@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"	
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/beans/spring-context-3.1.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/beans/spring-util-3.1.xsd">
+
+	<bean name="awsS3Client" class="com.amazonaws.services.s3.AmazonS3Client">
+		<constructor-arg index="0">
+			<bean class="com.amazonaws.auth.BasicAWSCredentials">
+				<constructor-arg index="0" value="AKIAIGBN2TCGAEZF6UAQ" />
+				<constructor-arg index="1" value="c/THVw9PCgf4dmqLmVBBXzGx0aoyMWVPdxpKd5/3" />
+			</bean>
+		</constructor-arg>
+	</bean>
+
+	<bean id="frenchQtrGuideCacheLoader" class="com.burda.scraper.cache.FrenchQuarterGuideCacheLoader" >
+		<property name="awsS3Client" ref="awsS3Client" />
+		<property name="s3BucketName" value="neworleanscom" />
+	</bean>
+		
+</beans>

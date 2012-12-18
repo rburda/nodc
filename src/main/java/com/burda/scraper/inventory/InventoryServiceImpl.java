@@ -13,7 +13,7 @@ public class InventoryServiceImpl implements InventoryService
 	@Override
 	public SearchResult getSearchResult() throws Exception
 	{
-		ExecutorService executor = Executors.newSingleThreadExecutor();
+		ExecutorService executor = Executors.newFixedThreadPool(2);
 		Future<SearchResult> task = executor.submit(new Callable<SearchResult>(){
 
 			@Override
@@ -21,10 +21,20 @@ public class InventoryServiceImpl implements InventoryService
 			{
 				return new NODCInventorySource().getResults();
 			}});
+		Future<SearchResult> task1 = executor.submit(new Callable<SearchResult>(){
+
+			@Override
+			public SearchResult call() throws Exception
+			{
+				return new FrenchQuarterGuideInventorySource().getResults();
+			}});		
 		
-		executor.awaitTermination(10, TimeUnit.SECONDS);
+		executor.shutdown();
 		SearchResult result = new SearchResult();
 		result.getHotels().addAll(task.get().hotels);
+		result.getHotels().addAll(task1.get().hotels);
+		result.headers.addAll(task.get().headers);
+		result.headers.addAll(task1.get().headers);
 		result.endDate = task.get().endDate;
 		result.startDate = task.get().startDate;
 		return result;

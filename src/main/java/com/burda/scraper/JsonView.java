@@ -17,7 +17,6 @@ public class JsonView {
 
       MediaType jsonMimeType = MediaType.APPLICATION_JSON;
 
-
       try {
           jsonConverter.write(model, jsonMimeType, new ServletServerHttpResponse(response));
       } catch (HttpMessageNotWritableException e) {

@@ -101,11 +101,11 @@ public class NODCInventorySource implements InventorySource
 				
 				RoomType roomType = new RoomType();
 				roomType.bookItUrl = calculateBookItUrl(bookIt);
-				roomType.avgNightlyRate = new BigDecimal(StringUtils.strip(avgNightlyRate.ownText(), "$"));
+				roomType.avgNightlyRate = InventoryUtils.createMoney(avgNightlyRate.ownText());
 				roomType.name = roomTypeName.ownText();
 				if (promoDesc != null)
 					roomType.promoDesc = promoDesc.ownText();
-				roomType.totalPrice = new BigDecimal(StringUtils.strip(totalPrice.ownText(), "$"));
+				roomType.totalPrice = InventoryUtils.createMoney(totalPrice.ownText());
 				
 				roomTypes.add(roomType);
 			}
