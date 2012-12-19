@@ -16,9 +16,13 @@
 		</constructor-arg>
 	</bean>
 
-	<bean id="frenchQtrGuideCacheLoader" class="com.burda.scraper.cache.FrenchQuarterGuideCacheLoader" >
+	<bean id="hotelDetailDAO" class="com.burda.scraper.dao.HotelDetailDAO">
 		<property name="awsS3Client" ref="awsS3Client" />
 		<property name="s3BucketName" value="neworleanscom" />
+	</bean>
+
+	<bean id="frenchQtrGuideCacheLoader" class="com.burda.scraper.cache.FrenchQuarterGuideCacheLoader" >
+		<property name="hotelDetailDAO" ref="hotelDetailDAO" />
 	</bean>
 		
 </beans>

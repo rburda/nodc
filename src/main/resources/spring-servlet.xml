@@ -32,6 +32,21 @@
 		class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
 		<property name="supportedMediaTypes" value="application/json" />
 	</bean>
-	-->
 
+	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		<property name="favorPathExtension" value="true"/>
+		<property name="mediaTypes">
+			<map>
+				<entry key="json" value="application/json"/>
+				<entry key="jsonp" value="application/javascript"/>
+			</map>
+		</property>
+		<property name="defaultViews">
+			<list>
+				<bean class="org.springframework.web.servlet.view.json.MappingJacksonJsonView"/>
+				<bean class="com.burda.scraper.JsonpView"/>
+			</list>
+		</property>
+	</bean>	
+	-->
 </beans>

@@ -1,6 +1,5 @@
 package com.burda.scraper.cache;
 
-import java.io.ByteArrayInputStream;
 import java.net.URI;
 
 import org.apache.http.HttpResponse;
@@ -17,27 +16,18 @@ import org.jsoup.parser.Parser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.burda.scraper.dao.HotelDetailDAO;
 
 public class FrenchQuarterGuideCacheLoader
 {
 	private Logger logger = LoggerFactory.getLogger(FrenchQuarterGuideCacheLoader.class);
 	
-	private AmazonS3Client s3 = null;
-	private String s3BucketName = null;
+	private HotelDetailDAO hotelDetailDAO;
 	
-	public void setAwsS3Client(AmazonS3Client awsClient)
+	public void setHotelDetailDAO(HotelDetailDAO hdd)
 	{
-		this.s3 = awsClient;
+		this.hotelDetailDAO = hdd;
 	}
-	
-	public void setS3BucketName(String bucketName)
-	{
-		this.s3BucketName = bucketName;
-	}
-	
 	public void loadCache() throws Exception
 	{
 		boolean hasMorePages = true;
@@ -56,16 +46,10 @@ public class FrenchQuarterGuideCacheLoader
 			{
 				String hotelId = hotelSummaryEl.select("hotel_id").first().ownText();
 				HttpResponse hotelDetailResponse = queryGetHotelData(hotelId);
-				
-				String fileKey = hotelId + ".xml";
+
 				byte[] xmlAsBytes = EntityUtils.toByteArray(hotelDetailResponse.getEntity());
-				ByteArrayInputStream is = new ByteArrayInputStream(xmlAsBytes);
-				ObjectMetadata md = new ObjectMetadata();
-				md.setContentLength(xmlAsBytes.length);
-				
-				s3.putObject(new PutObjectRequest(s3BucketName, fileKey, is, md));				
+				hotelDetailDAO.saveHotelDetails(hotelId, xmlAsBytes);				
 			}
-			
 		}
 		
 	}

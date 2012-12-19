@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.burda.scraper.inventory.InventoryServiceImpl;
@@ -23,6 +24,16 @@ public class SearchController
 {
 	private static final Logger logger = LoggerFactory.getLogger(SearchController.class);
 	
+	@RequestMapping(value = "/startSearch", method=RequestMethod.GET, produces="application/javascript")
+	@ResponseBody
+	public void redirectToSearch(
+			@RequestParam("jsoncallback") String jsonCallback, HttpServletResponse clientResponse) throws Exception
+	{
+		String callback = jsonCallback + "({\"redirectURL\": \"http:\\/\\/localhost:8080\\/search\"})";
+		clientResponse.setContentType("application/json");
+		clientResponse.getOutputStream().write(callback.getBytes());
+	}
+	
 	/**
 	 * Calls inventoryService and executes a search based on search params
 	 */
@@ -34,14 +45,9 @@ public class SearchController
 	{
 		SearchResult result = new InventoryServiceImpl().getSearchResult();
 		
-		/*
 		for (Header header: result.headers)
-		{
 			clientResponse.addHeader(header.name,  header.value);
-		}
-		*/
 		
 		return result;
-		//JsonView.render(result,  clientResponse);
 	}	
 }

@@ -215,4 +215,13 @@
 						</plugin>            
         </plugins>
     </build>
+    
+   <repositories>
+		<!-- needed to get spring dependencies -->
+		<repository>
+			<id>springsource-repo</id>
+			<name>SpringSource Repository</name>
+			<url>http://repo.springsource.org/release</url>
+		</repository>
+	</repositories>
 </project>
