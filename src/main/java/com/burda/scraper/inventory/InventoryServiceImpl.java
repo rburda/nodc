@@ -6,10 +6,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+
 import com.burda.scraper.model.SearchResult;
 
 public class InventoryServiceImpl implements InventoryService
 {
+	private NODCInventorySource nodcInventorySource;
+	private FrenchQuarterGuideInventorySource fqgInventorySource;
+	
 	@Override
 	public SearchResult getSearchResult() throws Exception
 	{
@@ -19,14 +25,14 @@ public class InventoryServiceImpl implements InventoryService
 			@Override
 			public SearchResult call() throws Exception
 			{
-				return new NODCInventorySource().getResults();
+				return nodcInventorySource.getResults();
 			}});
 		Future<SearchResult> task1 = executor.submit(new Callable<SearchResult>(){
 
 			@Override
 			public SearchResult call() throws Exception
 			{
-				return new FrenchQuarterGuideInventorySource().getResults();
+				return fqgInventorySource.getResults();
 			}});		
 		
 		executor.shutdown();
@@ -40,4 +46,13 @@ public class InventoryServiceImpl implements InventoryService
 		return result;
 	}
 	
+	public void setNODCInventorySource(NODCInventorySource invSource)
+	{
+		this.nodcInventorySource = invSource;
+	}
+	
+	public void setFQGInventorySource(FrenchQuarterGuideInventorySource invSource)
+	{
+		this.fqgInventorySource = invSource;
+	}	
 }

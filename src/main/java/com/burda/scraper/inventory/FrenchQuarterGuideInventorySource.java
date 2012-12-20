@@ -1,8 +1,6 @@
 package com.burda.scraper.inventory;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.Header;
@@ -14,16 +12,25 @@ import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.parser.Parser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.burda.scraper.dao.HotelDetailDAO;
+import com.burda.scraper.dao.SourceHotelDAO;
+import com.burda.scraper.model.Amenity;
 import com.burda.scraper.model.Hotel;
+import com.burda.scraper.model.Photo;
 import com.burda.scraper.model.RoomType;
 import com.burda.scraper.model.SearchResult;
+import com.burda.scraper.model.persisted.SourceHotel;
 
 public class FrenchQuarterGuideInventorySource implements InventorySource
 {
-	private static final Logger logger = LoggerFactory.getLogger(FrenchQuarterGuideInventorySource.class);	
+	private static final Logger logger = LoggerFactory.getLogger(FrenchQuarterGuideInventorySource.class);		
+
+	private HotelDetailDAO hotelDetailDAO;
+	private SourceHotelDAO sourceHotelDAO;
 	
 	@Override
 	public SearchResult getResults() throws Exception
@@ -60,10 +67,19 @@ public class FrenchQuarterGuideInventorySource implements InventorySource
 		SearchResult result = new SearchResult();
 		for (Element hotelElement: document.select(".hotelbox"))
 		{
-			Hotel hotel = new Hotel();
-			hotel.source = "FQG";
-			hotel.name = hotelElement.select(".hotel h1 a").first().ownText();
-			hotel.photosUrl = hotelElement.select(".hotelbox_content .hotel_img").first().attr("src");
+			String extHotelId = hotelElement.id();
+			com.burda.scraper.model.persisted.InventorySource invSource = 
+					com.burda.scraper.model.persisted.InventorySource.FQG;
+					
+			SourceHotel sourceHotel = sourceHotelDAO.getByHotelId(extHotelId, invSource);
+			if (sourceHotel == null)
+			{
+				logger.warn("unable to find mapping for: " + extHotelId);
+				continue;
+			}
+			Hotel hotel = new Hotel();	
+			hotel.setSource( sourceHotel);
+			hotel.setHotelDetails( hotelDetailDAO.getHotelDetail(sourceHotel.getHotelName()));		
 			for (Element rtElement: hotelElement.select(".room"))
 			{
 				RoomType rt = new RoomType();
@@ -88,7 +104,7 @@ public class FrenchQuarterGuideInventorySource implements InventorySource
 				rt.totalPrice = InventoryUtils.createMoney(rtElement.select(".room_price .price").first().ownText());
 				
 				rt.bookItUrl=createBookUrl(idParts);
-				hotel.roomTypes.add(rt);
+				hotel.addRoomType(rt);
 			}
 			result.hotels.add(hotel);
 		}
@@ -106,8 +122,8 @@ public class FrenchQuarterGuideInventorySource implements InventorySource
 		url.append("&rs_rate_code="+idParts[2]);
 		url.append("&rs_room_code="+idParts[3]);
 		url.append("&rs_city=New Orleans, LA");
-		url.append("&rs_chk_in=12/14/2012");
-		url.append("&rs_chk_out=12/16/2012");
+		url.append("&rs_chk_in=01/14/2013");
+		url.append("&rs_chk_out=01/16/2013");
 		url.append("&rs_rooms=1");
 		url.append("&ts_testing=");
 		url.append("&_booknow=1");
@@ -124,8 +140,8 @@ public class FrenchQuarterGuideInventorySource implements InventorySource
 				.setPath("/js/ajax/city_page_redesign/getResults.php")
 				.addParameter("rs_city", "New Orleans, Lousiana")
 				.addParameter("rs_cid", "3000008434")
-				.addParameter("rs_chk_in", "12/14/2012")
-				.addParameter("rs_chk_out", "12/16/2012")
+				.addParameter("rs_chk_in", "01/14/2013")
+				.addParameter("rs_chk_out", "01/16/2013")
 				.addParameter("rs_rooms", "1")
 				.addParameter("rs_curr_code", "")
 				.addParameter("rs_m_km", "")
@@ -149,5 +165,15 @@ public class FrenchQuarterGuideInventorySource implements InventorySource
 		}
 		return response;
 	}	
+	
+	public void setHotelDetailDAO(HotelDetailDAO hDAO)
+	{
+		this.hotelDetailDAO = hDAO;
+	}
+	
+	public void setSourceHotelDAO(SourceHotelDAO dao)
+	{
+		this.sourceHotelDAO = dao;
+	}
 	
 }

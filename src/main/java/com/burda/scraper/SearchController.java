@@ -4,13 +4,17 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.burda.scraper.inventory.InventoryService;
 import com.burda.scraper.inventory.InventoryServiceImpl;
 import com.burda.scraper.model.Header;
 import com.burda.scraper.model.SearchParams;
@@ -23,6 +27,10 @@ import com.burda.scraper.model.SearchResult;
 public class SearchController
 {
 	private static final Logger logger = LoggerFactory.getLogger(SearchController.class);
+	
+	@Autowired
+	@Qualifier("inventoryService")
+	InventoryService invService;
 	
 	@RequestMapping(value = "/startSearch", method=RequestMethod.GET, produces="application/javascript")
 	@ResponseBody
@@ -43,11 +51,12 @@ public class SearchController
 			@ModelAttribute("searchParams") SearchParams params, 
 			HttpServletResponse clientResponse) throws Exception
 	{
-		SearchResult result = new InventoryServiceImpl().getSearchResult();
+		SearchResult result = invService.getSearchResult();
 		
 		for (Header header: result.headers)
 			clientResponse.addHeader(header.name,  header.value);
 		
 		return result;
 	}	
+
 }

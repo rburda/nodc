@@ -1,13 +1,11 @@
 package com.burda.scraper.inventory;
 
-import java.math.BigDecimal;
 import java.net.URI;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -80,17 +78,16 @@ public class NODCInventorySource implements InventorySource
 			Element hPhotosUrl = searchResult.select(".productSummary p:eq(0) a:eq(1)").first();
 			
 			Hotel hotel = new Hotel();
-			hotel.name = hName.ownText();
-			hotel.description = hDescription.ownText();
-			hotel.areaDescription = calculateArea(hArea);
-			hotel.mapUrl = calculateMapUrl(hMapUrl);
-			hotel.moreInfoUrl = calculateMoreInfoUrl(hMoreInfoUrl);
-			hotel.photosUrl = calculatePhotosUrl(hPhotosUrl);
-			hotel.source="NODC";
-			
-			
+			hotel.setName(hName.ownText());
+			hotel.getHotelDetails().setDescription(hDescription.ownText());
+			hotel.getHotelDetails().setAreaDescription(calculateArea(hArea));
+			//hotel.details.set = calculateMapUrl(hMapUrl);
+			//hotel.moreInfoUrl = calculateMoreInfoUrl(hMoreInfoUrl);
+			//hotel.photosUrl = calculatePhotosUrl(hPhotosUrl);
+			//hotel.source="NODC";
+						
 			Elements roomTypeElements = searchResult.select("table.hotelResults");
-			List<RoomType> roomTypes = new ArrayList<RoomType>(); 
+		
 			for (Element roomTypeEl: roomTypeElements.select("tbody tr.cyl-HotelRow"))
 			{
 				Element bookIt = roomTypeEl.select(".bookIt").first();
@@ -107,9 +104,8 @@ public class NODCInventorySource implements InventorySource
 					roomType.promoDesc = promoDesc.ownText();
 				roomType.totalPrice = InventoryUtils.createMoney(totalPrice.ownText());
 				
-				roomTypes.add(roomType);
+				hotel.addRoomType(roomType);
 			}
-			hotel.roomTypes = roomTypes;
 			result.getHotels().add(hotel);
 		}	
 		
@@ -166,7 +162,7 @@ public class NODCInventorySource implements InventorySource
 		int beginIdx = onclick.indexOf("?");
 		int endIdx = onclick.indexOf("'; }");
 		
-		return onclick.substring(beginIdx+1, endIdx);
+		return "http://www.neworleans.com/mytrip/app?"+onclick.substring(beginIdx+1, endIdx);
 	}	
 	
 	

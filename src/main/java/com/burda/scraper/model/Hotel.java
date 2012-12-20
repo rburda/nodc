@@ -5,54 +5,54 @@ import java.util.List;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import com.burda.scraper.model.persisted.HotelDetail;
+import com.burda.scraper.model.persisted.SourceHotel;
 
 public class Hotel
 {
-	public String source;
-	public String internalName; //used for filtering etc...
-	public String name;
-	public String description;
-	public String mapUrl;
-	public String photosUrl;
-	public String areaDescription;
-	public String moreInfoUrl;
-	public List<RoomType> roomTypes = new ArrayList<RoomType>();
+	private SourceHotel source;
+	private HotelDetail details = new HotelDetail();
+	private String name;
+	private List<RoomType> roomTypes = new ArrayList<RoomType>();
 	
-	public String getSource()
+	public SourceHotel getSource()
 	{
 		return source;
 	}
-	public String getInternalName()
+	
+	public void setSource(SourceHotel sh)
 	{
-		return internalName;
+		this.source = sh;
 	}
+
 	public String getName()
 	{
 		return name;
 	}
-	public String getDescription()
+	
+	public void setName(String n)
 	{
-		return description;
+		this.name = n;
 	}
-	public String getMapUrl()
+	
+	public HotelDetail getHotelDetails()
 	{
-		return mapUrl;
+		return details;
 	}
-	public String getPhotosUrl()
+	
+	public void setHotelDetails(HotelDetail hd)
 	{
-		return photosUrl;
+		this.details = hd;
 	}
-	public String getAreaDescription()
-	{
-		return areaDescription;
-	}
-	public String getMoreInfoUrl()
-	{
-		return moreInfoUrl;
-	}
+	
 	public List<RoomType> getRoomTypes()
 	{
 		return roomTypes;
+	}
+	
+	public void addRoomType(RoomType rt)
+	{
+		this.roomTypes.add(rt);
 	}
 	
 	public String toString()

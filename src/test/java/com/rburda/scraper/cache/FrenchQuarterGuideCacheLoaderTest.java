@@ -7,11 +7,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.burda.scraper.cache.FrenchQuarterGuideCacheLoader;
+import com.rburda.scraper.BaseSpringJUnitTest;
 
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"classpath:/spring-context.xml"})
-public class FrenchQuarterGuideCacheLoaderTest
+public class FrenchQuarterGuideCacheLoaderTest extends BaseSpringJUnitTest
 {
 	
 	@Autowired
