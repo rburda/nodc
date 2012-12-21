@@ -9,34 +9,35 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.parser.Parser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.burda.scraper.dao.HotelDetailDAO;
 import com.burda.scraper.dao.SourceHotelDAO;
-import com.burda.scraper.model.Amenity;
 import com.burda.scraper.model.Hotel;
-import com.burda.scraper.model.Photo;
 import com.burda.scraper.model.RoomType;
+import com.burda.scraper.model.SearchParams;
 import com.burda.scraper.model.SearchResult;
 import com.burda.scraper.model.persisted.SourceHotel;
 
 public class FrenchQuarterGuideInventorySource implements InventorySource
 {
 	private static final Logger logger = LoggerFactory.getLogger(FrenchQuarterGuideInventorySource.class);		
-
+	private static final DateTimeFormatter STAY_DATE_FORMAT = DateTimeFormat.forPattern("MM/dd/yyyy");
+	
 	private HotelDetailDAO hotelDetailDAO;
 	private SourceHotelDAO sourceHotelDAO;
 	
 	@Override
-	public SearchResult getResults() throws Exception
+	public SearchResult getResults(SearchParams params) throws Exception
 	{
 		SearchResult result;
-		HttpResponse resp = queryHotelsViaHttpClient();
+		HttpResponse resp = queryHotelsViaHttpClient(params);
 		
 		byte[] html = EntityUtils.toByteArray(resp.getEntity());
 		result = createHotels(html);
@@ -131,7 +132,7 @@ public class FrenchQuarterGuideInventorySource implements InventorySource
 	}
 	
 
-	private HttpResponse queryHotelsViaHttpClient()
+	private HttpResponse queryHotelsViaHttpClient(SearchParams sp)
 	{
 		URIBuilder builder = new URIBuilder();
 		builder
@@ -140,9 +141,9 @@ public class FrenchQuarterGuideInventorySource implements InventorySource
 				.setPath("/js/ajax/city_page_redesign/getResults.php")
 				.addParameter("rs_city", "New Orleans, Lousiana")
 				.addParameter("rs_cid", "3000008434")
-				.addParameter("rs_chk_in", "01/14/2013")
-				.addParameter("rs_chk_out", "01/16/2013")
-				.addParameter("rs_rooms", "1")
+				.addParameter("rs_chk_in", STAY_DATE_FORMAT.print(sp.getCheckInDate()))
+				.addParameter("rs_chk_out", STAY_DATE_FORMAT.print(sp.getCheckOutDate()))
+				.addParameter("rs_rooms", String.valueOf(sp.getNumRooms()))
 				.addParameter("rs_curr_code", "")
 				.addParameter("rs_m_km", "")
 				.addParameter("needLiveRates", "true")

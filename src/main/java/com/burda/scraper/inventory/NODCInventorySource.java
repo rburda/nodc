@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import com.burda.scraper.model.Hotel;
 import com.burda.scraper.model.RoomType;
+import com.burda.scraper.model.SearchParams;
 import com.burda.scraper.model.SearchResult;
 
 public class NODCInventorySource implements InventorySource
@@ -29,9 +30,9 @@ public class NODCInventorySource implements InventorySource
 	private static final Logger logger = LoggerFactory.getLogger(NODCInventorySource.class);
 	
 	@Override
-	public SearchResult getResults() throws Exception
+	public SearchResult getResults(SearchParams params) throws Exception
 	{
-		HttpResponse response = queryNODCHotelsViaHttpClient();
+		HttpResponse response = queryNODCHotelsViaHttpClient(params);
 		byte[] html = EntityUtils.toByteArray(response.getEntity());
 
 		SearchResult result = createHotelsNODC(html);
@@ -166,7 +167,7 @@ public class NODCInventorySource implements InventorySource
 	}	
 	
 	
-	private HttpResponse queryNODCHotelsViaHttpClient()
+	private HttpResponse queryNODCHotelsViaHttpClient(SearchParams sp)
 	{
 		URIBuilder builder = new URIBuilder();
 		builder
@@ -178,28 +179,29 @@ public class NODCInventorySource implements InventorySource
 				.addParameter("promoId", "")
 				.addParameter("mo", "")
 				.addParameter("pdp:physicalDestination", "982")
-				.addParameter("departureDate", "11/30/2012")
-				.addParameter("returnDate", "12/02/2012")
-				.addParameter("numRooms", "1")
-				.addParameter("r1:0:ro:na", "2")
-				.addParameter("rl:0:ro:ob:nc", "0")
-				.addParameter("rl:1:ro:na", "1")
-				.addParameter("rl:1:ro:ob:nc", "0")
-				.addParameter("rl:2:ro:na", "1")
-				.addParameter("rl:2:ro:ob:nc", "0")
-				.addParameter("rl:3:ro:na", "1")
-				.addParameter("rl:3:ro:ob:nc", "0")
-				.addParameter("a:0:b:c:0:d:e", "")
-				.addParameter("a:0:b:c:1:d:e", "")
-				.addParameter("a:0:b:c:2:d:e", "")
-				.addParameter("a:1:b:c:0:d:e", "")
-				.addParameter("a:1:b:c:2:d:e", "")
-				.addParameter("a:2:b:c:0:d:e", "")
-				.addParameter("a:2:b:c:1:d:e", "")
-				.addParameter("a:2:b:c:2:d:e", "")
-				.addParameter("a:3:b:c:0:d:e", "")
-				.addParameter("a:3:b:c:1:d:e", "")
-				.addParameter("a:3:b:c:2:d:e", "")
+				.addParameter("departureDate", STAY_DATE_FORMAT.format(sp.getCheckInDate().toDate()))
+				.addParameter("returnDate", STAY_DATE_FORMAT.format(sp.getCheckOutDate().toDate()))
+				.addParameter("numRooms", toS(sp.getNumRooms()))
+				.addParameter("r1:0:ro:na", toS(sp.getNumAdults1()))
+				.addParameter("rl:0:ro:ob:nc", toS(sp.getNumChildren1()))
+				.addParameter("rl:1:ro:na", toS(sp.getNumAdults2()))
+				.addParameter("rl:1:ro:ob:nc", toS(sp.getNumChildren2()))
+				.addParameter("rl:2:ro:na", toS(sp.getNumAdults3()))
+				.addParameter("rl:2:ro:ob:nc", toS(sp.getNumChildren3()))
+				.addParameter("rl:3:ro:na", toS(sp.getNumAdults4()))
+				.addParameter("rl:3:ro:ob:nc", toS(sp.getNumChildren4()))
+				.addParameter("a:0:b:c:0:d:e", toS(sp.getRoom1ChildAge1()))
+				.addParameter("a:0:b:c:1:d:e", toS(sp.getRoom1ChildAge2()))
+				.addParameter("a:0:b:c:2:d:e", toS(sp.getRoom1ChildAge3()))
+				.addParameter("a:1:b:c:0:d:e", toS(sp.getRoom2ChildAge1()))
+				.addParameter("a:1:b:c:1:d:e", toS(sp.getRoom2ChildAge2()))
+				.addParameter("a:1:b:c:2:d:e", toS(sp.getRoom2ChildAge3()))
+				.addParameter("a:2:b:c:0:d:e", toS(sp.getRoom3ChildAge1()))
+				.addParameter("a:2:b:c:1:d:e", toS(sp.getRoom3ChildAge2()))
+				.addParameter("a:2:b:c:2:d:e", toS(sp.getRoom3ChildAge3()))
+				.addParameter("a:3:b:c:0:d:e", toS(sp.getRoom4ChildAge1()))
+				.addParameter("a:3:b:c:1:d:e", toS(sp.getRoom4ChildAge2()))
+				.addParameter("a:3:b:c:2:d:e", toS(sp.getRoom4ChildAge3()))
 				.addParameter("preferredProductId", "")
 				.addParameter("wicket:bookmarkablePage",
 						":com.vegas.athena.components.browse.hotel.HotelBrowsePage");					
@@ -217,6 +219,11 @@ public class NODCInventorySource implements InventorySource
 			logger.error("unable to retrieve query response", e);
 		}
 		return response;
+	}
+	
+	private String toS(int x)
+	{
+		return String.valueOf(x);
 	}
 
 }
