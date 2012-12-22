@@ -12,22 +12,72 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.joda.time.LocalDate;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
+import com.burda.scraper.dao.HotelDetailDAO;
+import com.burda.scraper.dao.SourceHotelDAO;
 import com.burda.scraper.model.Hotel;
 import com.burda.scraper.model.RoomType;
 import com.burda.scraper.model.SearchParams;
 import com.burda.scraper.model.SearchResult;
+import com.burda.scraper.model.persisted.SourceHotel;
+import com.google.common.collect.Lists;
 
 public class NODCInventorySource implements InventorySource
 {
 	private static final DateFormat STAY_DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy");
 	private static final Logger logger = LoggerFactory.getLogger(NODCInventorySource.class);
+	
+	@Autowired
+	@Qualifier("sourceHotelDAO")
+	private SourceHotelDAO sourceHotelDAO;
+	
+	@Autowired
+	@Qualifier("hotelDetailDAO")
+	private HotelDetailDAO hotelDetailDAO;
+	
+	/**
+	 * pulls all possible hotels from NODC inv source. Hotel objects returned only
+	 * have the 'source' filed out. Intention is to use this to fill cache of 
+	 * known hotels
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Hotel> getAllShellHotels() throws Exception
+	{
+		List<Hotel> hotels = Lists.newArrayList();
+		
+		SearchParams sp = SearchParams.oneRoomOneAdult(
+				new LocalDate().plusMonths(1), new LocalDate().plusMonths(1).plusDays(2));		
+		
+		HttpResponse httpResponse = queryNODCHotelsViaHttpClient(sp);
+		byte[] html = EntityUtils.toByteArray(httpResponse.getEntity());
+		Document document = Jsoup.parse(new String(html), "http://www.neworleans.com/mytrip/app");
+		for (Element hotelEl: document.select("[name=preferredProductId]").first().select("option"))
+		{
+			if (hotelEl.ownText().equalsIgnoreCase("All Hotels"))
+				continue;
+			
+			Hotel h = new Hotel();
+			SourceHotel source = new SourceHotel();
+			source.setExternalHotelId(hotelEl.val());
+			source.setHotelName(hotelEl.ownText());
+			source.setInvSource(com.burda.scraper.model.persisted.InventorySource.NODC);
+			h.setSource(source);
+			
+			hotels.add(h);
+		}
+		
+		return hotels;
+	}
 	
 	@Override
 	public SearchResult getResults(SearchParams params) throws Exception
@@ -59,24 +109,33 @@ public class NODCInventorySource implements InventorySource
 		result.startDate = STAY_DATE_FORMAT.parse(document.select("[name=departureDate]").first().val());
 		result.endDate = STAY_DATE_FORMAT.parse(document.select("[name=returnDate]").first().val());
 		
+		Elements hotelIds = document.select("[name=preferredProductId]").first().select("option");
+		
 		Elements searchResults = document.select(".searchResult");
 		for (Element searchResult: searchResults)
 		{
 			Element hName = searchResult.select(".productTitle a").first();
-			Element hDescription = searchResult.select(".productSummary p:eq(1)").first();	
-			Element hArea = searchResult.select(".productSummary p:eq(0)").first();
-			Element hMapUrl = searchResult.select(".productSummary p:eq(0) a").first();
-			Element hMoreInfoUrl = searchResult.select(".productSummary p:eq(2) a:eq(0)").first();
-			Element hPhotosUrl = searchResult.select(".productSummary p:eq(0) a:eq(1)").first();
+			//Element hDescription = searchResult.select(".productSummary p:eq(1)").first();	
+			//Element hArea = searchResult.select(".productSummary p:eq(0)").first();
+			//Element hMapUrl = searchResult.select(".productSummary p:eq(0) a").first();
+			//Element hMoreInfoUrl = searchResult.select(".productSummary p:eq(2) a:eq(0)").first();
+			//Element hPhotosUrl = searchResult.select(".productSummary p:eq(0) a:eq(1)").first();
 			
 			Hotel hotel = new Hotel();
-			hotel.setName(hName.ownText());
-			hotel.getHotelDetails().setDescription(hDescription.ownText());
-			hotel.getHotelDetails().setAreaDescription(calculateArea(hArea));
-			//hotel.details.set = calculateMapUrl(hMapUrl);
-			//hotel.moreInfoUrl = calculateMoreInfoUrl(hMoreInfoUrl);
-			//hotel.photosUrl = calculatePhotosUrl(hPhotosUrl);
-			//hotel.source="NODC";
+			
+			String extHotelId = 
+					hotelIds.select(String.format("option:containsOwn(%1$s)", hName.ownText())).first().val();
+			SourceHotel sourceHotel = sourceHotelDAO
+					.getByHotelId(extHotelId, com.burda.scraper.model.persisted.InventorySource.NODC);
+			if (sourceHotel == null)
+			{
+				logger.warn("skipping hotel with id: " + extHotelId + ", name: " + hName.ownText());
+				continue;
+			}
+			
+			hotel.setName(sourceHotel.getHotelName());
+			hotel.setHotelDetails(hotelDetailDAO.getHotelDetail(sourceHotel.getHotelName()));
+			hotel.setSource(sourceHotel);
 						
 			Elements roomTypeElements = searchResult.select("table.hotelResults");
 		
@@ -158,7 +217,7 @@ public class NODCInventorySource implements InventorySource
 	}	
 	
 	
-	private HttpResponse queryNODCHotelsViaHttpClient(SearchParams sp)
+	private static final HttpResponse queryNODCHotelsViaHttpClient(SearchParams sp)
 	{
 		URIBuilder builder = new URIBuilder();
 		builder
@@ -212,9 +271,20 @@ public class NODCInventorySource implements InventorySource
 		return response;
 	}
 	
-	private String toS(int x)
+	private static final String toS(int x)
 	{
 		return String.valueOf(x);
 	}
 
+	public void setSourceHotelDAO(SourceHotelDAO sourceHotelDAO)
+	{
+		this.sourceHotelDAO = sourceHotelDAO;
+	}
+
+	public void setHotelDetailDAO(HotelDetailDAO hotelDetailDAO)
+	{
+		this.hotelDetailDAO = hotelDetailDAO;
+	}
+	
+	
 }

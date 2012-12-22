@@ -13,6 +13,15 @@ public class SearchParams
 {
 	private static final Logger logger = LoggerFactory.getLogger(SearchParams.class);
 	
+	public static SearchParams oneRoomOneAdult(LocalDate cIn, LocalDate cOut)
+	{
+		SearchParams sp = oneRoomOneAdult();
+		sp.checkInDate = cIn;
+		sp.checkOutDate = cOut;
+		
+		return sp;
+	}
+	
 	public static SearchParams oneRoomOneAdult()
 	{
 		SearchParams sp = new SearchParams();

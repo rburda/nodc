@@ -53,7 +53,12 @@
 		<property name="sourceHotelDAO" ref="sourceHotelDAO" />		
 	</bean>	
 		
-	<bean id="nodcInvSource" class="com.burda.scraper.inventory.NODCInventorySource" />	
+	<bean id="nodcInvSource" class="com.burda.scraper.inventory.NODCInventorySource">
+		<property name="sourceHotelDAO" ref="sourceHotelDAO" />
+		<property name="hotelDetailDAO" ref="hotelDetailDAO" />
+	</bean>	
+	
+	<bean id="nodchotelLoader" class="com.burda.scraper.cache.NODCHotelLoader" />
 		
 	<bean id="inventoryService" class="com.burda.scraper.inventory.InventoryServiceImpl">
 		<property name="NODCInventorySource" ref="nodcInvSource" />

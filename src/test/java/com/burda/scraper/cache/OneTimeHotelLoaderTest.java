@@ -1,10 +1,9 @@
-package com.rburda.scraper.cache;
+package com.burda.scraper.cache;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.burda.scraper.cache.OneTimeHotelLoader;
-import com.rburda.scraper.BaseSpringJUnitTest;
+import com.burda.scraper.BaseSpringJUnitTest;
 
 public class OneTimeHotelLoaderTest extends BaseSpringJUnitTest
 {

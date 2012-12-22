@@ -1,12 +1,11 @@
-package com.rburda.scraper.inventory;
+package com.burda.scraper.inventory;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.burda.scraper.inventory.FrenchQuarterGuideInventorySource;
+import com.burda.scraper.BaseSpringJUnitTest;
 import com.burda.scraper.model.SearchParams;
 import com.burda.scraper.model.SearchResult;
-import com.rburda.scraper.BaseSpringJUnitTest;
 
 public class FrenchQuarterGuideInventorySourceTest extends BaseSpringJUnitTest
 {

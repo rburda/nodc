@@ -1,4 +1,4 @@
-package com.rburda.scraper;
+package com.burda.scraper;
 
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
