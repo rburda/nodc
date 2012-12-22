@@ -57,6 +57,7 @@ public class FrenchQuarterGuideInventorySource implements InventorySource
 			}
 			result.headers.add(newHeader);
 		}
+		logger.debug("fqg complete");
 		return result;
 	}
 	
@@ -69,6 +70,7 @@ public class FrenchQuarterGuideInventorySource implements InventorySource
 		for (Element hotelElement: document.select(".hotelbox"))
 		{
 			String extHotelId = hotelElement.id();
+			logger.error("parsing hotel id: " + extHotelId);
 			com.burda.scraper.model.persisted.InventorySource invSource = 
 					com.burda.scraper.model.persisted.InventorySource.FQG;
 					

@@ -6,9 +6,13 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SearchParams
 {
+	private static final Logger logger = LoggerFactory.getLogger(SearchParams.class);
+	
 	public static SearchParams oneRoomOneAdult()
 	{
 		SearchParams sp = new SearchParams();
@@ -49,9 +53,9 @@ public class SearchParams
 	private SearchParams(){}
 	
 	public SearchParams(Map<String, String> requestParams)
-	{
-		checkInDate = LocalDate.parse(requestParams.get("departureDate"), CHECK_IN_OUT_FORMAT);
-		checkOutDate = LocalDate.parse(requestParams.get("returnDate"), CHECK_IN_OUT_FORMAT);
+	{	
+		checkInDate = defCheckIn(requestParams.get("departureDate"));
+		checkOutDate = defCheckOut(requestParams.get("returnDate"));
 		numRooms = defZero(requestParams.get("numRooms"));
 		numAdults1 = defZero(requestParams.get("rl:0:ro:na"));
 		numChildren1 = defZero(requestParams.get("rl:0:ro:ob:nc"));
@@ -168,6 +172,42 @@ public class SearchParams
 		return checkOutDate;
 	}
 
+	private LocalDate defCheckIn(String date)
+	{
+		LocalDate cIn = defDate(date, new LocalDate());
+		LocalDate minDate = new LocalDate().plusDays(1);
+		if (cIn.isBefore(minDate))
+			cIn = minDate;
+		
+		return cIn;
+	}
+	
+	private LocalDate defCheckOut(String date)
+	{
+		LocalDate cOut = defDate(date, new LocalDate().plusDays(2));
+		LocalDate minDate = (getCheckInDate() != null ? getCheckInDate().plusDays(1) : new LocalDate().plusDays(2));
+		if (!cOut.isAfter(minDate))
+			cOut = minDate;
+		return cOut;
+	}
+	
+	private LocalDate defDate(String date, LocalDate ld)
+	{
+		LocalDate cDate = ld;
+		if (date != null)
+		{
+			try
+			{
+				cDate = LocalDate.parse(date, CHECK_IN_OUT_FORMAT);
+			}
+			catch (Exception e)
+			{
+				logger.error("unable to parse checkInDate", e);
+			}
+		}
+		return cDate;		
+	}
+	
 	private int defZero(String s)
 	{
 		int returnVal;

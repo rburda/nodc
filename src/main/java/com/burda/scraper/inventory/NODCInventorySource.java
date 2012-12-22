@@ -36,11 +36,6 @@ public class NODCInventorySource implements InventorySource
 		byte[] html = EntityUtils.toByteArray(response.getEntity());
 
 		SearchResult result = createHotelsNODC(html);
-		for (Hotel h: result.getHotels())
-		{
-			logger.error(String.format("hotel: %1$s", h));
-		}
-		List<com.burda.scraper.model.Header> headers = new ArrayList<com.burda.scraper.model.Header>();
 		for (Header header: response.getAllHeaders())
 		{
 			com.burda.scraper.model.Header newHeader = new com.burda.scraper.model.Header();			
@@ -48,15 +43,11 @@ public class NODCInventorySource implements InventorySource
 			{
 				newHeader.name = header.getName();
 				newHeader.value =  header.getValue() + "; domain=.neworleans.com";
+				result.headers.add(newHeader);
 			}
-			else
-			{
-				newHeader.name = header.getName();
-				newHeader.value = header.getValue();	
-			}
-			result.headers.add(newHeader);
 			logger.error(header.getName() + " " + header.getValue());
 		}
+		logger.debug("nodc complete");
 		return result;
 	}
 	

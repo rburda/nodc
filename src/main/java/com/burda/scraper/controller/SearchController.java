@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,10 +39,13 @@ public class SearchController
 	@RequestMapping(value = "/startSearch", method=RequestMethod.GET, produces="application/javascript")
 	@ResponseBody
 	public void redirectToSearch( 
-			@RequestParam Map<String, String> params, HttpServletResponse clientResponse) throws Exception
+			@RequestParam Map<String, String> params, 
+			HttpServletRequest request, HttpServletResponse clientResponse) throws Exception
 	{
+		StringBuffer hostWithPath = HttpUtils.getRequestURL(request);
+		String host = hostWithPath.substring(0, hostWithPath.indexOf("/startSearch"));
 		String callback = params.get("jsoncallback") 
-				+ "({\"redirectURL\": \"http:\\/\\/localhost:8080\\/search?" 
+				+ "({\"redirectURL\": \""+host+"\\/search?" 
 				+ createRequestString(params) 
 				+  "\"})";
 		clientResponse.setContentType("application/json");
