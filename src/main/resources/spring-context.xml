@@ -5,7 +5,31 @@
 	xmlns:util="http://www.springframework.org/schema/util"	
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/beans/spring-context-3.1.xsd
-		http://www.springframework.org/schema/util http://www.springframework.org/schema/beans/spring-util-3.1.xsd">
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/beans/spring-util-3.1.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd"
+	xmlns:aop="http://www.springframework.org/schema/aop">
+
+	<import resource="simplesm-context.xml" />
+	
+	<aop:aspectj-autoproxy />
+
+  <bean name="defaultMemcachedClient" class="com.google.code.ssm.CacheFactory">
+		<property name="defaultSerializationType"
+			value="#{T(com.google.code.ssm.api.format.SerializationType).valueOf('JSON')}" />
+    <property name="cacheClientFactory">
+     	<bean name="cacheClientFactory" class="com.google.code.ssm.providers.spymemcached.MemcacheClientFactoryImpl"/>
+    </property>
+    <property name="addressProvider">
+      <bean class="com.google.code.ssm.config.DefaultAddressProvider">
+        <property name="address" value="127.0.0.1:11211" />
+      </bean>
+    </property>
+    <property name="configuration">
+      <bean class="com.google.code.ssm.providers.CacheConfiguration">
+        <property name="consistentHashing" value="true" />
+      </bean>
+    </property>
+  </bean>
 
 	<bean name="awsS3Client" class="com.amazonaws.services.s3.AmazonS3Client">
 		<constructor-arg index="0">

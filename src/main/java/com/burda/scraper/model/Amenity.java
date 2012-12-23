@@ -1,7 +1,10 @@
 package com.burda.scraper.model;
 
-public class Amenity
+import java.io.Serializable;
+
+public class Amenity implements Serializable
 {
+	private static final long serialVersionUID = 1L;
 	public String name;
 	public String description;
 	

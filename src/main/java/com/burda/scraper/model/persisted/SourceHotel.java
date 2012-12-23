@@ -1,5 +1,7 @@
 package com.burda.scraper.model.persisted;
 
+import java.io.Serializable;
+
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import com.amazonaws.services.dynamodb.datamodeling.DynamoDBAttribute;
@@ -9,13 +11,13 @@ import com.amazonaws.services.dynamodb.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodb.datamodeling.DynamoDBTable;
 
 @DynamoDBTable(tableName = "nodc_hotel_source")
-public class SourceHotel
+public class SourceHotel implements Serializable
 {
+	private static final long serialVersionUID = 1L;
 	private String hotelName;
 	private InventorySource invSource;
 	private String externalHotelId;
 	
-	@JsonIgnore
 	@DynamoDBAttribute(attributeName = "hotel_name")	
 	public String getHotelName()
 	{
@@ -55,4 +57,5 @@ public class SourceHotel
 	{
 		this.externalHotelId = externalHotelId;
 	}
+	
 }

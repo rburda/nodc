@@ -1,5 +1,6 @@
 package com.burda.scraper.model.persisted;
 
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.List;
 
@@ -18,8 +19,10 @@ import com.burda.scraper.model.Photo;
 import com.google.common.collect.Lists;
 
 @DynamoDBTable(tableName = "nodc_hotel_content")
-public class HotelDetail
+public class HotelDetail implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	private static final Logger logger = LoggerFactory.getLogger(HotelDetail.class);
 	
 	private String name;

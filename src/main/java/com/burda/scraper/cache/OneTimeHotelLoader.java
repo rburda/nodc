@@ -14,6 +14,7 @@ import org.jsoup.parser.Parser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.burda.scraper.dao.HotelDetailCacheKey;
 import com.burda.scraper.dao.HotelDetailDAO;
 import com.burda.scraper.dao.MasterHotelDAO;
 import com.burda.scraper.dao.SourceHotelDAO;
@@ -73,7 +74,7 @@ public class OneTimeHotelLoader
 			//lastly, check to see if we already have a content detail record.
 			//If not, create one; if we do, then still set the address info as that
 			//doesn't come in during the normal cache load
-			HotelDetail hd = hotelDetailDAO.getHotelDetail(hotel.getHotelName());
+			HotelDetail hd = hotelDetailDAO.getHotelDetail(new HotelDetailCacheKey(hotel.getHotelName()));
 			if (hd == null)
 			{
 				hd = new HotelDetail();

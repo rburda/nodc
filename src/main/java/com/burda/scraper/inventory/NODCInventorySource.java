@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import com.burda.scraper.dao.HotelDetailCacheKey;
 import com.burda.scraper.dao.HotelDetailDAO;
 import com.burda.scraper.dao.SourceHotelDAO;
 import com.burda.scraper.model.Hotel;
@@ -134,7 +135,7 @@ public class NODCInventorySource implements InventorySource
 			}
 			
 			hotel.setName(sourceHotel.getHotelName());
-			hotel.setHotelDetails(hotelDetailDAO.getHotelDetail(sourceHotel.getHotelName()));
+			hotel.setHotelDetails(hotelDetailDAO.getHotelDetail(new HotelDetailCacheKey(sourceHotel.getHotelName())));
 			hotel.setSource(sourceHotel);
 						
 			Elements roomTypeElements = searchResult.select("table.hotelResults");

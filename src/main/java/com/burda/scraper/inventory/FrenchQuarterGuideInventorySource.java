@@ -17,6 +17,7 @@ import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.burda.scraper.dao.HotelDetailCacheKey;
 import com.burda.scraper.dao.HotelDetailDAO;
 import com.burda.scraper.dao.SourceHotelDAO;
 import com.burda.scraper.model.Hotel;
@@ -82,7 +83,7 @@ public class FrenchQuarterGuideInventorySource implements InventorySource
 			}
 			Hotel hotel = new Hotel();	
 			hotel.setSource( sourceHotel);
-			hotel.setHotelDetails( hotelDetailDAO.getHotelDetail(sourceHotel.getHotelName()));		
+			hotel.setHotelDetails( hotelDetailDAO.getHotelDetail(new HotelDetailCacheKey(sourceHotel.getHotelName())));		
 			for (Element rtElement: hotelElement.select(".room"))
 			{
 				RoomType rt = new RoomType();

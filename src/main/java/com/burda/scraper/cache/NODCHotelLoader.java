@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import com.burda.scraper.dao.HotelDetailCacheKey;
 import com.burda.scraper.dao.HotelDetailDAO;
 import com.burda.scraper.dao.MasterHotelDAO;
 import com.burda.scraper.dao.SourceHotelDAO;
@@ -62,7 +63,7 @@ public class NODCHotelLoader
 				masterHotelDAO.save(masterHotel);
 			}
 			
-			HotelDetail hd = hotelDetailDAO.getHotelDetail(h.getSource().getHotelName());
+			HotelDetail hd = hotelDetailDAO.getHotelDetail(new HotelDetailCacheKey(h.getSource().getHotelName()));
 			if (hd == null)
 			{
 				hd = new HotelDetail();

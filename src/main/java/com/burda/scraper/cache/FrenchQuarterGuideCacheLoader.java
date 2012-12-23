@@ -16,6 +16,7 @@ import org.jsoup.parser.Parser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.burda.scraper.dao.HotelDetailCacheKey;
 import com.burda.scraper.dao.HotelDetailDAO;
 import com.burda.scraper.dao.SourceHotelDAO;
 import com.burda.scraper.model.Amenity;
@@ -67,7 +68,7 @@ public class FrenchQuarterGuideCacheLoader
 				byte[] xmlAsBytes = EntityUtils.toByteArray(hotelDetailResponse.getEntity());
 				Element detailsEl = Jsoup.parse(new String(xmlAsBytes), "", Parser.xmlParser()).select("result").first();
 				
-				HotelDetail details = hotelDetailDAO.getHotelDetail(sourceHotel.getHotelName());
+				HotelDetail details = hotelDetailDAO.getHotelDetail(new HotelDetailCacheKey(sourceHotel.getHotelName()));
 				if (details == null)
 				{
 					details = new HotelDetail();

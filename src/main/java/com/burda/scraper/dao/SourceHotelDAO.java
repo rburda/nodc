@@ -2,10 +2,14 @@ package com.burda.scraper.dao;
 
 import com.burda.scraper.model.persisted.InventorySource;
 import com.burda.scraper.model.persisted.SourceHotel;
+import com.google.code.ssm.api.ParameterValueKeyProvider;
+import com.google.code.ssm.api.ReadThroughSingleCache;
 
 public class SourceHotelDAO extends AbstractDynamoDBDAO<SourceHotel>
 {	
-	public SourceHotel getByHotelId(String hotelId, InventorySource is)
+	@ReadThroughSingleCache(namespace = "SourceHotel", expiration = 3600)
+	public SourceHotel getByHotelId(
+		@ParameterValueKeyProvider(order=1) String hotelId, @ParameterValueKeyProvider(order=2) InventorySource is)
 	{
 		/*
 		DynamoDBQueryExpression queryExpression = 

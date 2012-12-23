@@ -6,6 +6,8 @@
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
+		  classpath:/spring-context-dev.xml
+			classpath:/spring-context-live.xml		  
 			classpath:/spring-context.xml
 		</param-value>
 	</context-param>
