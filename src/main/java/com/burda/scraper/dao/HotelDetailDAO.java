@@ -15,7 +15,6 @@ public class HotelDetailDAO extends AbstractDynamoDBDAO<HotelDetail>
 	@ReadThroughSingleCache(namespace = "HotelDetail", expiration = 3600)
 	public HotelDetail getHotelDetail(@ParameterValueKeyProvider(order=1) HotelDetailCacheKey ck)
 	{
-		logger.error("in gethoteldetail");
 		return getDynamoMapper().load(HotelDetail.class,  ck.getHotelName());
 	}
 }
