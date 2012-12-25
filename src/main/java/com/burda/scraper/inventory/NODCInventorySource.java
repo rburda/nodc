@@ -93,7 +93,7 @@ public class NODCInventorySource implements InventorySource
 			if (header.getValue().contains("JSESSIONID"))
 			{
 				newHeader.name = header.getName();
-				newHeader.value =  header.getValue() + "; domain=.neworleans.com";
+				newHeader.value =  header.getValue() + "; domain=test.www.neworleans.com";
 				result.headers.add(newHeader);
 			}
 			logger.error(header.getName() + " " + header.getValue());

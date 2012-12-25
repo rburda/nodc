@@ -13,10 +13,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.burda.scraper.inventory.InventoryService;
 import com.burda.scraper.model.Header;
@@ -55,10 +58,11 @@ public class SearchController
 	/**
 	 * Calls inventoryService and executes a search based on search params
 	 */
-	@RequestMapping(value = "/search", method = RequestMethod.GET,  produces = "application/json")
+	@RequestMapping(value = "/search", method = RequestMethod.GET)
 	@ResponseBody
-	public SearchResult search(
+	public ModelAndView search(
 			@RequestParam Map<String, String> params,
+			@ModelAttribute("searchResults") ModelMap model,
 			HttpServletResponse clientResponse) throws Exception
 	{
 		SearchParams sp = new SearchParams(params);
@@ -68,7 +72,9 @@ public class SearchController
 		for (Header header: result.headers)
 			clientResponse.addHeader(header.name,  header.value);
 		
-		return result;
+		model.put("result", result);
+		
+		return new ModelAndView("searchResult", model);
 	}	
 
 	private String createRequestString(Map<String, String> reqParams)

@@ -58,6 +58,12 @@
 	  </dependency>
 		
 		<dependency>
+			<groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+			<version>2.3.19</version>
+		</dependency>
+		
+		<dependency>
 		  <groupId>com.google.code.simple-spring-memcached</groupId>
 		  <artifactId>spymemcached-provider</artifactId>
 		  <version>3.1.0</version>

@@ -6,4 +6,9 @@ public class Photo implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 	public String url;
+	
+	public String getUrl()
+	{
+		return url;
+	}
 }

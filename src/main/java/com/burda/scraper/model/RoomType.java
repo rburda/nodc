@@ -16,6 +16,36 @@ public class RoomType
 	public BigDecimal totalPrice;
 	public List<DailyRate> dailyRates = new ArrayList<DailyRate>();
 	
+	public String getName()
+	{
+		return name;
+	}
+
+	public String getPromoDesc()
+	{
+		return promoDesc;
+	}
+
+	public String getBookItUrl()
+	{
+		return bookItUrl;
+	}
+
+	public BigDecimal getAvgNightlyRate()
+	{
+		return avgNightlyRate;
+	}
+
+	public BigDecimal getTotalPrice()
+	{
+		return totalPrice;
+	}
+
+	public List<DailyRate> getDailyRates()
+	{
+		return dailyRates;
+	}
+
 	public String toString()
 	{
 		return ToStringBuilder.reflectionToString(this);
