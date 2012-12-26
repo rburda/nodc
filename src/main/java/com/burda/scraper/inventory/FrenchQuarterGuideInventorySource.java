@@ -81,8 +81,9 @@ public class FrenchQuarterGuideInventorySource implements InventorySource
 				logger.warn("unable to find mapping for: " + extHotelId);
 				continue;
 			}
-			Hotel hotel = new Hotel();	
-			hotel.setSource( sourceHotel);
+			Hotel hotel = new Hotel();
+			hotel.setName(sourceHotel.getHotelName());
+			hotel.setSource(sourceHotel);
 			hotel.setHotelDetails( hotelDetailDAO.getHotelDetail(new HotelDetailCacheKey(sourceHotel.getHotelName())));		
 			for (Element rtElement: hotelElement.select(".room"))
 			{
