@@ -39,7 +39,7 @@ public class SearchController
 	@Qualifier("inventoryService")
 	InventoryService invService;
 	
-	@RequestMapping(value = "/startSearch", method=RequestMethod.GET, produces="application/javascript")
+	@RequestMapping(value = "/startSearch", method={RequestMethod.GET, RequestMethod.POST}, produces="application/javascript")
 	@ResponseBody
 	public void redirectToSearch( 
 			@RequestParam Map<String, String> params, 
