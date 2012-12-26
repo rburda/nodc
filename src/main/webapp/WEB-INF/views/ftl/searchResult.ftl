@@ -330,7 +330,12 @@
 							<!-- / search results box header with gradient background, hotel name, price -->
 							<!-- the product information summary section, including the thumbnail, star rating, and text. -->
 							<div class="resultsDescription">
-
+								<#if (hotel.hotelDetails.photos?size > 0)>
+								<a href="#photoLink"> 
+									<img src="${hotel.hotelDetails.photos[0].url!''}" 
+									 width="100" height="74" alt="" class="productThumb"/> 
+								</a>
+								</#if>
 								<div class="productSummary">
 									<p>
 										<img width="71" height="14" alt="Star Rating" src="http://www.neworleans.com/common/images/star_2_0.gif"/>${hotel.hotelDetails.areaDescription!''}
@@ -363,8 +368,9 @@
 								<thead>
 									<tr>
 										<th class="productCol">Room Type</th>
-										<th class="dayCol">Thu</th>
-										<th class="dayCol">Fri</th>
+										<#list hotel.roomTypes[0].dailyRates as dailyRate>
+										<th class="dayCol">${dailyRate.date?string("EEE")}</th>
+										</#list>
 										<th class="priceCol"><strong>Avg Nightly Rate</strong><br/> per night, per room</th>
 										<th class="bookItCol">&nbsp;</th>
 									</tr>
@@ -380,20 +386,17 @@
 											(<a href="#" class="showPromoDetail">details</a>)
 										</td>
 					
+										<#list roomType.dailyRates as dailyRate>
 										<td class="dayCol">
-											<span class="originalRate">$76</span>
+											<span class="originalRate">$${dailyRate.originalPrice!dailyRate.price}</span>
 											<br/>
-											<span class="promo">$${roomType.totalPrice!0.00}</span>
+											<span class="promo">$${dailyRate.price!0.00}</span>
 										</td>
-										<td class="dayCol">
-											<span class="originalRate">$75</span>
-											<br/>
-											<span class="promo">$${roomType.totalPrice!0.00}</span>
-										</td>
+										</#list>
 										<td rowspan="1" class="priceCol">
-											<span class="originalRate">$75.01</span>
+											<span class="originalRate">$${roomType.avgNightlyOriginalRate!roomType.avgNightlyRate}</span>
 											<br/>
-											<span class="promo">${roomType.totalPrice!''}</span>
+											<span class="promo">$${roomType.avgNightlyRate!''}</span>
 											<br/> 
 											<a style="position:relative;" class="pricetrigger" href="javascript:void(0);">view total price</a>						
 											<div class="child hotelDetailsPop" style="display:none">

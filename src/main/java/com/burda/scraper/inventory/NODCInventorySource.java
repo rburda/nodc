@@ -1,5 +1,6 @@
 package com.burda.scraper.inventory;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -25,6 +26,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import com.burda.scraper.dao.HotelDetailCacheKey;
 import com.burda.scraper.dao.HotelDetailDAO;
 import com.burda.scraper.dao.SourceHotelDAO;
+import com.burda.scraper.model.DailyRate;
 import com.burda.scraper.model.Hotel;
 import com.burda.scraper.model.RoomType;
 import com.burda.scraper.model.SearchParams;
@@ -151,10 +153,32 @@ public class NODCInventorySource implements InventorySource
 				RoomType roomType = new RoomType();
 				roomType.bookItUrl = calculateBookItUrl(bookIt);
 				roomType.avgNightlyRate = InventoryUtils.createMoney(avgNightlyRate.ownText());
+				Elements avgNightlyOriginalRateEl = roomTypeEl.select("td.priceCol span.originalRate");
+				if (avgNightlyOriginalRateEl != null && !avgNightlyOriginalRateEl.isEmpty())
+				{
+					roomType.avgNightlyOriginalRate = 
+							InventoryUtils.createMoney(avgNightlyOriginalRateEl.first().ownText());
+				}
 				roomType.name = roomTypeName.ownText();
 				if (promoDesc != null)
 					roomType.promoDesc = promoDesc.ownText();
 				roomType.totalPrice = InventoryUtils.createMoney(totalPrice.ownText());
+				
+				LocalDate currentDate = new LocalDate(result.startDate);
+				for (Element dailyRateEl: roomTypeEl.select("td.dayCol"))
+				{
+					BigDecimal price = InventoryUtils
+							.createMoney(dailyRateEl.select("span:not(.originalRate)").first().ownText());
+						
+					DailyRate dr = new DailyRate();
+					dr.date = currentDate.toDate();
+					dr.price = price;
+					Elements origPriceEl = dailyRateEl.select("span.originalRate");
+					if (origPriceEl != null && !origPriceEl.isEmpty())
+						dr.originalPrice = InventoryUtils.createMoney(origPriceEl.first().ownText());
+					currentDate = currentDate.plusDays(1);
+					roomType.dailyRates.add(dr);
+				}
 				
 				hotel.addRoomType(roomType);
 			}
