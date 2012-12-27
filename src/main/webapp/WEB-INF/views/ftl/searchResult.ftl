@@ -381,9 +381,7 @@
                                 if (window.focus) { newwindow.focus() }
                             }
                         </script>
-                        <a href="javascript:poptastic('http://www.neworleans.com/promotions/bigeasyupgrade/popup.html');">
-                            <img border="0" title="" alt="" src="http://neworleans.com/images/BEU-700x65.jpg" />
-                        </a>
+                        
                     </div>
                     <!-- sort bar -->
                     <div class="sortBar">
