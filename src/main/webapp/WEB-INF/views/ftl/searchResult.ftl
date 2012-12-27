@@ -186,7 +186,133 @@
 </head>
 <body class="globaless" id="transaction">
 
-	<div class="header-wrapper"></div>
+	<div class="header-wrapper">
+<div class="headercontain" id="header">
+<div><div class="topmenu" id="topmenu">
+<span class="topmenutitle">QUICK LINKS:</span>
+<ul class="quicklinks">
+<li><a href="http://www.neworleans.com/new-orleans-hotels/french-quarter-hotels/">French Quarter Hotels</a></li>
+<li><a href="http://www.neworleans.com/cruises/">Cruises</a></li>
+<li><a href="http://www.neworleans.com/new-orleans-tours/new-orleans-city-tours/">New Orleans City Tours</a></li>
+</ul>
+</div>
+<div class="logo midheader">
+<a href="/">
+<img width="358" height="82" border="0" alt="New Orleans, The Official New Orleans Travel Site" src="http://www.neworleans.com/images/NO-web-logo.png">
+</a>
+
+<div class="searchBox">
+<form name="gs" method="get" action="http://find.neworleans.com/search">
+<input type="hidden" name="entqr" value="1">
+<input type="hidden" name="output" value="xml_no_dtd">
+<input type="hidden" name="sort" value="date:D:L:d1">
+<input type="hidden" name="entsp" value="0">
+<input type="hidden" name="client" value="neworleans">
+<input type="hidden" name="ud" value="1">
+<input type="hidden" name="oe" value="UTF-8">
+<input type="hidden" name="ie" value="UTF-8">
+<input type="hidden" name="proxystylesheet" value="neworleans">
+<input type="hidden" name="site" value="neworleans">
+<input type="hidden" name="filter" value="p">
+<input type="text" onfocus="this.value='';this.className=this.className+' active';" onblur="this.className=this.className.replace(' active','');" value="Search..." name="q" maxlength="250" class="customsearchInput">
+<input type="image" class="customsearchButton" name="btnG" src="http://www.neworleans.com/images/arrowbutton-copy.png" value="">
+</form>
+</div>
+
+</div>
+
+<div class="links_cart">
+<!-- /top_links -->
+<div class="miniCart">
+<!-- mini cart wrap -->
+
+
+<div class="greeting">
+<a href="/mytrip/app/MyAccountLogin">My Account</a>
+</div>
+<a class="support" href="http://www.neworleans.com/about-us/customer-support.html">Customer Support</a>
+
+
+<!-- mini cart: wraps the entire cart plus its drop down to keep them the same width -->
+<div class="cart">
+<div class="cartHeader">
+<p onclick="CartWidget.doItemsLinkClick();" class="itemCount">
+Shopping Cart(0)
+</p>
+<p class="subTotal">
+Subtotal:
+$0.00
+</p>
+<a class="viewCart" href="/mytrip/app">&nbsp;</a>
+<div class="clear"></div>
+</div>
+<div class="cartContents">
+<div class="savedNotify">
+Your items have been<br>saved to your cart.
+</div>
+
+<p class="tray">
+<span onclick="CartWidget.closeCart();" class="cartClose">Close
+</span> <a href="#" class="view_cart_txt">There are no items in your cart</a>
+</p>
+</div>
+</div>
+</div>
+<!-- /miniCart -->
+<div id="facebook-like">
+<iframe scrolling="no" frameborder="0" allowtransparency="true" style="border: medium none; overflow: hidden; width: 90px; height: 21px;" src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Ffacebook.com%2Fmyneworleans&amp;send=false&amp;layout=button_count&amp;width=100&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21"></iframe>
+<script>!function(d,s,id){var f=d.getElementById(id).getElementsByTagName(s)[0];f.src=location.protocol+"//www.facebook.com/plugins/like.php?href=http%3A%2F%2Ffacebook.com%2Fmyneworleans&amp;send=false&amp;layout=button_count&amp;width=100&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21";f.style.display="";}(document,"iframe","facebook-like");</script>
+</div>
+<div class="twitter-link-container">
+<iframe scrolling="no" frameborder="0" allowtransparency="true" src="http://platform.twitter.com/widgets/follow_button.1355514129.html#_=1356566343585&amp;id=twitter-widget-0&amp;lang=en&amp;screen_name=NODotCom&amp;show_count=false&amp;show_screen_name=true&amp;size=m" class="twitter-follow-button" style="width: 133px; height: 20px;" title="Twitter Follow Button" data-twttr-rendered="true"></iframe>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=location.protocol+"//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</div>
+</div> <!-- /links_cart -->
+
+
+
+
+<div id="navigation">
+<ul class="top_nav">
+<li title="home"><a href="/" title="New Orleans Home">Home</a>
+</li>
+<li class="selected" title="hotels"><a href="http://www.neworleans.com/new-orleans-hotels/" title="New Orleans Hotels">Hotels</a>
+</li>
+<li title="airhotel"><a href="http://www.neworleans.com/new-orleans-vacation-packages/" title="New Orleans Air + Hotel">Air + Hotel</a>
+</li>
+<li title="deals"><a href="http://www.neworleans.com/new-orleans-deals/" title="New Orleans Travel Deals">Deals</a>
+</li>
+<li class="selected" title="tours-activities"><a href="http://www.neworleans.com/new-orleans-tours/" title="New Orleans Tours and Activities">Tours / Activities</a>
+</li>
+<li title="festivals-events"><a href="http://www.neworleans.com/new-orleans-events/" title="New Orleans Festivals &amp; Events">Festivals / Events</a>
+</li>
+<li title="dining"><a href="http://www.neworleans.com/la/restaurants/" title="New Orleans Dining">Dining</a>
+</li>
+<li title="nightlife"><a href="http://www.neworleans.com/la/nightlife/" title="New Orleans Nightlife">Nightlife</a>
+</li>
+<li title="frenchquarter"><a href="http://www.neworleans.com/french-quarter/" title="New Orleans French Quarter">French Quarter</a>
+</li>
+<li class="last" title="more"><a href="http://www.neworleans.com/new-orleans-tips/" title="Things To Do">More<div></div></a>
+<ul class="sub_nav">
+<li class="first"><a href="http://www.neworleans.com/new-orleans-tips/group-travel/" title="Group Travel">Group Travel</a></li>
+<li><a href="http://www.neworleans.com/things-to-do-in-new-orleans/" title="New Orleans Attractions">Things to Do &amp; Attractions</a></li>
+<li><a href="http://www.neworleans.com/things-to-do-in-new-orleans/kids/" title="Things to Do with Kids in New Orleans ">Things to Do with Kids</a></li>
+<li><a href="http://tickets.neworleans.com/index.html" title="Event Tickets">Event Tickets</a></li>
+<li><a href="http://www.neworleans.com/new-orleans-tips/maps/" title="New Orleans Maps">Maps</a></li>
+<li><a href="http://www.neworleans.com/blog/" title="Blog">NewOrleans.com Blogs</a></li>
+<li><a href="http://www.neworleans.com/new-orleans-sports/" title="New Orleans Sports">Sports</a></li>
+<li><a href="http://www.neworleans.com/new-orleans-tips/transportation/" title="New Orleans Transportation">Transportation</a></li>
+<li><a href="http://www.neworleans.com/new-orleans-tips/new-orleans-weather/" title="New Orleans Weather">Weather</a></li>
+<li><a href="http://pages.reply.shop.neworleans.com/page.aspx?QS=773ed3059447707d7e52647881115fcaf053f0855bc772e6781e5a23db264caf" title="Free New Orleans Travel Guide">Free Travel Guide</a></li>
+<li><a href="http://www.neworleans.com/new-orleans-tips/new-orleans-directory/" title="All Sections">All Sections</a></li>
+</ul>
+</li>
+</ul>
+<div class="clear"></div>
+</div>
+
+</div> </div> <!-- /header -->
+</div>
 	<!-- /header-wrapper -->
 
 	<!-- javascript and cookies disabled messaging -->
