@@ -347,10 +347,33 @@
         <div id="main-content">
             <!-- page content -->
             <a name="summaryTop"></a>
-            <div class="wait_img hotel_wait_img">
-            </div>
+            <div class="wait_img hotel_wait_img"></div>
             <div class="summaryCol">
                 <div class="summaryBox">
+				
+					<div class="searchSummary">
+						<h3>Search Summary</h3>
+						<p>
+							<strong>Check-In:</strong>
+							${searchResults["result"].startDate?string("MM/dd/yy")}
+							
+						</p>
+						<p>
+							<strong>Check-Out:</strong>
+							${searchResults["result"].endDate?string("MM/dd/yy")}
+						</p>
+						<p>
+							<strong>Rooms:</strong>
+							1
+						</p>
+						<p>
+							<strong>Adults:</strong>
+							2
+							<strong>Children:</strong>
+							0
+						</p>
+
+					</div>
                 </div>
                 <div style="width: 200px; height: 265px; margin-top: -10px;">
                     <script src="http://ad.doubleclick.net/adj/neworleans.com/hotelsearch;sz=200x265;sidebar=100;ord=5360199?"
@@ -426,13 +449,15 @@
                     </div>
                     <!-- / sort bar -->
                     <!-- pagination -->
-                    <div style="font-size: 14px;" class="pagination">
-                        <p class="left">
-                            <span>1-19 of 19 results</span>
-                        </p>
-                        <div class="clear">
-                        </div>
-                    </div>
+					<#if (searchResults["result"].hotels?size > 0) >
+						<div style="font-size: 14px;" class="pagination">
+							<p class="left">
+								<span>1-${searchResults["result"].hotels?size} of ${searchResults["result"].hotels?size} results</span>
+							</p>
+							<div class="clear">
+							</div>
+						</div>
+					</#if>
                     <!-- / pagination -->
                     <div>
                         <#list searchResults["result"].hotels as hotel>
@@ -566,13 +591,16 @@
                         <!-- / clearing -->
                     </div>
                     <!-- bottom pagination -->
-                    <div style="font-size: 14px;" class="pagination">
-                        <p class="left">
-                            <span>1-19 of 19 results</span>
-                        </p>
-                        <div class="clear">
-                        </div>
-                    </div>
+					<#if (searchResults["result"].hotels?size > 0) >
+						<div style="font-size: 14px;" class="pagination">
+							<p class="left">
+								<span>1-${searchResults["result"].hotels?size} of ${searchResults["result"].hotels?size} results</span>
+							</p>
+							<div class="clear">
+							</div>
+						</div>
+					</#if>
+											
                     <!-- / pagination -->
                     <div class="clear">
                         <br />
