@@ -374,6 +374,37 @@
 						</p>
 
 					</div>
+					<div class="browseSideBarPanel hotel">
+						<div class="hotelOnly">
+						<!-- change search list -->
+
+							<div class="changeSearch">
+								<h3>Change Search</h3>
+								<!-- /change search -->
+								<div class="changeWrap"></div>
+							</div>
+							
+							<div class="tcenter">
+								<div class="verisignWrap">
+								<img width="113" height="59" border="0" alt="COMODO Secured" src="http://neworleans.com/common/images/img_comodo_secure.gif"> <span class="labelDrop">NewOrleans.com GUARDS YOUR PRIVACY &amp; SECURITY</span> 
+								<a onclick="window.open('http://neworleans.com/includes/info_safetobuy.html','secure','width=450,height=450,scrollbars=yes,resizable=yes');return false;" href="javascript:void(0);">Learn how we protect<br>your online purchases</a>
+								</div>
+							<!-- /verisign -->
+							<!-- / customer support -->
+							</div>
+						</div>
+					</div>
+					<div class="csWrap">
+						<img width="97" height="56" style="border: 0px;" alt="" src="http://neworleans.com/images/placeholder_cs.jpg">
+						<p>
+						<strong> We're here for you
+						</strong> <br>
+						Need help with your order?<br>
+						<strong>USA/Canada toll free<br>
+						1-855-639-6756 </strong>
+						</p>
+					</div>
+					
                 </div>
                 <div style="width: 200px; height: 265px; margin-top: -10px;">
                     <script src="http://ad.doubleclick.net/adj/neworleans.com/hotelsearch;sz=200x265;sidebar=100;ord=5360199?"
@@ -600,7 +631,8 @@
 							</div>
 						</div>
 					</#if>
-											
+					
+						
                     <!-- / pagination -->
                     <div class="clear">
                         <br />
@@ -815,3 +847,4 @@
     </div>
 </body>
 </html>
+
