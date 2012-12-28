@@ -22,7 +22,8 @@
     <script type="text/javascript" src="http://neworleans.com/common/js/jquery/jquery.galleriffic.js"></script>
     <script type="text/javascript" src="http://neworleans.com/common/js/jquery/jquery.opacityrollover.js"></script>
     <script src="http://maps.google.com/maps/api/js?sensor=false&amp;v=3.5" type="text/javascript"></script>
-    <script type="text/javascript" src="http://maps.gstatic.com/intl/en_us/mapfiles/api-3/8/12/main.js"></script>
+   
+	
     <style type="text/css">
         @media screen and (-webkit-min-device-pixel-ratio:0)
         {
@@ -62,7 +63,7 @@
     <script src="//libs.coremetrics.com/configs/90379065.js"></script>
     <script src="http://neworleans.com/common/js/jquery/jquery-ui.js" type="text/javascript"></script>
     <script src="http://neworleans.com/common/js/jquery/cyllenius-calendar.js" type="text/javascript"></script>
-    <script src="http://neworleans.com/mytrip/common/js/SearchWidget.js" type="text/javascript"></script>
+    <script src="http://localhost:9999/SearchWidget.js" type="text/javascript"></script>
     <script type="text/javascript">
         if (typeof (SearchWidgetFormOpts) == 'undefined')
             SearchWidgetFormOpts = {};
@@ -234,14 +235,11 @@
                         <!-- mini cart wrap -->
                     </div>
                     <!-- /miniCart -->
-                    <script type="text/javascript">                        // &lt;!--[CDATA[
-                        !function (d, s, id) { var f = d.getElementById(id).getElementsByTagName(s)[0]; f.src = location.protocol + "//www.facebook.com/plugins/like.php?href=http%3A%2F%2Ffacebook.com%2Fmyneworleans&amp;send=false&amp;layout=button_count&amp;width=100&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21"; f.style.display = ""; } (document, "iframe", "facebook-like");
-                        // ]]--&gt;</script>
                     <div id="facebook-like">
-                        <iframe scrolling="no" width="320" height="240" frameborder="0" style="border: medium none;
-                            overflow: hidden; width: 90px; height: 21px;" src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Ffacebook.com%2Fmyneworleans&amp;send=false&amp;layout=button_count&amp;width=100&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21">
-                        </iframe>
-                    </div>
+						<iframe scrolling="no" frameborder="0" allowtransparency="true" style="border: medium none; overflow: hidden; width: 90px; height: 21px;" src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Ffacebook.com%2Fmyneworleans&amp;send=false&amp;layout=button_count&amp;width=100&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21"></iframe>
+						<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=location.protocol+"//www.facebook.com/plugins/like.php?href=http%3A%2F%2Ffacebook.com%2Fmyneworleans&amp;send=false&amp;layout=button_count&amp;width=100&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21";js.style.display="";}}(document,"iframe","facebook-like");</script>
+					</div>
+
                     <div class="twitter-link-container">
                         <iframe scrolling="no" frameborder="0" allowtransparency="true" src="http://platform.twitter.com/widgets/follow_button.1355514129.html#_=1356566343585&amp;id=twitter-widget-0&amp;lang=en&amp;screen_name=NODotCom&amp;show_count=false&amp;show_screen_name=true&amp;size=m"
                             class="twitter-follow-button" style="width: 133px; height: 20px;" title="Twitter Follow Button"
@@ -374,14 +372,20 @@
 						</p>
 
 					</div>
+					
 					<div class="browseSideBarPanel hotel">
 						<div class="hotelOnly">
 						<!-- change search list -->
 
 							<div class="changeSearch">
 								<h3>Change Search</h3>
-								<!-- /change search -->
-								<div class="changeWrap"></div>
+								
+								<div class="changeWrap">
+								
+								
+								<form id="id4f0"></form>
+								
+								</div>
 							</div>
 							
 							<div class="tcenter">
@@ -847,4 +851,3 @@
     </div>
 </body>
 </html>
-
