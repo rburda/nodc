@@ -63,7 +63,7 @@
     <script src="//libs.coremetrics.com/configs/90379065.js"></script>
     <script src="http://neworleans.com/common/js/jquery/jquery-ui.js" type="text/javascript"></script>
     <script src="http://neworleans.com/common/js/jquery/cyllenius-calendar.js" type="text/javascript"></script>
-    <script src="http://localhost:9999/SearchWidget.js" type="text/javascript"></script>
+    <script src="http://neworleans.com/common/js/SearchWidget.js" type="text/javascript"></script>
     <script type="text/javascript">
         if (typeof (SearchWidgetFormOpts) == 'undefined')
             SearchWidgetFormOpts = {};
@@ -382,8 +382,6 @@
 								
 								<div class="changeWrap">
 								
-								
-								<form id="id4f0"></form>
 								
 								</div>
 							</div>
