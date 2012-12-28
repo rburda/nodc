@@ -63,11 +63,12 @@ public class SearchController
 	public ModelAndView search(
 			@RequestParam Map<String, String> params,
 			@ModelAttribute("searchResults") ModelMap model,
+			HttpServletRequest clientRequest,
 			HttpServletResponse clientResponse) throws Exception
 	{
 		SearchParams sp = new SearchParams(params);
 		logger.debug("params == " + sp);
-		SearchResult result = invService.getSearchResult(sp);
+		SearchResult result = invService.getSearchResult(clientRequest, sp);
 		
 		for (Header header: result.headers)
 			clientResponse.addHeader(header.name,  header.value);

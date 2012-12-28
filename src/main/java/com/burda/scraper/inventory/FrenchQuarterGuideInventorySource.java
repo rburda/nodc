@@ -2,6 +2,8 @@ package com.burda.scraper.inventory;
 
 import java.net.URI;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -35,7 +37,7 @@ public class FrenchQuarterGuideInventorySource implements InventorySource
 	private SourceHotelDAO sourceHotelDAO;
 	
 	@Override
-	public SearchResult getResults(SearchParams params) throws Exception
+	public SearchResult getResults(HttpServletRequest request, SearchParams params) throws Exception
 	{
 		SearchResult result;
 		HttpResponse resp = queryHotelsViaHttpClient(params);

@@ -4,14 +4,23 @@ import java.math.BigDecimal;
 import java.net.URI;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.CookieStore;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.joda.time.LocalDate;
 import org.jsoup.Jsoup;
@@ -61,7 +70,7 @@ public class NODCInventorySource implements InventorySource
 		SearchParams sp = SearchParams.oneRoomOneAdult(
 				new LocalDate().plusMonths(1), new LocalDate().plusMonths(1).plusDays(2));		
 		
-		HttpResponse httpResponse = queryNODCHotelsViaHttpClient(sp);
+		HttpResponse httpResponse = queryNODCHotelsViaHttpClient("", sp);
 		byte[] html = EntityUtils.toByteArray(httpResponse.getEntity());
 		Document document = Jsoup.parse(new String(html), "http://www.neworleans.com/mytrip/app");
 		for (Element hotelEl: document.select("[name=preferredProductId]").first().select("option"))
@@ -83,9 +92,9 @@ public class NODCInventorySource implements InventorySource
 	}
 	
 	@Override
-	public SearchResult getResults(SearchParams params) throws Exception
+	public SearchResult getResults(HttpServletRequest request, SearchParams params) throws Exception
 	{
-		HttpResponse response = queryNODCHotelsViaHttpClient(params);
+		HttpResponse response = queryNODCHotelsViaHttpClient(findJSessionId(request), params);
 		byte[] html = EntityUtils.toByteArray(response.getEntity());
 
 		SearchResult result = createHotelsNODC(html);
@@ -242,8 +251,9 @@ public class NODCInventorySource implements InventorySource
 	}	
 	
 	
-	private static final HttpResponse queryNODCHotelsViaHttpClient(SearchParams sp)
+	private static final HttpResponse queryNODCHotelsViaHttpClient(String jSessionId, SearchParams sp)
 	{
+		logger.error("jsessionid == " + jSessionId);
 		URIBuilder builder = new URIBuilder();
 		builder
 				.setScheme("http")
@@ -278,16 +288,32 @@ public class NODCInventorySource implements InventorySource
 				.addParameter("a:3:b:c:1:d:e", toS(sp.getRoom4ChildAge2()))
 				.addParameter("a:3:b:c:2:d:e", toS(sp.getRoom4ChildAge3()))
 				.addParameter("preferredProductId", "")
+				.addParameter("JSESSIONID", jSessionId)
 				.addParameter("wicket:bookmarkablePage",
-						":com.vegas.athena.components.browse.hotel.HotelBrowsePage");					
+						":com.vegas.athena.components.browse.hotel.HotelBrowsePage")
+				;					
 		HttpResponse response = null;
 		try
 		{
+			DefaultHttpClient httpClient = new DefaultHttpClient();
+			
+			
 			URI uri = builder.build();
-			HttpGet httpget = new HttpGet(uri);
+			HttpPost httpget = new HttpPost(uri); //.addHeader("JSESSIONID", );
+			httpget.setHeader("Cookie", jSessionId);
+			httpget.setHeader(
+					"User-Agent",
+					"Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_4; en-US) AppleWebKit/534.10 (KHTML, like Gecko) Chrome/8.0.552.231 Safari/534.10");
+			//CookieStore store = new BasicCookieStore();
+			//store.addCookie(new BasicClientCookie("JSESSIONID",jSessionId));
+			//HttpContext localContext = new BasicHttpContext();
+			//localContext.setAttribute(ClientContext.COOKIE_STORE, store);
+			//httpClient.setCookieStore(store);
+			
 			logger.error("uri == " + httpget.getURI());
 
-			response = new DefaultHttpClient().execute(httpget);
+			//response = httpClient.execute(httpget, localContext);
+			response = httpClient.execute(httpget);
 		} 
 		catch (Exception e)
 		{
@@ -295,6 +321,20 @@ public class NODCInventorySource implements InventorySource
 		}
 		return response;
 	}
+	
+	private static final String findJSessionId(HttpServletRequest request)
+	{
+		String jsessionId = "";
+		for (Cookie c: request.getCookies())
+		{
+			if (c.getName().equals("parent_cookie"))
+			{
+				jsessionId = c.getValue().replace("___", ";");
+				break;
+			}
+		}
+		return jsessionId;
+	}	
 	
 	private static final String toS(int x)
 	{

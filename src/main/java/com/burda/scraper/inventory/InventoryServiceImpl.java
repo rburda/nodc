@@ -7,6 +7,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +22,8 @@ public class InventoryServiceImpl implements InventoryService
 	private FrenchQuarterGuideInventorySource fqgInventorySource;
 	
 	@Override
-	public SearchResult getSearchResult(final SearchParams params) throws Exception
+	public SearchResult getSearchResult(
+			final HttpServletRequest request, final SearchParams params) throws Exception
 	{
 		ExecutorService executor = Executors.newFixedThreadPool(2);
 		Future<SearchResult> task = executor.submit(new Callable<SearchResult>(){
@@ -28,14 +31,14 @@ public class InventoryServiceImpl implements InventoryService
 			@Override
 			public SearchResult call() throws Exception
 			{
-				return nodcInventorySource.getResults(params);
+				return nodcInventorySource.getResults(request, params);
 			}});
 		Future<SearchResult> task1 = executor.submit(new Callable<SearchResult>(){
 
 			@Override
 			public SearchResult call() throws Exception
 			{
-				return fqgInventorySource.getResults(params);
+				return fqgInventorySource.getResults(request, params);
 			}});		
 		
 		executor.shutdown();

@@ -15,7 +15,7 @@ public class FrenchQuarterGuideInventorySourceTest extends BaseSpringJUnitTest
 	@Test
 	public void testGetSearchResult() throws Exception
 	{
-		SearchResult sr = invSource.getResults(SearchParams.oneRoomOneAdult());
+		SearchResult sr = invSource.getResults(null, SearchParams.oneRoomOneAdult());
 		int x = 1;
 		
 	}

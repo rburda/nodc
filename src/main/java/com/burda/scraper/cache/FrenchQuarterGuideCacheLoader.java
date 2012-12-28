@@ -1,6 +1,7 @@
 package com.burda.scraper.cache;
 
 import java.net.URI;
+import java.net.URLDecoder;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -76,7 +77,7 @@ public class FrenchQuarterGuideCacheLoader
 					details.setAddress1(detailsEl.select("address").first().ownText());
 				}
 							
-				details.setDescription(detailsEl.select("description_full").first().ownText());
+				details.setDescription(URLDecoder.decode(detailsEl.select("description_full").first().ownText(), "UTF-8"));
 				details.setAreaDescription(detailsEl.select("district").first().ownText());
 				if (details.getCity() == null)
 					details.setCity("");
