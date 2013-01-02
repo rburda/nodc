@@ -28,7 +28,7 @@ import com.burda.scraper.model.SearchParams;
 import com.burda.scraper.model.SearchResult;
 import com.burda.scraper.model.persisted.SourceHotel;
 
-public class FrenchQuarterGuideInventorySource implements InventorySource
+public class FrenchQuarterGuideInventorySource implements Warehouse
 {
 	private static final Logger logger = LoggerFactory.getLogger(FrenchQuarterGuideInventorySource.class);		
 	private static final DateTimeFormatter STAY_DATE_FORMAT = DateTimeFormat.forPattern("MM/dd/yyyy");
@@ -43,33 +43,18 @@ public class FrenchQuarterGuideInventorySource implements InventorySource
 		HttpResponse resp = queryHotelsViaHttpClient(params);
 		
 		byte[] html = EntityUtils.toByteArray(resp.getEntity());
-		result = createHotels(html);
+		result = createHotels(params, html);
 		
-		for (Header header: resp.getAllHeaders())
-		{
-			com.burda.scraper.model.Header newHeader = new com.burda.scraper.model.Header();			
-			if (header.getValue().contains("JSESSIONID"))
-			{
-				newHeader.name = header.getName();
-				newHeader.value =  header.getValue() + "; domain=.rezserver.com";
-			}
-			else
-			{
-				newHeader.name = header.getName();
-				newHeader.value = header.getValue();	
-			}
-			result.headers.add(newHeader);
-		}
 		logger.debug("fqg complete");
 		return result;
 	}
 	
-	private SearchResult createHotels(byte[] html) throws Exception
+	private SearchResult createHotels(SearchParams params, byte[] html) throws Exception
 	{
 		Document document = Jsoup.parse(
 				new String(html), "http://secure.rezserver.com/js/ajax/city_page_redesign/getResults.php");
 		
-		SearchResult result = new SearchResult();
+		SearchResult result = new SearchResult(params);
 		for (Element hotelElement: document.select(".hotelbox"))
 		{
 			String extHotelId = hotelElement.id();

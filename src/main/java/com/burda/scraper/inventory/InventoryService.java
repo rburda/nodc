@@ -7,5 +7,7 @@ import com.burda.scraper.model.SearchResult;
 
 public interface InventoryService
 {
-	public SearchResult getSearchResult(HttpServletRequest request, SearchParams params) throws Exception;
+	SearchResult getSearchResult(HttpServletRequest request, SearchParams params) throws Exception;
+	
+	SearchResult getUpdatedResults(String sessionId);
 }

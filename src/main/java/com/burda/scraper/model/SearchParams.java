@@ -1,5 +1,6 @@
 package com.burda.scraper.model;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -9,8 +10,9 @@ import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SearchParams
+public class SearchParams implements Serializable
 {
+	private static final long serialVersionUID = 1L;
 	private static final Logger logger = LoggerFactory.getLogger(SearchParams.class);
 	
 	public static SearchParams oneRoomOneAdult(LocalDate cIn, LocalDate cOut)
@@ -58,6 +60,7 @@ public class SearchParams
 	private int room4ChildAge1 = 0;
 	private int room4ChildAge2 = 0;
 	private int room4ChildAge3 = 0;
+	private String sessionId;
 	
 	private SearchParams(){}
 	
@@ -179,6 +182,14 @@ public class SearchParams
 	public LocalDate getCheckOutDate()
 	{
 		return checkOutDate;
+	}
+	public String getSessionId()
+	{
+		return sessionId;
+	}
+	public void setSessionId(String sId)
+	{
+		this.sessionId = sId;
 	}
 
 	private LocalDate defCheckIn(String date)

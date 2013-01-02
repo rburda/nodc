@@ -9,7 +9,7 @@ import com.burda.scraper.dao.HotelDetailCacheKey;
 import com.burda.scraper.dao.HotelDetailDAO;
 import com.burda.scraper.dao.MasterHotelDAO;
 import com.burda.scraper.dao.SourceHotelDAO;
-import com.burda.scraper.inventory.NODCInventorySource;
+import com.burda.scraper.inventory.NODCWarehouse;
 import com.burda.scraper.model.Hotel;
 import com.burda.scraper.model.persisted.HotelDetail;
 import com.burda.scraper.model.persisted.InventorySource;
@@ -20,7 +20,7 @@ public class NODCHotelLoader
 {
 	@Autowired
 	@Qualifier("nodcInvSource")
-	NODCInventorySource invSource;
+	NODCWarehouse invSource;
 	
 	@Autowired
 	@Qualifier("sourceHotelDAO")

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpUtils;
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.burda.scraper.inventory.InventoryService;
-import com.burda.scraper.model.Header;
 import com.burda.scraper.model.SearchParams;
 import com.burda.scraper.model.SearchResult;
 import com.google.common.collect.Lists;
@@ -45,12 +45,15 @@ public class SearchController
 			@RequestParam Map<String, String> params, 
 			HttpServletRequest request, HttpServletResponse clientResponse) throws Exception
 	{
+		SearchParams sp = new SearchParams(params);
+		sp.setSessionId(findSessionId(request));
+		logger.debug("params == " + sp);
+		invService.getSearchResult(request, sp);
+		
 		StringBuffer hostWithPath = HttpUtils.getRequestURL(request);
 		String host = hostWithPath.substring(0, hostWithPath.indexOf("/startSearch"));
 		String callback = params.get("jsoncallback") 
-				+ "({\"redirectURL\": \""+host+"\\/search?" 
-				+ createRequestString(params) 
-				+  "\"})";
+				+ "({\"redirectURL\": \""+host+"\\/results" +  "\"})";
 		clientResponse.setContentType("application/json");
 		clientResponse.getOutputStream().write(callback.getBytes());
 	}
@@ -58,22 +61,15 @@ public class SearchController
 	/**
 	 * Calls inventoryService and executes a search based on search params
 	 */
-	@RequestMapping(value = "/search", method = RequestMethod.GET)
+	@RequestMapping(value = "/results", method = RequestMethod.GET)
 	@ResponseBody
 	public ModelAndView search(
 			@RequestParam Map<String, String> params,
 			@ModelAttribute("searchResults") ModelMap model,
 			HttpServletRequest clientRequest,
 			HttpServletResponse clientResponse) throws Exception
-	{
-		SearchParams sp = new SearchParams(params);
-		logger.debug("params == " + sp);
-		SearchResult result = invService.getSearchResult(clientRequest, sp);
-		
-		for (Header header: result.headers)
-			clientResponse.addHeader(header.name,  header.value);
-		
-		model.put("result", result);
+	{		
+		model.put("result", invService.getUpdatedResults(findSessionId(clientRequest)));
 		
 		return new ModelAndView("searchResult", model);
 	}	
@@ -91,4 +87,18 @@ public class SearchController
 		}
 		return buf.toString();
 	}
+	
+	private static final String findSessionId(HttpServletRequest request)
+	{
+		String id = "";
+		for (Cookie c: request.getCookies())
+		{
+			if (c.getName().equals("parent_cookie"))
+			{
+				id = c.getValue().substring(0, c.getValue().indexOf("___"));
+				break;
+			}
+		}		
+		return id;
+	}	
 }

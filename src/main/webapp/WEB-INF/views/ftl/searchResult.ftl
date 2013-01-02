@@ -202,28 +202,28 @@
                     </ul>
                 </div>
                 <div class="logo midheader">
-                    <a href="/">
+                    <a href="http://www.neworleans.com">
                         <img width="358" height="82" border="0" alt="New Orleans, The Official New Orleans Travel Site"
-                            src="http://www.neworleans.com/images/NO-web-logo.png">
+                            src="http://www.neworleans.com/images/NO-web-logo.png"/>
                     </a>
                     <div class="searchBox">
                         <form name="gs" method="get" action="http://find.neworleans.com/search">
-                        <input type="hidden" name="entqr" value="1">
-                        <input type="hidden" name="output" value="xml_no_dtd">
-                        <input type="hidden" name="sort" value="date:D:L:d1">
-                        <input type="hidden" name="entsp" value="0">
-                        <input type="hidden" name="client" value="neworleans">
-                        <input type="hidden" name="ud" value="1">
-                        <input type="hidden" name="oe" value="UTF-8">
-                        <input type="hidden" name="ie" value="UTF-8">
-                        <input type="hidden" name="proxystylesheet" value="neworleans">
-                        <input type="hidden" name="site" value="neworleans">
-                        <input type="hidden" name="filter" value="p">
-                        <input type="text" onfocus="this.value='';this.className=this.className+' active';"
+                        	<input type="hidden" name="entqr" value="1"/>
+                        	<input type="hidden" name="output" value="xml_no_dtd"/>
+                        	<input type="hidden" name="sort" value="date:D:L:d1"/>
+                        	<input type="hidden" name="entsp" value="0"/>
+                        	<input type="hidden" name="client" value="neworleans"/>
+                        	<input type="hidden" name="ud" value="1"/>
+                        	<input type="hidden" name="oe" value="UTF-8"/>
+                        	<input type="hidden" name="ie" value="UTF-8"/>
+                        	<input type="hidden" name="proxystylesheet" value="neworleans"/>
+                        	<input type="hidden" name="site" value="neworleans"/>
+                        	<input type="hidden" name="filter" value="p"/>
+                        	<input type="text" onfocus="this.value='';this.className=this.className+' active';"
                             onblur="this.className=this.className.replace(' active','');" value="Search..."
-                            name="q" maxlength="250" class="customsearchInput">
-                        <input type="image" class="customsearchButton" name="btnG" src="http://www.neworleans.com/images/arrowbutton-copy.png"
-                            value="">
+                            name="q" maxlength="250" class="customsearchInput"/>
+                        	<input type="image" class="customsearchButton" name="btnG" src="http://www.neworleans.com/images/arrowbutton-copy.png"
+                            value=""/>
                         </form>
                     </div>
                 </div>
@@ -362,13 +362,13 @@
 						</p>
 						<p>
 							<strong>Rooms:</strong>
-							1
+							${searchResults["result"].numRooms}
 						</p>
 						<p>
 							<strong>Adults:</strong>
-							2
+							${searchResults["result"].numAdults}
 							<strong>Children:</strong>
-							0
+							${searchResults["result"].numChildren}
 						</p>
 
 					</div>
