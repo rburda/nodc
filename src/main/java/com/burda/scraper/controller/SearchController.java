@@ -25,6 +25,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.burda.scraper.inventory.InventoryService;
 import com.burda.scraper.model.SearchParams;
 import com.burda.scraper.model.SearchResult;
+import com.burda.scraper.model.SortType;
 import com.google.common.collect.Lists;
 
 /**
@@ -65,11 +66,13 @@ public class SearchController
 	@ResponseBody
 	public ModelAndView search(
 			@RequestParam Map<String, String> params,
+			@RequestParam(value="sort", defaultValue="DEFAULT") SortType sortType,
+			@RequestParam(value="page", defaultValue="1") int page,
 			@ModelAttribute("searchResults") ModelMap model,
 			HttpServletRequest clientRequest,
 			HttpServletResponse clientResponse) throws Exception
 	{		
-		model.put("result", invService.getUpdatedResults(findSessionId(clientRequest)));
+		model.put("result", invService.getUpdatedResults(findSessionId(clientRequest), sortType, page));
 		
 		return new ModelAndView("searchResult", model);
 	}	

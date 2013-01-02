@@ -14,11 +14,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.burda.scraper.model.SearchParams;
 import com.burda.scraper.model.SearchResult;
+import com.burda.scraper.model.SortType;
 import com.burda.scraper.model.persisted.InventorySource;
 import com.google.code.ssm.api.format.SerializationType;
 
 public class InventoryServiceImpl implements InventoryService
-{
+{	
   @Autowired
   @Qualifier("defaultMemcachedClient") 
   private com.google.code.ssm.Cache cache;
@@ -54,10 +55,11 @@ public class InventoryServiceImpl implements InventoryService
 		session.addToResults(InventorySource.NODC, nodcTask.get());
 		session.addToResults(InventorySource.FQG, fqgTask.get());
 		cache.set(params.getSessionId(), (60 * 180) /*three hours*/, session, SerializationType.JSON );
-		return session.getSearchResults();
+		return session.getSearchResults(1);
 	}
 	
-	public SearchResult getUpdatedResults(String sessionId) 
+	@Override
+	public SearchResult getUpdatedResults(String sessionId, SortType sortBy, int page) 
 	{
 		SearchResult sr = null;
 		Session s = null;
@@ -71,7 +73,10 @@ public class InventoryServiceImpl implements InventoryService
 		}
 		
 		if (s != null)
-			sr = s.getSearchResults();
+		{
+
+			sr = s.getSearchResults(page);
+		}
 		
 		return sr;
 	}

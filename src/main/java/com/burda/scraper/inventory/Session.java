@@ -15,7 +15,10 @@ import com.google.common.collect.Maps;
 public class Session implements Serializable
 {
 	private static final long serialVersionUID = 1L;
+	private static final int NUM_RESULTS_PER_PAGE = 20;
+	
 	private SearchParams params;
+	private Map<InventorySource, Boolean> completeStatusMap = Maps.newConcurrentMap();
 	private Map<InventorySource, SearchResult> searchResultMap = Maps.newConcurrentMap();
 
 	Session()
@@ -38,12 +41,24 @@ public class Session implements Serializable
 	
 	public Map<InventorySource, SearchResult> getSearchResultMap()
 	{
-		return searchResultMap;
+		return Maps.newHashMap(searchResultMap);
 	}
 	
 	public void setSearchResultMap(Map<InventorySource, SearchResult> map)
 	{
-		this.searchResultMap = map;
+		this.searchResultMap.clear();
+		this.searchResultMap.putAll(map);
+	}
+	
+	public Map<InventorySource, Boolean> getCompleteStatusMap()
+	{
+		return Maps.newHashMap(completeStatusMap);
+	}
+	
+	public void setCompleteStatusMap(Map<InventorySource, Boolean> map)
+	{
+		this.completeStatusMap.clear();
+		this.completeStatusMap.putAll(map);
 	}
 	
 	@JsonIgnore
@@ -53,8 +68,8 @@ public class Session implements Serializable
 	}
 		
 	@JsonIgnore
-	public final SearchResult getSearchResults()
-	{
+	public final SearchResult getSearchResults(int page)
+	{	
 		SearchResult aggragatedResult = new SearchResult(params);
 		SearchResult fqgResult = searchResultMap.get(com.burda.scraper.model.persisted.InventorySource.FQG);
 		SearchResult nodcResult = searchResultMap.get(com.burda.scraper.model.persisted.InventorySource.NODC);
@@ -76,7 +91,16 @@ public class Session implements Serializable
 					}
 				}
 			}
-			aggragatedResult.getHotels().addAll(nodcResult.hotels);			
+			aggragatedResult.getHotels().addAll(nodcResult.hotels);	
+			
+			int startResult = ( (page-1)*NUM_RESULTS_PER_PAGE + 1 );
+			int endResult = startResult+NUM_RESULTS_PER_PAGE;
+			if (startResult > aggragatedResult.getHotels().size()-1)
+				startResult = aggragatedResult.getHotels().size()-1;
+			if (endResult > aggragatedResult.getHotels().size()-1)
+				endResult = aggragatedResult.getHotels().size()-1;
+			
+			aggragatedResult.hotels = aggragatedResult.getHotels().subList(startResult, endResult);
 		}
 		
 		return aggragatedResult;
