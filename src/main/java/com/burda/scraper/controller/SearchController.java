@@ -64,7 +64,7 @@ public class SearchController
 	 */
 	@RequestMapping(value = "/results", method = RequestMethod.GET)
 	@ResponseBody
-	public ModelAndView search(
+	public ModelAndView getResults(
 			@RequestParam Map<String, String> params,
 			@RequestParam(value="sort", defaultValue="DEFAULT") SortType sortType,
 			@RequestParam(value="page", defaultValue="1") int page,
@@ -76,6 +76,12 @@ public class SearchController
 		
 		return new ModelAndView("searchResult", model);
 	}	
+	
+	@RequestMapping(value="/health", method=RequestMethod.GET)
+	public @ResponseBody String healthCheck()
+	{
+		return "ok";
+	}
 
 	private String createRequestString(Map<String, String> reqParams)
 	{
@@ -96,9 +102,14 @@ public class SearchController
 		String id = "";
 		for (Cookie c: request.getCookies())
 		{
+			logger.debug(String.format("cookie: %1$s, value: %2$s"));
 			if (c.getName().equals("parent_cookie"))
 			{
-				id = c.getValue().substring(0, c.getValue().indexOf("___"));
+				int idx = c.getValue().indexOf("___");
+				if (idx >=0)
+					id = c.getValue().substring(0, idx);
+				else
+					id = c.getValue();
 				break;
 			}
 		}		
