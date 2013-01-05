@@ -6,23 +6,29 @@
     <link type="text/css" rel="stylesheet" href="http://www.neworleans.com/style/global.css" />
     <link type="text/css" rel="stylesheet" href="http://www.neworleans.com/mytrip/style/checkout.css" />
     <link type="text/css" rel="stylesheet" href="http://www.neworleans.com/style/globaless.css" />
-    <script src="http://platform.twitter.com/widgets.js"></script>
-    <script type="text/javascript" src="http://www.google-analytics.com/ga.js"></script>
-    <script type="text/javascript" src="http://www.neworleans.com/common/js/jquery/jquery-core.js"></script>
-    <script type="text/javascript" src="http://www.neworleans.com/javascript/global.js"></script>
-    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.2.min.js"></script>
-    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.js"></script>
-    <script type="text/javascript" src="http://neworleans.com/javascript/tealeaf.js"></script>
+    <!-- Following Script tags are added because this page is expected to have JQModalWindow -->
+    <script src="http://neworleans.com/common/js/jquery/jquery-core.js" type="text/javascript"></script>
+    <script src="http://neworleans.com/common/js/jquery/jquery-modal.js" type="text/javascript"></script>
     <script type="text/javascript" src="http://neworleans.com/common/js/jquery/jquery-ui.js"></script>
-    <script type="text/javascript" src="http://neworleans.com/common/js/jquery/jquery-scrollTo.js"></script>
-    <script src="http://neworleans.com/common/js/jquery/cyl-tooltip.js" type="text/javascript"></script>
-    <script type="text/javascript" src="http://neworleans.com/common/js/jquery/jquery-modal.js"></script>
-    <script type="text/javascript" src="http://neworleans.com/video/player-helper.js"></script>
-    <script type="text/javascript" src="http://neworleans.com/video/swfobject.js"></script>
+    <script type="text/javascript" src="http://neworleans.com/common/js/jquery/jquery-scrollTo.js"></script> 
+    <script type="text/javascript" src="http://neworleans.com/common/js/jquery/jquery-modal.js"></script>    
     <script type="text/javascript" src="http://neworleans.com/common/js/jquery/jquery.galleriffic.js"></script>
     <script type="text/javascript" src="http://neworleans.com/common/js/jquery/jquery.opacityrollover.js"></script>
+    <script type="text/javascript" src="http://neworleans.com/common/js/outside-wicket/widget-lib.js"></script>    
+    <script src="http://platform.twitter.com/widgets.js"></script>
+    <script type="text/javascript" src="http://www.neworleans.com/javascript/global.js"></script>
+    <script type="text/javascript" src="http://neworleans.com/javascript/tealeaf.js"></script>
+    <script src="http://neworleans.com/common/js/jquery/cyl-tooltip.js" type="text/javascript"></script>
+    <script type="text/javascript" src="http://neworleans.com/video/player-helper.js"></script>
+    <script type="text/javascript" src="http://neworleans.com/video/swfobject.js"></script>
     <script src="http://maps.google.com/maps/api/js?sensor=false&amp;v=3.5" type="text/javascript"></script>
-   
+    <script src="http://neworleans.com/common/js/mini_cart.js" type="text/javascript"></script>
+    <script type="text/javascript" src="http://neworleans.com/javascript/coremetrics/v40/eluminate.js"></script>
+    <script type="text/javascript" src="http://neworleans.com/javascript/coremetrics/cmcustom.js"></script>
+    <script type="text/javascript" src="http://neworleans.com/javascript/coremetrics/cmxCustomGlobal.js"></script>    
+		<script 
+			src="http://www.neworleans.com/common/js/outside-wicket/widget-incl.js" 
+			insertto="sidebarWidget" widget="/mytrip/app/SearchWidget?skin=homeHotel" type="text/javascript"></script>
 	
     <style type="text/css">
         @media screen and (-webkit-min-device-pixel-ratio:0)
@@ -44,10 +50,7 @@
             }
         }
     </style>
-    <script type="text/javascript" src="http://neworleans.com/javascript/tealeaf.js"></script>
-    <!-- Following Script tags are added because this page is expected to have JQModalWindow -->
-    <script src="http://neworleans.com/common/js/jquery/jquery-core.js" type="text/javascript"></script>
-    <script src="http://neworleans.com/common/js/jquery/jquery-modal.js" type="text/javascript"></script>
+    <script type="text/javascript" src="http://neworleans.com/javascript/tealeaf.js"></script>       
     <link type="text/css" rel="stylesheet" href="http://neworleans.com/common/css/jquery/jqModal.css" />
     <style>
         .contentHeader
@@ -55,81 +58,6 @@
             background: url(http://neworleans.com/images/hdr_hotelsearch.png) no-repeat left top;
         }
     </style>
-    <script src="http://neworleans.com/common/js/jquery/jquery-core.js" type="text/javascript"></script>
-    <script src="http://neworleans.com/common/js/mini_cart.js" type="text/javascript"></script>
-    <script type="text/javascript" src="http://neworleans.com/javascript/coremetrics/v40/eluminate.js"></script>
-    <script type="text/javascript" src="http://neworleans.com/javascript/coremetrics/cmcustom.js"></script>
-    <script type="text/javascript" src="http://neworleans.com/javascript/coremetrics/cmxCustomGlobal.js"></script>
-    <script src="//libs.coremetrics.com/configs/90379065.js"></script>
-    <script src="http://neworleans.com/common/js/jquery/jquery-ui.js" type="text/javascript"></script>
-    <script src="http://neworleans.com/common/js/jquery/cyllenius-calendar.js" type="text/javascript"></script>
-    <script src="http://neworleans.com/common/js/SearchWidget.js" type="text/javascript"></script>
-    <script type="text/javascript">
-        if (typeof (SearchWidgetFormOpts) == 'undefined')
-            SearchWidgetFormOpts = {};
-        SearchWidgetFormOpts['id61'] =
-			{
-			    "maxDaysInFuture": 730,
-			    "allowSameDayEndDate": false,
-			    "allProductTypes":
-					{ "CAR": "Car",
-					    "TRANSPORTATION": "Airport Transportation",
-					    "TRIP_INSURANCE": "Travel Insurance",
-					    "AIR": "Air",
-					    "TOUR": "Tour",
-					    "HOTEL": "Hotel"
-					}
-			};
-    </script>
-    <script src="http://neworleans.com/common/js/jquery/jquery-selectToUISlider.js" type="text/javascript"></script>
-    <script src="http://neworleans.com/common/js/jquery/jquery-curvycorners.js" type="text/javascript"></script>
-    <script src="http://neworleans.com/common/js/sliderChoice-init.js" type="text/javascript"></script>
-    <style>
-        .ui-slider span.ui-slider-tic
-        {
-            height: 0 !important;
-            top: 0 !important;
-        }
-    </style>
-    <script src="http://neworleans.com/mytrip/app/resources/org.apache.wicket.markup.html.WicketEventReference/wicket-event.js"
-        type="text/javascript"></script>
-    <script src="http://neworleans.com/mytrip/app/resources/org.apache.wicket.ajax.WicketAjaxReference/wicket-ajax.js"
-        type="text/javascript"></script>
-    <script src="http://neworleans.com/mytrip/app/resources/com.vegas.ui.wicket.page.CylleniusWebPage/jqmodalwindow.js"
-        type="text/javascript"></script>
-    <script type="text/javascript">
-        cyljq(document).ready(function () {
-            cyljq("a.tooltip-hover").simpleToolTip();
-        });
-    </script>
-    <script src="http://neworleans.com/mytrip/app/resources/org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow/res/modal.js"
-        type="text/javascript"></script>
-    <link href="http://neworleans.com/mytrip/app/resources/org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow/res/modal.css"
-        type="text/css" rel="stylesheet" />
-    <link href="http://neworleans.com/mytrip/style/vegas_modal.css" type="text/css" rel="stylesheet" />
-    <script src="http://neworleans.com/common/js/jquery/jquery-core.js" type="text/javascript"></script>
-    <script src="http://neworleans.com/common/js/jquery/jquery.boxshadow.js" type="text/javascript"></script>
-    <script src="http://neworleans.com/mytrip/app/resources/com.vegas.ui.wicket.panel.AthenaModalWindow/vegas_modal.js"
-        type="text/javascript"></script>
-    <link href="http://neworleans.com/mytrip/style/hotel_modal.css" type="text/css" rel="stylesheet" />
-    <script type="text/javascript">
-        if (typeof (SearchWidgetFormOpts) == 'undefined')
-            SearchWidgetFormOpts = {};
-        SearchWidgetFormOpts['id64'] =
-			{
-			    "maxDaysInFuture": 730,
-			    "allowSameDayEndDate": false,
-			    "allProductTypes":
-					{
-					    "CAR": "Car",
-					    "TRANSPORTATION": "Airport Transportation",
-					    "TRIP_INSURANCE": "Travel Insurance",
-					    "AIR": "Air",
-					    "TOUR": "Tour",
-					    "HOTEL": "Hotel"
-					}
-			};
-    </script>
     <script type="text/javascript">
         Wicket.Event.add(window, "load",
 		function (event) {
@@ -376,11 +304,10 @@
 					<div class="browseSideBarPanel hotel">
 						<div class="hotelOnly">
 						<!-- change search list -->
-
 							<div class="changeSearch">
 								<h3>Change Search</h3>
 								
-								<div class="changeWrap">
+								<div id="sidebarWidget">
 								
 								
 								</div>

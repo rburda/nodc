@@ -102,7 +102,7 @@ public class SearchController
 		String id = "";
 		for (Cookie c: request.getCookies())
 		{
-			logger.debug(String.format("cookie: %1$s, value: %2$s"));
+			logger.debug(String.format("cookie: %1$s, value: %2$s", c.getName(), c.getValue()));
 			if (c.getName().equals("parent_cookie"))
 			{
 				int idx = c.getValue().indexOf("___");

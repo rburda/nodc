@@ -7,15 +7,20 @@ import java.util.List;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
+import com.google.common.collect.Lists;
+
 
 public class SearchResult
 {
+	private static final int NUM_RESULTS_PER_PAGE = 20;	
+	
 	public Date startDate;
 	public Date endDate;
 	public int numRooms;
 	public int numAdults;
 	public int numChildren;
-	public List<Hotel> hotels = new ArrayList<Hotel>();
+	public int currentPage;
+	private List<Hotel> hotels = new ArrayList<Hotel>();
 	
 	SearchResult(){}
 	
@@ -26,6 +31,7 @@ public class SearchResult
 		this.numRooms = sp.getNumRooms();
 		this.numAdults = sp.getNumAdults1() + sp.getNumAdults2() + sp.getNumAdults3() + sp.getNumAdults4();
 		this.numChildren = sp.getNumChildren1() + sp.getNumChildren2() + sp.getNumChildren3() + sp.getNumChildren4();
+		this.currentPage = 1;
 	}
 	
 	public Date getStartDate()
@@ -37,9 +43,27 @@ public class SearchResult
 		return endDate;
 	}
 	
+	@JsonIgnore
+	public List<Hotel> getAllHotels()
+	{
+		return Lists.newArrayList(hotels);
+	}
+	
 	public List<Hotel> getHotels()
 	{
-		return hotels;
+		int startResult = ( (currentPage-1)*NUM_RESULTS_PER_PAGE + 1 );
+		int endResult = startResult+NUM_RESULTS_PER_PAGE;
+		if (startResult > hotels.size()-1)
+			startResult = hotels.size()-1;
+		if (endResult > hotels.size()-1)
+			endResult = hotels.size()-1;
+		
+		return Lists.newArrayList(hotels.subList(startResult, endResult));
+	}
+	
+	public void setHotels(List<Hotel> hotels)
+	{
+		this.hotels = Lists.newArrayList(hotels);
 	}
 	
 	public int getNumRooms()
@@ -55,6 +79,16 @@ public class SearchResult
 	public int getNumChildren()
 	{
 		return numChildren;
+	}
+	
+	public int getNumResultPages()
+	{
+		return hotels.size() % NUM_RESULTS_PER_PAGE;
+	}
+	
+	public int getCurrentPage()
+	{
+		return currentPage;
 	}
 
 	public String toString()

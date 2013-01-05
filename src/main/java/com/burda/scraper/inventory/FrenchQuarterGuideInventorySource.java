@@ -1,6 +1,7 @@
 package com.burda.scraper.inventory;
 
 import java.net.URI;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -27,6 +28,7 @@ import com.burda.scraper.model.RoomType;
 import com.burda.scraper.model.SearchParams;
 import com.burda.scraper.model.SearchResult;
 import com.burda.scraper.model.persisted.SourceHotel;
+import com.google.common.collect.Lists;
 
 public class FrenchQuarterGuideInventorySource implements Warehouse
 {
@@ -55,6 +57,7 @@ public class FrenchQuarterGuideInventorySource implements Warehouse
 				new String(html), "http://secure.rezserver.com/js/ajax/city_page_redesign/getResults.php");
 		
 		SearchResult result = new SearchResult(params);
+		List<Hotel> hotels = Lists.newArrayList();
 		for (Element hotelElement: document.select(".hotelbox"))
 		{
 			String extHotelId = hotelElement.id();
@@ -98,8 +101,9 @@ public class FrenchQuarterGuideInventorySource implements Warehouse
 				rt.bookItUrl=createBookUrl(idParts);
 				hotel.addRoomType(rt);
 			}
-			result.hotels.add(hotel);
+			hotels.add(hotel);
 		}
+		result.setHotels(hotels);
 		
 		return result;
 	}

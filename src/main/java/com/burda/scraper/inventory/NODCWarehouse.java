@@ -113,6 +113,7 @@ public class NODCWarehouse implements Warehouse
 		Elements hotelIds = document.select("[name=preferredProductId]").first().select("option");
 		
 		Elements searchResults = document.select(".searchResult");
+		List<Hotel> hotels = Lists.newArrayList();
 		for (Element searchResult: searchResults)
 		{
 			Element hName = searchResult.select(".productTitle a").first();
@@ -180,9 +181,10 @@ public class NODCWarehouse implements Warehouse
 				
 				hotel.addRoomType(roomType);
 			}
-			result.getHotels().add(hotel);
+			hotels.add(hotel);
 		}	
 		
+		result.setHotels(hotels);
 		return result;
 	}
 	
