@@ -10,6 +10,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import com.burda.scraper.model.Hotel;
 import com.burda.scraper.model.SearchParams;
 import com.burda.scraper.model.SearchResult;
+import com.burda.scraper.model.SortType;
 import com.burda.scraper.model.persisted.InventorySource;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -70,7 +71,7 @@ public class Session implements Serializable
 	}
 		
 	@JsonIgnore
-	public final SearchResult getSearchResults(int page)
+	public final SearchResult getSearchResults(int page, SortType sort)
 	{	
 		SearchResult aggragatedResult = new SearchResult(params);
 		SearchResult fqgResult = searchResultMap.get(com.burda.scraper.model.persisted.InventorySource.FQG);
@@ -97,6 +98,7 @@ public class Session implements Serializable
 			aggragatedHotels.addAll(nodcResult.getAllHotels());	
 			aggragatedResult.setHotels(aggragatedHotels);
 			aggragatedResult.currentPage = page;
+			aggragatedResult.currentSort = sort;
 		}
 		
 		return aggragatedResult;

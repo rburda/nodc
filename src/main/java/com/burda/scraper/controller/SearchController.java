@@ -133,7 +133,7 @@ public class SearchController
 	private static final Cookie createSessionIdCookie(String sessionId)
 	{
 		Cookie sessionIdCookie = new Cookie("sessionid", sessionId);
-		sessionIdCookie.setDomain(".neworleans.com");
+		//sessionIdCookie.setDomain(".neworleans.com");
 		sessionIdCookie.setMaxAge(-1);
 		sessionIdCookie.setSecure(false);
 		

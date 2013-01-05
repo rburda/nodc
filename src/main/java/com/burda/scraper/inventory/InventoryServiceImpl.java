@@ -55,7 +55,7 @@ public class InventoryServiceImpl implements InventoryService
 		session.addToResults(InventorySource.NODC, nodcTask.get());
 		session.addToResults(InventorySource.FQG, fqgTask.get());
 		cache.set(params.getSessionId(), (60 * 180) /*three hours*/, session, SerializationType.JSON );
-		return session.getSearchResults(1);
+		return session.getSearchResults(1, SortType.DEFAULT);
 	}
 	
 	@Override
@@ -75,7 +75,7 @@ public class InventoryServiceImpl implements InventoryService
 		if (s != null)
 		{
 
-			sr = s.getSearchResults(page);
+			sr = s.getSearchResults(page, sortBy);
 		}
 		
 		return sr;

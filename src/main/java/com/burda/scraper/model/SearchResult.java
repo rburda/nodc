@@ -1,6 +1,7 @@
 package com.burda.scraper.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class SearchResult
 	public int numAdults;
 	public int numChildren;
 	public int currentPage;
+	public SortType currentSort = SortType.DEFAULT;
 	private List<Hotel> hotels = new ArrayList<Hotel>();
 	
 	SearchResult(){}
@@ -58,7 +60,11 @@ public class SearchResult
 		if (endResult > hotels.size()-1)
 			endResult = hotels.size()-1;
 		
-		return Lists.newArrayList(hotels.subList(startResult, endResult));
+		List<Hotel> sortedHotels = Lists.newArrayList(hotels);
+		Collections.sort(sortedHotels, currentSort);
+		
+		List<Hotel> pagedHotels = Lists.newArrayList(sortedHotels.subList(startResult, endResult));
+		return pagedHotels;
 	}
 	
 	public void setHotels(List<Hotel> hotels)

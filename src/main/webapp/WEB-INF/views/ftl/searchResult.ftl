@@ -425,8 +425,7 @@
                             <!-- search results box header with gradient background, hotel name, price -->
                             <div class="searchResultsHead">
                                 <h2 class="averageRate">
-                                    Lowest Average Price: <span style="" class="averageRate">$67.</span><span style=""
-                                        class="averageRate">51</span>
+                                    Lowest Average Price: <span style="" class="averageRate">$${hotel.lowestAvgRate!0.00}</span>
                                 </h2>
                                 <h2 class="productTitle">
                                     <a href="#productTitleLink">${hotel.name!''}</a>

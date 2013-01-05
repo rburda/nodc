@@ -98,7 +98,7 @@ public class FrenchQuarterGuideInventorySource implements Warehouse
 						hotelElement.select("#rateDetails_"+roomTypeId + " .price").first().ownText());
 				rt.totalPrice = InventoryUtils.createMoney(rtElement.select(".room_price .price").first().ownText());
 				
-				rt.bookItUrl=createBookUrl(idParts);
+				rt.bookItUrl=createBookUrl(params, idParts);
 				hotel.addRoomType(rt);
 			}
 			hotels.add(hotel);
@@ -108,7 +108,7 @@ public class FrenchQuarterGuideInventorySource implements Warehouse
 		return result;
 	}
 	
-	private String createBookUrl(String[] idParts)
+	private String createBookUrl(SearchParams sp, String[] idParts)
 	{
 		StringBuffer url = new StringBuffer();
 		url.append("https://secure.rezserver.com/book/index.php?refid=5057&seshid=ac5711115d836fd9a54f2c0757438cfc");
@@ -118,8 +118,8 @@ public class FrenchQuarterGuideInventorySource implements Warehouse
 		url.append("&rs_rate_code="+idParts[2]);
 		url.append("&rs_room_code="+idParts[3]);
 		url.append("&rs_city=New Orleans, LA");
-		url.append("&rs_chk_in=01/14/2013");
-		url.append("&rs_chk_out=01/16/2013");
+		url.append("&rs_chk_in="+STAY_DATE_FORMAT.print(sp.getCheckInDate()));
+		url.append("&rs_chk_out="+STAY_DATE_FORMAT.print(sp.getCheckOutDate()));
 		url.append("&rs_rooms=1");
 		url.append("&ts_testing=");
 		url.append("&_booknow=1");

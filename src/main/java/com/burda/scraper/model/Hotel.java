@@ -1,5 +1,6 @@
 package com.burda.scraper.model;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +49,17 @@ public class Hotel
 	public List<RoomType> getRoomTypes()
 	{
 		return roomTypes;
+	}
+	
+	public BigDecimal getLowestAvgRate()
+	{
+		BigDecimal lowest = null;
+		for (RoomType rt: getRoomTypes())
+		{
+			if (lowest == null || rt.getAvgNightlyRate().compareTo(lowest) < 0)
+				lowest = rt.getAvgNightlyRate();
+		}
+		return lowest;
 	}
 	
 	public void addRoomType(RoomType rt)
