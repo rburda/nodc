@@ -83,7 +83,7 @@ public class SearchResult
 	
 	public int getNumResultPages()
 	{
-		return hotels.size() % NUM_RESULTS_PER_PAGE;
+		return (int) Math.ceil(hotels.size() / NUM_RESULTS_PER_PAGE);
 	}
 	
 	public int getCurrentPage()
