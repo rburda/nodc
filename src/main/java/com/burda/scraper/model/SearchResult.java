@@ -13,14 +13,15 @@ import com.google.common.collect.Lists;
 
 public class SearchResult
 {
-	private static final int NUM_RESULTS_PER_PAGE = 20;	
-	
 	public Date startDate;
 	public Date endDate;
 	public int numRooms;
 	public int numAdults;
 	public int numChildren;
-	public int currentPage;
+	public int currentPage = 1;
+	public int numPages = 1;
+	public int startHotel = 1;
+	public int numTotalHotels = 0;
 	public SortType currentSort = SortType.DEFAULT;
 	private List<Hotel> hotels = new ArrayList<Hotel>();
 	
@@ -53,18 +54,7 @@ public class SearchResult
 	
 	public List<Hotel> getHotels()
 	{
-		int startResult = ( (currentPage-1)*NUM_RESULTS_PER_PAGE + 1 );
-		int endResult = startResult+NUM_RESULTS_PER_PAGE;
-		if (startResult > hotels.size()-1)
-			startResult = hotels.size()-1;
-		if (endResult > hotels.size()-1)
-			endResult = hotels.size()-1;
-		
-		List<Hotel> sortedHotels = Lists.newArrayList(hotels);
-		Collections.sort(sortedHotels, currentSort);
-		
-		List<Hotel> pagedHotels = Lists.newArrayList(sortedHotels.subList(startResult, endResult));
-		return pagedHotels;
+		return Lists.newArrayList(hotels);
 	}
 	
 	public void setHotels(List<Hotel> hotels)
@@ -87,16 +77,36 @@ public class SearchResult
 		return numChildren;
 	}
 	
-	public int getNumResultPages()
+	public int getNumPages()
 	{
-		return (int) Math.ceil(hotels.size() / NUM_RESULTS_PER_PAGE);
+		return numPages;
 	}
 	
 	public int getCurrentPage()
 	{
 		return currentPage;
 	}
-
+	
+	public SortType getCurrentSort()
+	{
+		return currentSort;
+	}
+	
+	public int getNumTotalHotels()
+	{
+		return numTotalHotels;
+	}
+	
+	public int getStartHotel()
+	{
+		return startHotel;
+	}
+	
+	public int getEndHotel()
+	{
+		return getStartHotel()+getHotels().size()-1;
+	}
+	
 	public String toString()
 	{
 		return ToStringBuilder.reflectionToString(this);

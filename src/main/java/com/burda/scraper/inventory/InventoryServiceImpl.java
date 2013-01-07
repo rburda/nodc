@@ -1,9 +1,12 @@
 package com.burda.scraper.inventory;
 
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -17,9 +20,12 @@ import com.burda.scraper.model.SearchResult;
 import com.burda.scraper.model.SortType;
 import com.burda.scraper.model.persisted.InventorySource;
 import com.google.code.ssm.api.format.SerializationType;
+import com.google.common.collect.Lists;
 
 public class InventoryServiceImpl implements InventoryService
 {	
+	private static int SESSION_CACHE_TIMEOUT_IN_SECONDS = (60* 180); /* three hours */
+	
   @Autowired
   @Qualifier("defaultMemcachedClient") 
   private com.google.code.ssm.Cache cache;
@@ -30,36 +36,48 @@ public class InventoryServiceImpl implements InventoryService
 	private FrenchQuarterGuideInventorySource fqgInventorySource;
 	
 	@Override
-	public SearchResult getSearchResult(
+	public void search(
 			final HttpServletRequest request, final SearchParams params) throws Exception
 	{
 		ExecutorService executor = Executors.newFixedThreadPool(2);
-		Future<SearchResult> nodcTask = executor.submit(new Callable<SearchResult>(){
+		
+		List<Callable<SearchResult>> workers = Lists.newArrayList();
+		workers.add(new Callable<SearchResult>(){
 
 			@Override
 			public SearchResult call() throws Exception
 			{
 				return nodcInventorySource.getResults(request, params);
 			}});
-		Future<SearchResult> fqgTask = executor.submit(new Callable<SearchResult>(){
+		workers.add(new Callable<SearchResult>(){
 
 			@Override
 			public SearchResult call() throws Exception
 			{
 				return fqgInventorySource.getResults(request, params);
-			}});		
-		
+			}});
+		List<Future<SearchResult>> workerResults = executor.invokeAll(workers, 15, TimeUnit.SECONDS);
 		executor.shutdown();
 
 		Session session = new Session(params);
-		session.addToResults(InventorySource.NODC, nodcTask.get());
-		session.addToResults(InventorySource.FQG, fqgTask.get());
-		cache.set(params.getSessionId(), (60 * 180) /*three hours*/, session, SerializationType.JSON );
-		return session.getSearchResults(1, SortType.DEFAULT);
+		Future<SearchResult> nodcResult = workerResults.get(0);
+		Future<SearchResult> fqgResult = workerResults.get(1);
+		if (nodcResult.isCancelled())
+			logger.warn("Unable to get NODC results before timeout");
+		else
+			session.addToResults(InventorySource.NODC, nodcResult.get());	
+		if (fqgResult.isCancelled())
+			logger.warn("Unable to get FQG results before timeout");
+		else
+			session.addToResults(InventorySource.FQG, fqgResult.get());	
+
+		session.setCurrentPage(1);
+		session.setCurrentSort(SortType.DEFAULT);
+		cache.set(params.getSessionId(), SESSION_CACHE_TIMEOUT_IN_SECONDS, session, SerializationType.JSON );
 	}
 	
 	@Override
-	public SearchResult getUpdatedResults(String sessionId, SortType sortBy, int page) 
+	public SearchResult getUpdatedResults(String sessionId, SortType sortBy, Integer page) 
 	{
 		SearchResult sr = null;
 		Session s = null;
@@ -74,8 +92,19 @@ public class InventoryServiceImpl implements InventoryService
 		
 		if (s != null)
 		{
-
-			sr = s.getSearchResults(page, sortBy);
+			if (page != null)
+				s.setCurrentPage(page);
+			if (sortBy != null)
+				s.setCurrentSort(sortBy);
+			try
+			{
+				cache.set(sessionId, SESSION_CACHE_TIMEOUT_IN_SECONDS, s, SerializationType.JSON );
+			}
+			catch (Exception e)
+			{
+				logger.error("error saving updated session", e);
+			}
+			sr = s.getSearchResults();
 		}
 		
 		return sr;

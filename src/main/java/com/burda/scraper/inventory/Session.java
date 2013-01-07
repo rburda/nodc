@@ -1,6 +1,7 @@
 package com.burda.scraper.inventory;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -17,12 +18,15 @@ import com.google.common.collect.Maps;
 
 public class Session implements Serializable
 {
+	private static final int NUM_RESULTS_PER_PAGE = 20;	
 	private static final long serialVersionUID = 1L;
-
 	
 	private SearchParams params;
 	private Map<InventorySource, Boolean> completeStatusMap = Maps.newConcurrentMap();
 	private Map<InventorySource, SearchResult> searchResultMap = Maps.newConcurrentMap();
+	private SortType currentSort;
+	private int currentPage = 1;
+	private boolean sortAsc;
 
 	Session()
 	{}
@@ -64,6 +68,52 @@ public class Session implements Serializable
 		this.completeStatusMap.putAll(map);
 	}
 	
+	public int getCurrentPage()
+	{
+		return currentPage;
+	}
+	
+	public void setCurrentPage(int page)
+	{
+		this.currentPage = page;
+	}
+	
+	public boolean getSortDirection()
+	{
+		return sortAsc;
+	}
+	
+	public void setSortDirection(boolean sd)
+	{
+		this.sortAsc = sd;
+	}
+
+	public SortType getCurrentSortCache()
+	{
+		return currentSort;
+	}
+	
+	public void setCurrentSortCache(SortType st)
+	{
+		currentSort = st;
+	}
+	
+	@JsonIgnore
+	public SortType getCurrentSort()
+	{
+		return currentSort;
+	}	
+	
+	@JsonIgnore
+	public void setCurrentSort(SortType sortType)
+	{
+		if (sortType == currentSort)
+			sortAsc = !sortAsc;
+		else
+			sortAsc = true;
+		this.currentSort = sortType;			
+	}
+	
 	@JsonIgnore
 	public final void addToResults(InventorySource iSource, SearchResult results)
 	{
@@ -71,7 +121,7 @@ public class Session implements Serializable
 	}
 		
 	@JsonIgnore
-	public final SearchResult getSearchResults(int page, SortType sort)
+	public final SearchResult getSearchResults()
 	{	
 		SearchResult aggragatedResult = new SearchResult(params);
 		SearchResult fqgResult = searchResultMap.get(com.burda.scraper.model.persisted.InventorySource.FQG);
@@ -96,11 +146,41 @@ public class Session implements Serializable
 				}
 			}
 			aggragatedHotels.addAll(nodcResult.getAllHotels());	
-			aggragatedResult.setHotels(aggragatedHotels);
-			aggragatedResult.currentPage = page;
-			aggragatedResult.currentSort = sort;
 		}
 		
+		aggragatedResult.currentPage = currentPage;
+		aggragatedResult.numPages = (int) Math.ceil(aggragatedHotels.size() / NUM_RESULTS_PER_PAGE);
+		aggragatedResult.startHotel = getStartResult(aggragatedHotels)+1;
+		aggragatedResult.currentSort = currentSort;
+		aggragatedResult.numTotalHotels = aggragatedHotels.size();
+		aggragatedResult.setHotels(createFilteredHotelList(aggragatedHotels));
 		return aggragatedResult;
+	}
+	
+	private List<Hotel> createFilteredHotelList(List<Hotel> hotels)
+	{
+		int startResult = getStartResult(hotels);
+		int endResult = startResult+NUM_RESULTS_PER_PAGE;
+		
+		if (endResult > hotels.size())
+			endResult = hotels.size();
+		
+		List<Hotel> sortedHotels = Lists.newArrayList(hotels);
+		Collections.sort(sortedHotels, currentSort);
+		if (!sortAsc)
+			Collections.reverse(sortedHotels);
+		
+		List<Hotel> pagedHotels = Collections.EMPTY_LIST;
+		if (startResult >=0)
+			pagedHotels = Lists.newArrayList(sortedHotels.subList(startResult, endResult));
+		return pagedHotels;
+	}
+	
+	private int getStartResult(List<Hotel> allHotels)
+	{
+		int startResult = ( (currentPage-1)*NUM_RESULTS_PER_PAGE );
+		if (startResult > allHotels.size()-1)
+			startResult = allHotels.size()-1;
+		return startResult;
 	}
 }

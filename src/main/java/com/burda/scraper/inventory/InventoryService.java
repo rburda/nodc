@@ -8,7 +8,7 @@ import com.burda.scraper.model.SortType;
 
 public interface InventoryService
 {
-	SearchResult getSearchResult(HttpServletRequest request, SearchParams params) throws Exception;
+	void search(HttpServletRequest request, SearchParams params) throws Exception;
 	
-	SearchResult getUpdatedResults(String sessionId, SortType sortBy, int page);
+	SearchResult getUpdatedResults(String sessionId, SortType sortBy, Integer page);
 }

@@ -11,6 +11,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -41,25 +43,33 @@ public class FrenchQuarterGuideInventorySource implements Warehouse
 	@Override
 	public SearchResult getResults(HttpServletRequest request, SearchParams params) throws Exception
 	{
-		SearchResult result;
+		SearchResult result = new SearchResult(params);
 		HttpResponse resp = queryHotelsViaHttpClient(params);
-		
-		byte[] html = EntityUtils.toByteArray(resp.getEntity());
-		result = createHotels(params, html);
-		
+		if (resp != null)
+		{
+			byte[] html = EntityUtils.toByteArray(resp.getEntity());
+			result = createHotels(params, html);
+		}		
 		logger.debug("fqg complete");
 		return result;
 	}
 	
 	private SearchResult createHotels(SearchParams params, byte[] html) throws Exception
 	{
+		SearchResult result = new SearchResult(params);
+		
 		Document document = Jsoup.parse(
 				new String(html), "http://secure.rezserver.com/js/ajax/city_page_redesign/getResults.php");
 		
-		SearchResult result = new SearchResult(params);
 		List<Hotel> hotels = Lists.newArrayList();
 		for (Element hotelElement: document.select(".hotelbox"))
 		{
+			if (Thread.interrupted())
+			{
+				logger.warn("Stopping result gathering; thread has been cancelled");
+				break;				
+			}
+
 			String extHotelId = hotelElement.id();
 			logger.error("parsing hotel id: " + extHotelId);
 			com.burda.scraper.model.persisted.InventorySource invSource = 
@@ -153,7 +163,11 @@ public class FrenchQuarterGuideInventorySource implements Warehouse
 			HttpGet httpget = new HttpGet(uri);
 			logger.error("uri == " + httpget.getURI());
 
-			response = new DefaultHttpClient().execute(httpget);
+			DefaultHttpClient httpClient = new DefaultHttpClient();
+			HttpParams httpParams = httpClient.getParams();
+			HttpConnectionParams.setConnectionTimeout(httpParams, 10000);
+	    HttpConnectionParams.setSoTimeout(httpParams, 10000);
+			response = httpClient.execute(httpget);
 		} 
 		catch (Exception e)
 		{

@@ -19,6 +19,8 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
@@ -95,9 +97,13 @@ public class NODCWarehouse implements Warehouse
 	public SearchResult getResults(HttpServletRequest request, SearchParams params) throws Exception
 	{
 		HttpResponse response = queryNODCHotelsViaHttpClient(findSessionCookieString(request), params);
-		byte[] html = EntityUtils.toByteArray(response.getEntity());
 
-		SearchResult result = createHotelsNODC(params, html);
+		SearchResult result = new SearchResult(params);		
+		if (response != null)
+		{
+			byte[] html = EntityUtils.toByteArray(response.getEntity());
+			result = createHotelsNODC(params, html);			
+		}
 		logger.debug("nodc complete");
 		return result;
 	}
@@ -116,6 +122,12 @@ public class NODCWarehouse implements Warehouse
 		List<Hotel> hotels = Lists.newArrayList();
 		for (Element searchResult: searchResults)
 		{
+			if (Thread.interrupted())
+			{
+				logger.warn("Stopping result gathering; thread has been cancelled");
+				break;				
+			}
+			
 			Element hName = searchResult.select(".productTitle a").first();
 			//Element hDescription = searchResult.select(".productSummary p:eq(1)").first();	
 			//Element hArea = searchResult.select(".productSummary p:eq(0)").first();
@@ -289,7 +301,12 @@ public class NODCWarehouse implements Warehouse
 			httpget.setHeader("Cookie", sessionCookieString);
 			
 			logger.error("uri == " + httpget.getURI());
-			response = new DefaultHttpClient().execute(httpget);
+			
+			DefaultHttpClient httpClient = new DefaultHttpClient();
+			HttpParams httpParams = httpClient.getParams();
+			HttpConnectionParams.setConnectionTimeout(httpParams, 15000);
+	    HttpConnectionParams.setSoTimeout(httpParams, 15000);
+			response = httpClient.execute(httpget);
 		} 
 		catch (Exception e)
 		{

@@ -1,8 +1,6 @@
 package com.burda.scraper.controller;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.servlet.http.Cookie;
@@ -25,9 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.burda.scraper.inventory.InventoryService;
 import com.burda.scraper.model.SearchParams;
-import com.burda.scraper.model.SearchResult;
 import com.burda.scraper.model.SortType;
-import com.google.common.collect.Lists;
 
 /**
  * Handles requests for the application home page.
@@ -56,7 +52,7 @@ public class SearchController
 		String sessionId = findSessionId(request);
 		sp.setSessionId(sessionId);
 		logger.debug("params == " + sp);
-		invService.getSearchResult(request, sp);
+		invService.search(request, sp);
 		
 		StringBuffer hostWithPath = HttpUtils.getRequestURL(request);
 		String host = hostWithPath.substring(0, hostWithPath.indexOf("/startSearch"));
@@ -81,8 +77,8 @@ public class SearchController
 	@RequestMapping(value = "/results", method = RequestMethod.GET)
 	@ResponseBody
 	public ModelAndView getResults(
-			@RequestParam(value="sort", defaultValue="DEFAULT") SortType sortType,
-			@RequestParam(value="page", defaultValue="1") int page,
+			@RequestParam(value="sort", required=false) SortType sortType,
+			@RequestParam(value="page", required=false) Integer page,
 			@ModelAttribute("searchResults") ModelMap model,
 			HttpServletRequest clientRequest,
 			HttpServletResponse clientResponse) throws Exception

@@ -30,6 +30,14 @@
 			src="http://www.neworleans.com/common/js/outside-wicket/widget-incl.js" 
 			insertto="sidebarWidget" widget="/mytrip/app/SearchWidget?skin=homeHotel" type="text/javascript"></script>
 	
+		<script type="text/javascript">
+	 		cyljq(document).ready(function() {
+	 			cyljq(".scheck").click(function() {
+	   			document.location.href="results?page=1&sort="+cyljq(this).val();
+	  		});
+	 		});
+	</script>
+	
     <style type="text/css">
         @media screen and (-webkit-min-device-pixel-ratio:0)
         {
@@ -58,15 +66,6 @@
             background: url(http://neworleans.com/images/hdr_hotelsearch.png) no-repeat left top;
         }
     </style>
-    <script type="text/javascript">
-        Wicket.Event.add(window, "load",
-		function (event) {
-		    var el = cyljq('#sortByWeightf3').get(0); if (el) el.checked = true; ;
-		    el = cyljq('#sortByPricef4').get(0); if (el) el.checked = false;
-		    el = cyljq('#sortByNamef5').get(0); if (el) el.checked = false;
-		    el = cyljq('#sortByRatingf6').get(0); if (el) el.checked = false;
-		});
-    </script>
     <script src="http://neworleans.com/mytrip/common/js/adtag_docwrite_util.js" type="text/javascript"></script>
     <style type="text/css">
         .searchbutton
@@ -368,51 +367,34 @@
                     </div>
                     <!-- sort bar -->
                     <div class="sortBar">
-                        <form action="../" name="eventSortOption">
-                        <ul>
-                            <li class="first">
-                                <label>
-                                    Sort by:</label></li>
-                            <li>
-                                <input id="sortByWeight" type="radio" checked="checked" value="radio0" class="checkBox wicket-sortByGroupf2"
-                                    name="browseItems:sortByGroup" />
-                                <label for="sortByWeightf3">
-                                    NewOrleans.com Picks
-                                </label>
-                                &nbsp; </li>
-                            <li>
-                                <input type="radio" value="radio1" id="sortByPrice" class="checkBox wicket-sortByGroupf2"
-                                    name="browseItems:sortByGroup" />
-                                <label for="sortByPrice">
-                                    Price
-                                </label>
-                                &nbsp; </li>
-                            <li>
-                                <input type="radio" value="radio2" id="sortByNamef5" class="checkBox wicket-sortByGroupf2"
-                                    name="browseItems:sortByGroup" />
-                                <label for="sortByNamef5">
-                                    Hotel Name
-                                </label>
-                                &nbsp; </li>
-                            <li>
-                                <input type="radio" value="radio3" id="sortByRatingf6" class="checkBox wicket-sortByGroupf2"
-                                    name="browseItems:sortByGroup" />
-                                <label for="sortByRatingf6">
-                                    Rating
-                                </label>
-                            </li>
-                        </ul>
-                        </form>
-                        <span class="clear"></span>
+	                    <ul>
+	                     <li class="first"><label>Sort by:</label></li>
+	                     <li>
+	                         <input id="sortWeight" type="radio" value="DEFAULT" class="scheck checkBox" <#if (searchResults["result"].currentSort.name() == "DEFAULT") > checked="checked" </#if> />
+	                         <label for="sortWeight">NewOrleans.com Picks</label>&nbsp; 
+	                     </li>
+	                     <li>
+	                         <input id="sortPrice" type="radio" value="PRICE" class="scheck checkBox" <#if (searchResults["result"].currentSort.name() == "PRICE") > checked="checked" </#if> />
+	                         <label for="sortPrice">Price</label> &nbsp; 
+	                     </li>
+	                     <li>
+	                         <input id="sortName" type="radio" value="HOTEL_NAME" class="scheck checkBox" <#if (searchResults["result"].currentSort.name() == "HOTEL_NAME") > checked="checked" </#if> />
+	                         <label for="sortName">Hotel Name</label>&nbsp; 
+	                     </li>
+	                     <li>
+	                         <input id="sortRating" type="radio" value="RATING" class="scheck checkBox" <#if (searchResults["result"].currentSort.name() == "RATING") > checked="checked" </#if> />
+	                         <label for="sortRating">Rating</label>
+	                     </li>
+	                    </ul>
+                     	<span class="clear"></span>
                     </div>
-                    <div class="clear">
-                    </div>
+                    <div class="clear"></div>
                     <!-- / sort bar -->
                     <!-- pagination -->
 					<#if (searchResults["result"].hotels?size > 0) >
 						<div style="font-size: 14px;" class="pagination">
 							<p class="left">
-								<span>1-${searchResults["result"].hotels?size} of ${searchResults["result"].hotels?size} results</span>
+								<span>${searchResults["result"].startHotel}-${searchResults["result"].endHotel} of ${searchResults["result"].numTotalHotels} results</span>
 							</p>
 							<div class="clear">
 							</div>
@@ -550,15 +532,15 @@
                         <!-- / clearing -->
                     </div>
                     <!-- bottom pagination -->
-					<#if (searchResults["result"].hotels?size > 0) >
-						<div style="font-size: 14px;" class="pagination">
-							<p class="left">
-								<span>1-${searchResults["result"].hotels?size} of ${searchResults["result"].hotels?size} results</span>
-							</p>
-							<div class="clear">
-							</div>
-						</div>
-					</#if>
+										<#if (searchResults["result"].hotels?size > 0) >
+											<div style="font-size: 14px;" class="pagination">
+												<p class="left">
+													<span>${searchResults["result"].startHotel}-${searchResults["result"].endHotel} of ${searchResults["result"].numTotalHotels} results</span>
+												</p>
+												<div class="clear">
+												</div>
+											</div>
+										</#if>
 					
 						
                     <!-- / pagination -->

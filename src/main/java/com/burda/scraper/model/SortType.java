@@ -1,11 +1,12 @@
 package com.burda.scraper.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Comparator;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-public enum SortType implements Comparator<Hotel>
+public enum SortType implements Comparator<Hotel>, Serializable
 {
 	DEFAULT 
 	{
