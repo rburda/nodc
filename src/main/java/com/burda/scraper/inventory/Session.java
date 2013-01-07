@@ -149,7 +149,7 @@ public class Session implements Serializable
 		}
 		
 		aggragatedResult.currentPage = currentPage;
-		aggragatedResult.numPages = (int) Math.ceil(aggragatedHotels.size() / NUM_RESULTS_PER_PAGE);
+		aggragatedResult.numPages = (int) Math.ceil(((float)aggragatedHotels.size()) / NUM_RESULTS_PER_PAGE);
 		aggragatedResult.startHotel = getStartResult(aggragatedHotels)+1;
 		aggragatedResult.currentSort = currentSort;
 		aggragatedResult.numTotalHotels = aggragatedHotels.size();

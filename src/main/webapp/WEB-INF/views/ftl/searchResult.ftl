@@ -391,15 +391,30 @@
                     <div class="clear"></div>
                     <!-- / sort bar -->
                     <!-- pagination -->
-					<#if (searchResults["result"].hotels?size > 0) >
-						<div style="font-size: 14px;" class="pagination">
-							<p class="left">
-								<span>${searchResults["result"].startHotel}-${searchResults["result"].endHotel} of ${searchResults["result"].numTotalHotels} results</span>
-							</p>
-							<div class="clear">
-							</div>
-						</div>
-					</#if>
+											<#if (searchResults["result"].hotels?size > 0) >
+												<div style="font-size: 14px;" class="pagination">
+													<p class="left">
+														<span>${searchResults["result"].startHotel}-${searchResults["result"].endHotel} of ${searchResults["result"].numTotalHotels} results</span>
+													</p>
+													<p class="right">
+														<#if (searchResults["result"].currentPage != 1) >
+															<a href='results?page=${searchResults["result"].currentPage-1}'>&lt; Previous</a>
+														</#if>
+														<#list 1..searchResults["result"].numPages as i>
+															<#if (searchResults["result"].currentPage == i) >
+																<span style="font-weight: bold;">${i}</span> 
+																<#else>
+																	<span> <a href="results?page=${i}" title="Go to page ${i}">${i}</a></span>
+															</#if>
+	
+														</#list>
+														<#if (searchResults["result"].currentPage != searchResults["result"].numPages) >
+															<a href='results?page=${searchResults["result"].currentPage+1}'>Next &gt;</a>
+														</#if>
+													</p>
+													<div class="clear"></div>
+												</div>
+											</#if>
                     <!-- / pagination -->
                     <div>
                         <#list searchResults["result"].hotels as hotel>
@@ -537,6 +552,22 @@
 												<p class="left">
 													<span>${searchResults["result"].startHotel}-${searchResults["result"].endHotel} of ${searchResults["result"].numTotalHotels} results</span>
 												</p>
+												<p class="right">
+													<#if (searchResults["result"].currentPage != 1) >
+														<a href='results?page=${searchResults["result"].currentPage-1}'>&lt; Previous</a>
+													</#if>
+													<#list 1..searchResults["result"].numPages as i>
+														<#if (searchResults["result"].currentPage == i) >
+															<span style="font-weight: bold;">${i}</span> 
+															<#else>
+																<span> <a href="results?page=${i}" title="Go to page ${i}">${i}</a></span>
+														</#if>
+
+													</#list>
+													<#if (searchResults["result"].currentPage != searchResults["result"].numPages) >
+														<a href='results?page=${searchResults["result"].currentPage+1}'>Next &gt;</a>
+													</#if>
+												</p>												
 												<div class="clear">
 												</div>
 											</div>
