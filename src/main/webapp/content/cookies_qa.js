@@ -18,6 +18,6 @@
 	           }
 	        }
             document.cookie = 'parent_cookie='+jsession+"___"+wwwsid+';domain=.www.neworleans.com';
-			$('.hotelSearchForm').attr("action", "http://qa.www.neworleans.com/startSearch");
+			$('.hotelSearchForm').attr("action", "http://qa-nodcsearch.elasticbeanstalk.com/startSearch");
 		});
 })();
