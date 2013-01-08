@@ -14,7 +14,7 @@
     <script type="text/javascript" src="http://neworleans.com/common/js/jquery/jquery-modal.js"></script>    
     <script type="text/javascript" src="http://neworleans.com/common/js/jquery/jquery.galleriffic.js"></script>
     <script type="text/javascript" src="http://neworleans.com/common/js/jquery/jquery.opacityrollover.js"></script>
-    <script type="text/javascript" src="http://neworleans.com/common/js/outside-wicket/widget-lib.js"></script>    
+    <script type="text/javascript" src="widget-lib.js"></script>    
     <script src="http://platform.twitter.com/widgets.js"></script>
     <script type="text/javascript" src="http://www.neworleans.com/javascript/global.js"></script>
     <script type="text/javascript" src="http://neworleans.com/javascript/tealeaf.js"></script>
@@ -26,9 +26,10 @@
     <script type="text/javascript" src="http://neworleans.com/javascript/coremetrics/v40/eluminate.js"></script>
     <script type="text/javascript" src="http://neworleans.com/javascript/coremetrics/cmcustom.js"></script>
     <script type="text/javascript" src="http://neworleans.com/javascript/coremetrics/cmxCustomGlobal.js"></script>    
-		<script 
-			src="http://www.neworleans.com/common/js/outside-wicket/widget-incl.js" 
-			insertto="sidebarWidget" widget="/mytrip/app/SearchWidget?skin=homeHotel" type="text/javascript"></script>
+		<script src="widget-incl.js" callbacksrc="http://test.www.neworleans.com:8080/cookies_incl.js"
+			insertto="sidebarWidget" widget="http://www.neworleans.com/mytrip/app/SearchWidget?skin=homeHotel" 
+			type="text/javascript"></script>
+
 	
 		<script type="text/javascript">
 	 		cyljq(document).ready(function() {
@@ -304,12 +305,8 @@
 						<div class="hotelOnly">
 						<!-- change search list -->
 							<div class="changeSearch">
-								<h3>Change Search</h3>
-								
-								<div id="sidebarWidget">
-								
-								
-								</div>
+								<h3>Change Search</h3>								
+								<div id="sidebarWidget"></div>
 							</div>
 							
 							<div class="tcenter">

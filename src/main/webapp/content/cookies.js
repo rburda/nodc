@@ -1,5 +1,5 @@
 (function(){
-	$(document).ready(
+	cyljq(document).ready(
 		function() 
 		{
 	        c = document.cookie.split('; ');
@@ -18,6 +18,6 @@
 	           }
 	        }
             document.cookie = 'parent_cookie='+jsession+"___"+wwwsid+';domain=.www.neworleans.com';
-			$('.hotelSearchForm').attr("action", "http://test.www.neworleans.com:8080/startSearch");
+            cyljq('.hotelSearchForm').attr("action", "http://test.www.neworleans.com:8080/startSearch");
 		});
 })();

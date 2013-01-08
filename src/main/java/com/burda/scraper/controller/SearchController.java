@@ -62,6 +62,23 @@ public class SearchController
 		clientResponse.getOutputStream().write(callback.getBytes());
 		clientResponse.addCookie(createSessionIdCookie(sessionId));
 	}
+
+	@RequestMapping(value = "/search", method={RequestMethod.GET, RequestMethod.POST}, produces="application/javascript")
+	@ResponseBody
+	public ModelAndView search( 
+			@RequestParam Map<String, String> params, 
+			@ModelAttribute("searchResults") ModelMap model,
+			HttpServletRequest request, HttpServletResponse clientResponse) throws Exception
+	{
+		SearchParams sp = new SearchParams(params);
+		String sessionId = findSessionId(request);
+		sp.setSessionId(sessionId);
+		invService.search(request, sp);
+		model.put("result", invService.getUpdatedResults(sessionId, null, null));
+		
+		clientResponse.addCookie(createSessionIdCookie(sessionId));
+		return new ModelAndView("searchResult", model);
+	}	
 	
 	/**
 	 * 

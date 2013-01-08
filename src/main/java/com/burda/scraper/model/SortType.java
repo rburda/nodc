@@ -23,16 +23,7 @@ public enum SortType implements Comparator<Hotel>, Serializable
 		@Override
 		public int compare(Hotel h1, Hotel h2)
 		{
-			BigDecimal lowestH1 = null;
-			BigDecimal lowestH2 = null;
-			for (RoomType rt: h1.getRoomTypes())
-				if (lowestH1 == null || rt.getTotalPrice().compareTo(lowestH1) < 0 )
-					lowestH1 = rt.getTotalPrice();				
-			for (RoomType rt: h2.getRoomTypes())
-				if (lowestH2 == null || rt.getTotalPrice().compareTo(lowestH2) < 0 )
-					lowestH2 = rt.getTotalPrice();
-			
-			return lowestH1.compareTo(lowestH2);
+			return h1.getLowestAvgRate().compareTo(h2.getLowestAvgRate());
 		}
 	},
 	HOTEL_NAME 
