@@ -196,7 +196,7 @@ public class NODCWarehouse implements Warehouse
 			hotels.add(hotel);
 		}	
 		
-		result.setHotels(hotels);
+		result.setAllHotels(hotels);
 		return result;
 	}
 	

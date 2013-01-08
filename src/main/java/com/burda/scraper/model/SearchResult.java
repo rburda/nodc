@@ -23,7 +23,8 @@ public class SearchResult
 	public int startHotel = 1;
 	public int numTotalHotels = 0;
 	public SortType currentSort = SortType.DEFAULT;
-	private List<Hotel> hotels = new ArrayList<Hotel>();
+	private List<Hotel> allHotels = new ArrayList<Hotel>();
+	private List<Hotel> filteredHotels = new ArrayList<Hotel>();
 	
 	SearchResult(){}
 	
@@ -46,20 +47,24 @@ public class SearchResult
 		return endDate;
 	}
 	
-	@JsonIgnore
 	public List<Hotel> getAllHotels()
 	{
-		return Lists.newArrayList(hotels);
+		return Lists.newArrayList(allHotels);
 	}
 	
-	public List<Hotel> getHotels()
+	public void setAllHotels(List<Hotel> allHotels)
 	{
-		return Lists.newArrayList(hotels);
+		this.allHotels = allHotels;
 	}
 	
-	public void setHotels(List<Hotel> hotels)
+	public List<Hotel> getFilteredHotels()
 	{
-		this.hotels = Lists.newArrayList(hotels);
+		return Lists.newArrayList(filteredHotels);
+	}
+	
+	public void setFilteredHotels(List<Hotel> hotels)
+	{
+		this.filteredHotels = Lists.newArrayList(hotels);
 	}
 	
 	public int getNumRooms()
@@ -104,7 +109,7 @@ public class SearchResult
 	
 	public int getEndHotel()
 	{
-		return getStartHotel()+getHotels().size()-1;
+		return getStartHotel()+filteredHotels.size()-1;
 	}
 	
 	public String toString()

@@ -1,3 +1,13 @@
+<#macro chopstring val length=17>
+	<#assign x = val?length>
+	<#assign name = val>
+	<#if (x > length) >
+		${val?substring(0,length) + "..."}
+	  <#else>
+	  	${val}	
+	</#if>
+</#macro>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -308,6 +318,21 @@
 								<h3>Change Search</h3>								
 								<div id="sidebarWidget"></div>
 							</div>
+							<div class="allAvailableItems">
+								<h3>All Available Hotels</h3>
+								<p>For your convenience, we've listed all of the available hotels within your search.</p>
+								<ul>
+									<li class="leftTitle">Hotel</li>
+									<li class="rightTitle">Avg</li>
+									<#list searchResults["result"].allHotels as hotel>
+										<li class="productName" style="position: static !important;">
+											<a href="#productNameLink" class="tooltip-hover" id="id6c0"><@chopstring val=hotel.name /></a>
+										</li>
+										<li class="productPrice">$${hotel.lowestAvgRate?round}</li>									
+									</#list>
+									<li class="last"></li>
+								</ul>
+							</div>
 							
 							<div class="tcenter">
 								<div class="verisignWrap">
@@ -388,7 +413,7 @@
                     <div class="clear"></div>
                     <!-- / sort bar -->
                     <!-- pagination -->
-											<#if (searchResults["result"].hotels?size > 0) >
+											<#if (searchResults["result"].filteredHotels?size > 0) >
 												<div style="font-size: 14px;" class="pagination">
 													<p class="left">
 														<span>${searchResults["result"].startHotel}-${searchResults["result"].endHotel} of ${searchResults["result"].numTotalHotels} results</span>
@@ -414,7 +439,7 @@
 											</#if>
                     <!-- / pagination -->
                     <div>
-                        <#list searchResults["result"].hotels as hotel>
+                        <#list searchResults["result"].filteredHotels as hotel>
                         <div class="searchResult">
                             <!-- search results box header with gradient background, hotel name, price -->
                             <div class="searchResultsHead">
@@ -544,7 +569,7 @@
                         <!-- / clearing -->
                     </div>
                     <!-- bottom pagination -->
-										<#if (searchResults["result"].hotels?size > 0) >
+										<#if (searchResults["result"].filteredHotels?size > 0) >
 											<div style="font-size: 14px;" class="pagination">
 												<p class="left">
 													<span>${searchResults["result"].startHotel}-${searchResults["result"].endHotel} of ${searchResults["result"].numTotalHotels} results</span>

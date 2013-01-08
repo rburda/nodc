@@ -153,7 +153,10 @@ public class Session implements Serializable
 		aggragatedResult.startHotel = getStartResult(aggragatedHotels)+1;
 		aggragatedResult.currentSort = currentSort;
 		aggragatedResult.numTotalHotels = aggragatedHotels.size();
-		aggragatedResult.setHotels(createFilteredHotelList(aggragatedHotels));
+		
+		Collections.sort(aggragatedHotels, SortType.HOTEL_NAME);
+		aggragatedResult.setAllHotels(aggragatedHotels);
+		aggragatedResult.setFilteredHotels(createFilteredHotelList(aggragatedHotels));
 		return aggragatedResult;
 	}
 	
