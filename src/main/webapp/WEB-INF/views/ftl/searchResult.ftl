@@ -36,10 +36,11 @@
     <script type="text/javascript" src="http://neworleans.com/javascript/coremetrics/v40/eluminate.js"></script>
     <script type="text/javascript" src="http://neworleans.com/javascript/coremetrics/cmcustom.js"></script>
     <script type="text/javascript" src="http://neworleans.com/javascript/coremetrics/cmxCustomGlobal.js"></script>    
-		<script src="widget-incl.js" callbacksrc="http://test.www.neworleans.com:8080/cookies_incl.js"
+<!-- 
+		<script src="widget-incl.js" callbacksrc="http://qa-nodcsearch.elasticbeanstalk.com/cookies_incl.js"
 			insertto="sidebarWidget" widget="http://www.neworleans.com/mytrip/app/SearchWidget?skin=homeHotel" 
 			type="text/javascript"></script>
-
+ -->
 	
 		<script type="text/javascript">
 	 		cyljq(document).ready(function() {
