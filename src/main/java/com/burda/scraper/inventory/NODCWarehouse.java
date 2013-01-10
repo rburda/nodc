@@ -260,7 +260,7 @@ public class NODCWarehouse implements Warehouse
 		builder
 				.setScheme("http")
 				.setHost("www.neworleans.com")
-				.setPath("/mytrip/app/")
+				.setPath("/mytrip/app/SearchWidget")
 				.addParameter("id88_hf_0", "")
 				.addParameter("productType", "HOTEL")
 				.addParameter("promoId", "")
@@ -318,13 +318,16 @@ public class NODCWarehouse implements Warehouse
 	private static final String findSessionCookieString(HttpServletRequest request)
 	{
 		String sessionCookieString = "";
-		for (Cookie c: request.getCookies())
+		if (request != null && request.getCookies() != null)
 		{
-			if (c.getName().equals("parent_cookie"))
+			for (Cookie c: request.getCookies())
 			{
-				sessionCookieString = c.getValue().replace("___", ";");
-				break;
-			}
+				if (c.getName().equals("parent_cookie"))
+				{
+					sessionCookieString = c.getValue().replace("___", ";");
+					break;
+				}
+			}			
 		}
 		return sessionCookieString;
 	}	
