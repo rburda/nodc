@@ -16,6 +16,7 @@
     <link type="text/css" rel="stylesheet" href="http://www.neworleans.com/style/global.css" />
     <link type="text/css" rel="stylesheet" href="http://www.neworleans.com/mytrip/style/checkout.css" />
     <link type="text/css" rel="stylesheet" href="http://www.neworleans.com/style/globaless.css" />
+    <link type="text/css" rel="stylesheet" href="style/searchstyle.css" />
     <!-- Following Script tags are added because this page is expected to have JQModalWindow -->
     <script src="http://neworleans.com/common/js/jquery/jquery-core.js" type="text/javascript"></script>
     <script src="http://neworleans.com/common/js/jquery/jquery-modal.js" type="text/javascript"></script>
@@ -24,7 +25,7 @@
     <script type="text/javascript" src="http://neworleans.com/common/js/jquery/jquery-modal.js"></script>    
     <script type="text/javascript" src="http://neworleans.com/common/js/jquery/jquery.galleriffic.js"></script>
     <script type="text/javascript" src="http://neworleans.com/common/js/jquery/jquery.opacityrollover.js"></script>
-    <script type="text/javascript" src="widget-lib.js"></script>    
+    <script type="text/javascript" src="http://neworleans.com/common/js/outside-wicket/widget-lib.js"></script>    
     <script src="http://platform.twitter.com/widgets.js"></script>
     <script type="text/javascript" src="http://www.neworleans.com/javascript/global.js"></script>
     <script type="text/javascript" src="http://neworleans.com/javascript/tealeaf.js"></script>
@@ -35,94 +36,55 @@
     <script src="http://neworleans.com/common/js/mini_cart.js" type="text/javascript"></script>
     <script type="text/javascript" src="http://neworleans.com/javascript/coremetrics/v40/eluminate.js"></script>
     <script type="text/javascript" src="http://neworleans.com/javascript/coremetrics/cmcustom.js"></script>
-    <script type="text/javascript" src="http://neworleans.com/javascript/coremetrics/cmxCustomGlobal.js"></script>    
-<!-- 
-		<script src="widget-incl.js" callbacksrc="http://qa-nodcsearch.elasticbeanstalk.com/cookies_incl.js"
-			insertto="sidebarWidget" widget="http://www.neworleans.com/mytrip/app/SearchWidget?skin=homeHotel" 
-			type="text/javascript"></script>
- -->
+    <script type="text/javascript" src="http://neworleans.com/javascript/coremetrics/cmxCustomGlobal.js"></script>
+    <script type="text/javascript" src="js/search.js"></script>    
 	
 		<script type="text/javascript">
-	 		cyljq(document).ready(function() {
+	 		cyljq(document).ready(function() 
+	 		{
 	 			cyljq(".scheck").click(function() {
 	   			document.location.href="results?page=1&sort="+cyljq(this).val();
 	  		});
+	 			
+				var ajaxOpts = {
+						url: 'http://www.neworleans.com/mytrip/app/SearchWidget?skin=homeHotel',
+						type: "GET",
+						dataType: "jsonp",
+						cache: true,
+						jsonp: "json=true&jsoncallback"
+				};
+				
+				insertTo = 'sidebarWidget';
+				cyljq.ajax(ajaxOpts).done(function(data)
+				{
+					Cyllenius.Widget._loadContentScripts(data.response,
+							function(content){
+								
+								var insertWidget = function(preSelected){
+									var $insertTo = preSelected || cyljq('#' + insertTo);
+									if (Cyllenius.Widget.isDebugging)Cyllenius.Widget.debug("<div><span style='color: purple;'>Finding insertion point " + insertTo + "; wait: " + cyljq.readyWait + "; found: " + $insertTo.length + "</span></div>");
+									$insertTo.html(content);
+									$insertTo.append("<script>cyljq().ready(function(){Cyllenius.Widget._overrideSubmits('" + insertTo + "');Cyllenius.Widget._overrideAjaxSubmits('" + insertTo + "');Cyllenius.Widget._executeCustomCallback('" + insertTo + "', 'onAfterDynamicLoad');Cyllenius.Widget._onAfterInitialLoad('" + insertTo + "');});<\/script>");
+									Cyllenius.Widget._onAllWidgetResourcesLoaded($insertTo);
+								};
+								var $insertTo = cyljq('#' + insertTo);
+								if ($insertTo.length > 0)
+									insertWidget($insertTo);
+								else
+								{
+									if (Cyllenius.Widget.isDebugging)Cyllenius.Widget.debug("<div><span style='color: red;'>Delaying loading till ready " + insertTo + "; wait: " + cyljq.readyWait + "; found: " + $insertTo.length + "</span></div>");
+									cyljq().ready(function(){insertWidget(false);});
+								}
+							}, insertTo);
+				}).fail(function(XHR, textStatus, errorThrown){alert(textStatus);alert(errorThrown);});
+				setTimeout("modifyUrl();", 1000);
 	 		});
+	 		
 	</script>
 	
-    <style type="text/css">
-        @media screen and (-webkit-min-device-pixel-ratio:0)
-        {
-            /* Safari 3.0 and Opera 9 rules here */
-            select.safariKids
-            {
-                width: 44px;
-                padding: 0;
-                margin-right: 2px;
-            }
-            select.safariKids option
-            {
-                padding: 0;
-            }
-            .safariPadR2
-            {
-                padding-right: 2px !important;
-            }
-        }
-    </style>
     <script type="text/javascript" src="http://neworleans.com/javascript/tealeaf.js"></script>       
     <link type="text/css" rel="stylesheet" href="http://neworleans.com/common/css/jquery/jqModal.css" />
-    <style>
-        .contentHeader
-        {
-            background: url(http://neworleans.com/images/hdr_hotelsearch.png) no-repeat left top;
-        }
-    </style>
     <script src="http://neworleans.com/mytrip/common/js/adtag_docwrite_util.js" type="text/javascript"></script>
-    <style type="text/css">
-        .searchbutton
-        {
-            margin-top: 10px;
-            -moz-box-shadow: inset 0px 1px 0px 0px #f9eca0;
-            -webkit-box-shadow: inset 0px 1px 0px 0px #f9eca0;
-            box-shadow: inset 0px 1px 0px 0px #f9eca0;
-            background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #f0c911
-				), color-stop(1, #f2ab1e) );
-            background: -moz-linear-gradient(center top, #f0c911 5%, #f2ab1e 100%);
-            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f0c911',
-				endColorstr='#f2ab1e' );
-            background-color: #f0c911;
-            -moz-border-radius: 6px;
-            -webkit-border-radius: 6px;
-            border-radius: 6px;
-            border: 1px solid #e6a045;
-            display: inline-block;
-            color: #211a19;
-            font-family: arial;
-            font-size: 18px;
-            font-weight: bold;
-            padding: 9px 24px;
-            text-decoration: none;
-            text-shadow: 1px 1px 0px #ded17c;
-        }
-        
-        .searchbutton:hover
-        {
-            background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #f2ab1e
-				), color-stop(1, #f0c911) );
-            background: -moz-linear-gradient(center top, #f2ab1e 5%, #f0c911 100%);
-            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f2ab1e',
-				endColorstr='#f0c911' );
-            background-color: #f2ab1e;
-        }
-        
-        .searchbutton:active
-        {
-            position: relative;
-            top: 1px;
-        }
-        /* This imageless css button was generated by CSSButtonGenerator.com */
-    </style>
     <script type="text/javascript" charset="UTF-8" src="http://maps.gstatic.com/cat_js/intl/en_us/mapfiles/api-3/8/12/%7Bcommon,util%7D.js"></script>
     <script type="text/javascript" charset="UTF-8" src="http://maps.gstatic.com/cat_js/intl/en_us/mapfiles/api-3/8/12/%7Bstats%7D.js"></script>
 </head>
@@ -183,7 +145,16 @@
                         <iframe scrolling="no" frameborder="0" allowtransparency="true" src="http://platform.twitter.com/widgets/follow_button.1355514129.html#_=1356566343585&amp;id=twitter-widget-0&amp;lang=en&amp;screen_name=NODotCom&amp;show_count=false&amp;show_screen_name=true&amp;size=m"
                             class="twitter-follow-button" style="width: 133px; height: 20px;" title="Twitter Follow Button"
                             data-twttr-rendered="true"></iframe>
-                        <script>                            !function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = location.protocol + "//platform.twitter.com/widgets.js"; fjs.parentNode.insertBefore(js, fjs); } } (document, "script", "twitter-wjs");</script>
+                        <script>
+                        	!function (d, s, id) { 
+                        		var js, fjs = d.getElementsByTagName(s)[0]; 
+                        		if (!d.getElementById(id)) { 
+                        			js = d.createElement(s); js.id = id; 
+                        			js.src = location.protocol + "//platform.twitter.com/widgets.js"; 
+                        			fjs.parentNode.insertBefore(js, fjs); 
+                        		} 
+                        	} (document, "script", "twitter-wjs");
+                        </script>
                     </div>
                 </div>
                 <!-- /links_cart -->
@@ -242,44 +213,7 @@
         <!-- /header -->
     </div>
     <!-- /header-wrapper -->
-    <!-- javascript and cookies disabled messaging -->
-    <div style="display: none" id="cookieDisabled">
-        <div class="jsDetection">
-            <p class="bold header m_b10">
-                Get the most out of VEGAS.com .</p>
-            <p class="f13 m_b10">
-                You have browser settings that are limiting the way the VEGAS.com website looks
-                and behaves. To use VEGAS.com as it is intended, you will need to make a few simple
-                adjustments to your browser settings.</p>
-            <p class="f13">
-                (1) <a target="_blank" onclick="window.open(this.href,'popup', 'scrollbars=yes,toolbar=no,addressbar=no,statusbar=no,height=500,width=600'); return false;"
-                    href="/incl/cookies.html">See how to enable cookies</a>.
-            </p>
-            <p class="f13">
-                (2) After you enable your cookies, <a href="../app">please click here</a>.
-            </p>
-        </div>
-    </div>
-    <script src="http://neworleans.com/common/js/cookieDetect.js" type="text/javascript"></script>
-    <noscript>
-        <div class="jsDetection">
-            <p class="bold header m_b10">
-                Get the most out of VEGAS.com .
-            </p>
-            <p class="f13 m_b10">
-                You have browser settings that are limiting the way the VEGAS.com website looks
-                and behaves. To use VEGAS.com as it is intended, you will need to make a few simple
-                adjustments to your browser settings.
-            </p>
-            <p class="f13">
-                (1) <a href="/incl/javascript.html" target="_blank">See how to enable JavaScript</a>.
-            </p>
-            <p class="f13">
-                (2) After you enable JavaScript, <a href="../app">please click here</a>.
-            </p>
-        </div>
-    </noscript>
-    <!-- / javascript and cookies disabled messaging -->
+
     <div id="wrapper">
         <div id="main-content">
             <!-- page content -->
@@ -329,7 +263,7 @@
 										<li class="productName" style="position: static !important;">
 											<a href="#productNameLink" class="tooltip-hover" id="id6c0"><@chopstring val=hotel.name /></a>
 										</li>
-										<li class="productPrice">$${hotel.lowestAvgRate?round}</li>									
+										<li class="productPrice">$${hotel.lowestAvgRate?round!0.00}</li>									
 									</#list>
 									<li class="last"></li>
 								</ul>

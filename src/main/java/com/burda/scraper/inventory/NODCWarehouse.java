@@ -304,8 +304,8 @@ public class NODCWarehouse implements Warehouse
 			
 			DefaultHttpClient httpClient = new DefaultHttpClient();
 			HttpParams httpParams = httpClient.getParams();
-			HttpConnectionParams.setConnectionTimeout(httpParams, 15000);
-	    HttpConnectionParams.setSoTimeout(httpParams, 15000);
+			HttpConnectionParams.setConnectionTimeout(httpParams, 45000);
+	    HttpConnectionParams.setSoTimeout(httpParams, 45000);
 			response = httpClient.execute(httpget);
 		} 
 		catch (Exception e)

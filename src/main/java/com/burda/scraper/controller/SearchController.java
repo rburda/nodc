@@ -128,18 +128,22 @@ public class SearchController
 			if (id == null)
 				id = String.valueOf(System.currentTimeMillis() + SESSION_SALT.getAndIncrement());
 		}
+		logger.error("sessionid == " + id);
 		return id;
 	}	
 	private static final String findCookieValue(HttpServletRequest request, String cookieName)
 	{
-		for (Cookie c: request.getCookies())
+		if (request != null && request.getCookies() != null)
 		{
-			logger.debug(String.format("cookie: %1$s, value: %2$s", c.getName(), c.getValue()	));
-			if (c.getName().equals(cookieName))
+			for (Cookie c: request.getCookies())
 			{
-				return c.getValue();
-			}
-		}			
+				logger.debug(String.format("cookie: %1$s, value: %2$s", c.getName(), c.getValue()	));
+				if (c.getName().equals(cookieName))
+				{
+					return c.getValue();
+				}
+			}			
+		}
 		return null;
 	}
 	

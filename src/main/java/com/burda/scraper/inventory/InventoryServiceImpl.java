@@ -56,8 +56,8 @@ public class InventoryServiceImpl implements InventoryService
 			{
 				return fqgInventorySource.getResults(request, params);
 			}});
-		List<Future<SearchResult>> workerResults = executor.invokeAll(workers, 15, TimeUnit.SECONDS);
-		executor.shutdown();
+		//List<Future<SearchResult>> workerResults = executor.invokeAll(workers, 15, TimeUnit.SECONDS);
+		List<Future<SearchResult>> workerResults = executor.invokeAll(workers);
 
 		Session session = new Session(params);
 		Future<SearchResult> nodcResult = workerResults.get(0);
@@ -71,6 +71,7 @@ public class InventoryServiceImpl implements InventoryService
 		else
 			session.addToResults(InventorySource.FQG, fqgResult.get());	
 
+		executor.shutdown();
 		session.setCurrentPage(1);
 		session.setCurrentSort(SortType.DEFAULT);
 		cache.set(params.getSessionId(), SESSION_CACHE_TIMEOUT_IN_SECONDS, session, SerializationType.JSON );
