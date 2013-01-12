@@ -754,7 +754,6 @@
         autoOpen: false,
         resizable: false,
 		width:668,
-		height:430,
         position: ['middle', 100],
         modal: true,
         zIndex: 1600,
