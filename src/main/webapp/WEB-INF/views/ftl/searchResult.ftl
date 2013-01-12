@@ -27,6 +27,10 @@
     <script type="text/javascript" src="http://neworleans.com/common/js/jquery/jquery.opacityrollover.js"></script>
     <script type="text/javascript" src="http://neworleans.com/common/js/outside-wicket/widget-lib.js"></script>    
     <script src="http://platform.twitter.com/widgets.js"></script>
+    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+    <script src="http://maps.google.com/maps/api/js?key=AIzaSyATPZS76QxgLdfyWoC2f_v9yZYed1cTLZc&sensor=false" type="text/javascript"></script>
     <script type="text/javascript" src="http://www.neworleans.com/javascript/global.js"></script>
     <script type="text/javascript" src="http://neworleans.com/javascript/tealeaf.js"></script>
     <script src="http://neworleans.com/common/js/jquery/cyl-tooltip.js" type="text/javascript"></script>
@@ -382,7 +386,7 @@
                                     Lowest Average Price: <span style="" class="averageRate">$${hotel.lowestAvgRate!0.00}</span>
                                 </h2>
                                 <h2 class="productTitle">
-                                    <a href="#productTitleLink">${hotel.name!''}</a>
+                                    <a href="#" id="link">${hotel.name!''}</a>
                                 </h2>
                                 <div class="clear">
                                 </div>
@@ -743,5 +747,32 @@
     <div class="ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all"
         id="ui-datepicker-div">
     </div>
+<div id="dialog"></div>
 </body>
+<script>
+  $("#dialog").dialog({
+        autoOpen: false,
+        resizable: false,
+		width:668,
+		height:430,
+        position: ['middle', 100],
+        modal: true,
+        zIndex: 1600,
+        dialogClass: "task-modal",
+        open: function (event, ui) {
+            //$(this).html('').css('overflow', 'hidden'); $('.ui-widget-overlay').css('width', '100%');
+			 $(this).load('http://test.www.neworleans.com:8080/details.html');  
+			 
+            //initialize();
+        },
+        close: function (event, ui) {
+            $("#dialog").html('');
+        }
+    });
+
+  
+  $("#link").click(function () {
+        $('#dialog').dialog('open');
+    });
+	</script>
 </html>
