@@ -91,6 +91,11 @@
     <script src="http://neworleans.com/mytrip/common/js/adtag_docwrite_util.js" type="text/javascript"></script>
     <script type="text/javascript" charset="UTF-8" src="http://maps.gstatic.com/cat_js/intl/en_us/mapfiles/api-3/8/12/%7Bcommon,util%7D.js"></script>
     <script type="text/javascript" charset="UTF-8" src="http://maps.gstatic.com/cat_js/intl/en_us/mapfiles/api-3/8/12/%7Bstats%7D.js"></script>
+    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+      <script src="jqModal.js" type="text/javascript"></script>
+    <link type="text/css" rel="stylesheet" href="jqModal.css" />	
 </head>
 <body class="globaless" id="transaction">
     <div class="header-wrapper">
@@ -386,7 +391,7 @@
                                     Lowest Average Price: <span style="" class="averageRate">$${hotel.lowestAvgRate!0.00}</span>
                                 </h2>
                                 <h2 class="productTitle">
-                                    <a href="#" id="link">${hotel.name!''}</a>
+                                    <a onclick="$('#About').jqmShow();" href="#" >${hotel.name!''}</a>
                                 </h2>
                                 <div class="clear">
                                 </div>
@@ -747,31 +752,15 @@
     <div class="ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all"
         id="ui-datepicker-div">
     </div>
-<div id="dialog"></div>
+<div id="About" class="jqmWindow"></div>
 </body>
-<script>
-  $("#dialog").dialog({
-        autoOpen: false,
-        resizable: false,
-		width:668,
-        position: ['middle', 100],
-        modal: true,
-        zIndex: 1600,
-        dialogClass: "task-modal",
-        open: function (event, ui) {
-            //$(this).html('').css('overflow', 'hidden'); $('.ui-widget-overlay').css('width', '100%');
-			 $(this).load('http://test.www.neworleans.com:8080/details.html');  
-			 
-            //initialize();
-        },
-        close: function (event, ui) {
-            $("#dialog").html('');
-        }
-    });
 
+ <script>
+ 
+  $().ready(function () {
   
-  $("#link").click(function () {
-        $('#dialog').dialog('open');
-    });
-	</script>
+    $('#About').jqm({ ajax: 'http://test.www.neworleans.com:8080/detailsjqmpop.html' });
+});
+    
+  </script>
 </html>
