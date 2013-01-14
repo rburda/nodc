@@ -756,10 +756,14 @@
 </body>
 
  <script>
- 
+ var varHeight = function(hash){
+        windowHeight   = $(window).height();
+		hash.w.css('height', windowHeight-35).show();
+}
+
   $().ready(function () {
   
-    $('#About').jqm({ ajax: 'http://test.www.neworleans.com:8080/detailsjqmpop.html' });
+    $('#About').jqm({ ajax: 'http://test.www.neworleans.com:8080/detailsjqmpop.html', overlay:0 , onShow:varHeight });
 });
     
   </script>
