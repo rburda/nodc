@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml">
 <head>
-  <title>Royal Sonesta Hotel New Orleans French Quarter | NewOrleans.com</title>
+	<title>Royal Sonesta Hotel New Orleans French Quarter | NewOrleans.com</title>
 	<meta content="Percussion CM System" name="generator"/>
 	<meta name="perc_linkback" id="perc_linkback" content="FmRjZm1mZ3gHbWZ4AWRkZWV4BmNmZXgTZGNmbWVn"/>	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="google-site-verification" content="VuYBMs5Uo7jdZmib_THsIaXMPXKABWvtdqqIHTzOtl0" />
@@ -20,17 +20,17 @@
 
 </head>
 
-<body id="hotels" class="globaless" >
-<div id="wrapper" style="width:620px">
-<div id="main-content" style="width:620px">
+<body id="hotels">
+<!--<div id="wrapper" style="width:620px">
+<div id="main-content" style="width:620px">-->
 	
-	    <div id="right-col">
+	    <div class="hotelModal">
 			
 		<script src="http://www.neworleans.com/common/js/jquery/jquery-ui.js" type="text/javascript"></script>
 		<script src="http://www.neworleans.com/common/js/jquery/jquery-tabs.js" type="text/javascript"></script>
 		<script src="http://www.neworleans.com/common/js/jquery/jquery.galleriffic.js" type="text/javascript"></script>
 		<script src="http://www.neworleans.com/common/js/jquery/jquery.opacityrollover.js" type="text/javascript"></script>
-		<script src="$rxs_navbase_common/js/jquery/jqModal.js" type="text/javascript"></script>
+		<script src="jquery/jqModal.js" type="text/javascript"></script>
 		<script type="text/javascript" src="http://www.neworleans.com/video/player-helper.js"></script>
 		<script type="text/javascript" src="http://www.neworleans.com/video/swfobject.js"></script>
 				<script type="text/javascript">
@@ -132,14 +132,18 @@
 
 			/* ]]> */
 		</script>
-		<div class="hotelDescription vcard">
+		<div class="resultsDescription">
+        <a href="#" id="id592" class="closeWindow jqmClose"> 
+		<img width="80" height="25" border="0" alt="" src="http://www.neworleans.com/mytrip/images/btn_pop_close.gif"> 
+		</a>
+
+		<div class="description">
 			<div class="productThumb">
-				
-		<img class="photo previewThumb productThumb" src="http://www.neworleans.com/new-orleans-hotels/royal-sonesta/sonesta.jpg" alt="Royal Sonesta Hotel " height='188' width='250' />
-				</div>
+				<img src="http://www.neworleans.com/new-orleans-hotels/le-pavillon/med_main.jpg" alt="Royal Sonesta Hotel " class="productThumb" />
+			</div>
 			<div class="productSummary">
     			<h1 class="fn org hotel-title">Royal Sonesta Hotel</h1>
-				<div class="rating productStars"><img src="/images/star-rating-4_5.png" alt="4.50" /></div>
+				<div class="rating productStars"><img src="http://www.neworleans.com/images/star-rating-4_5.png" alt="4.50" /></div>
 				<div class="adr">
 					<div class="address1 street-address">300 Bourbon St.</div>
 					<div class="address2 extended-address"></div>
@@ -150,35 +154,28 @@
 			</div>
 			<div class="clear"></div>
 		</div>
-		
-	<div class="col-double">
-		<style>  
-h3.searchhere {
-	color:#692182;
-	background:url(http://www.neworleans.com/images/arrow-purple-40x24.png) 0 50% no-repeat;
-	padding-left:50px;
-	font-size:18px;
-	margin-bottom:20px !important;
-	}
-</style>		
-<h3><script language="JavaScript" src="http://ad.doubleclick.net/adj/neworleans.com/hotelsearch;sz=623x59;ad_slot=101;ord=1234567?" type="text/javascript"></script></h3>
-			</div>
-		<div>
-    		<div id="tabs" class="tab-row">
+		<!---des-->
+		</div>
+		<div class="productWrap">
+		<div class="adBlock"></div>
+        <div class="clear"></div>
+		<div id="destinations">
+
+    		<div id="tabs" class="tab-row" style="width:668px;border-left-width: 0;border-right-width: 0;">
     			<ul class="tabList">
                 	<li><a href="#rooms"><span>Rooms</span></a></li>
 					<li><a href="#description"><span>Description</span></a></li>
     				<li><a href="#hotelDetails"><span>Hotel Details</span></a></li>
 					<li><a href="#map"><span>Map</span></a></li>
-                						<li><a href="#photos"><span>Photos</span></a></li>
-										                	<li><a href="#video"><span>Video</span></a></li>
-															<li><a href="#deals-promos"><span>Deals</span></a></li>    				
+   					<li><a href="#photos"><span>Photos</span></a></li>
+					<li><a href="#video"><span>Video</span></a></li>
+					<li><a href="#deals-promos"><span>Deals</span></a></li>    				
                 </ul>
     			<div class="clear"></div>
 				<div id="rooms" class="roomsTab tabbed-item">
     				<h2>Room Descriptions</h2>
     				
-		<div class="tabRoom" id="11658">
+		    <div class="tabRoom" id="11658">
     		<div class="tabText">
         		<h4>Deluxe Double</h4>
 				        		
@@ -444,6 +441,12 @@ h3.searchhere {
 												<div id="deals-promos" class="tabbed-item"></div>
 			</div>
 		</div>
+		
+		<div class="clear"></div>  
+		<p class="close jqmClose">
+<a onclick="var wcall=wicketAjaxGet('?wicket:interface=:18:browseItems:browseableProducts:1:itemContainer:hotelDetailPopupWin:content:closeWindow::IBehaviorListener:0:-1',function() { }.bind(this),function() { }.bind(this), function() {return Wicket.$('id592') != null;}.bind(this));return !wcall;" href="#" id="id592">Close Window
+</a>
+</p>
 		    	<script language="javascript" src="/javascript/coremetrics/v40/eluminate.js" type="text/javascript"></script>
     	<script language="javascript" src="/javascript/coremetrics/cmcustom.js" type="text/javascript"></script>
     	<script language="javascript" src="/javascript/coremetrics/cmxCustomGlobal.js" type="text/javascript"></script>
@@ -518,8 +521,8 @@ h3.searchhere {
     	</script>
 	    </div>
     <div class="clear"></div>  
-  </div> <!-- /main-content -->
-</div>
+ <!-- </div> <!-- /main-content -->
+<!--</div>-->
   
         
 
