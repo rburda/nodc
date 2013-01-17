@@ -27,6 +27,10 @@
     <script type="text/javascript" src="http://neworleans.com/common/js/jquery/jquery.opacityrollover.js"></script>
     <script type="text/javascript" src="http://neworleans.com/common/js/outside-wicket/widget-lib.js"></script>    
     <script src="http://platform.twitter.com/widgets.js"></script>
+    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+    <script src="http://maps.google.com/maps/api/js?key=AIzaSyATPZS76QxgLdfyWoC2f_v9yZYed1cTLZc&sensor=false" type="text/javascript"></script>
     <script type="text/javascript" src="http://www.neworleans.com/javascript/global.js"></script>
     <script type="text/javascript" src="http://neworleans.com/javascript/tealeaf.js"></script>
     <script src="http://neworleans.com/common/js/jquery/cyl-tooltip.js" type="text/javascript"></script>
@@ -87,6 +91,11 @@
     <script src="http://neworleans.com/mytrip/common/js/adtag_docwrite_util.js" type="text/javascript"></script>
     <script type="text/javascript" charset="UTF-8" src="http://maps.gstatic.com/cat_js/intl/en_us/mapfiles/api-3/8/12/%7Bcommon,util%7D.js"></script>
     <script type="text/javascript" charset="UTF-8" src="http://maps.gstatic.com/cat_js/intl/en_us/mapfiles/api-3/8/12/%7Bstats%7D.js"></script>
+    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+      <script src="jqModal.js" type="text/javascript"></script>
+    <link type="text/css" rel="stylesheet" href="jqModal.css" />	
 </head>
 <body class="globaless" id="transaction">
     <div class="header-wrapper">
@@ -382,7 +391,7 @@
                                     Lowest Average Price: <span style="" class="averageRate">$${hotel.lowestAvgRate!0.00}</span>
                                 </h2>
                                 <h2 class="productTitle">
-                                    <a href="#productTitleLink">${hotel.name!''}</a>
+                                    <a onclick="$('#About').jqmShow();" href="#" >${hotel.name!''}</a>
                                 </h2>
                                 <div class="clear">
                                 </div>
@@ -743,5 +752,19 @@
     <div class="ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all"
         id="ui-datepicker-div">
     </div>
+<div id="About" class="jqmWindow"></div>
 </body>
+
+ <script>
+ var varHeight = function(hash){
+        windowHeight   = $(window).height();
+		hash.w.css('height', windowHeight-35).show();
+}
+
+  $().ready(function () {
+  
+    $('#About').jqm({ ajax: 'http://test.www.neworleans.com:8080/detailsjqmpop.html', overlay:0 , onShow:varHeight });
+});
+    
+  </script>
 </html>
