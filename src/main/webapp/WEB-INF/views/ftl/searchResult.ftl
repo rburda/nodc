@@ -763,7 +763,7 @@
 
   $().ready(function () {
   
-    $('#About').jqm({ ajax: 'http://test.www.neworleans.com:8080/detailsjqmpop.html', overlay:0 , onShow:varHeight });
+    $('#About').jqm({ ajax: 'http://test.www.neworleans.com:8080/details.html', overlay:0 , onShow:varHeight });
 });
     
   </script>
