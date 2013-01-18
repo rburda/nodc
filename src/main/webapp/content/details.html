@@ -64,6 +64,27 @@
 			
 			var $tabs;
 			jQuery().ready(function() {
+				if (typeof selectedHotelDetailTab != 'undefined')
+{
+if(selectedHotelDetailTab.indexOf("#map") > -1) {
+selectedHotelDetailTab = "#map-163372"
+}
+else if(selectedHotelDetailTab.indexOf("#photos") > -1) {
+selectedHotelDetailTab = "#photo-163372"
+}
+else if(selectedHotelDetailTab.indexOf("#video") > -1) {
+selectedHotelDetailTab = "#video-163372"
+}
+else if(selectedHotelDetailTab.indexOf("#rooms") > -1) {
+selectedHotelDetailTab = "#room-163372"
+}
+else if(selectedHotelDetailTab.indexOf("#rateCalendar") > -1) {
+selectedHotelDetailTab = "#calendar-163372"
+}
+$tabs.tabs("select", selectedHotelDetailTab);
+selectedHotelDetailTab = "";
+}
+			
 				$tabs = jQuery("#tabs").tabs({show:function(event, ui) {
     				if (ui.panel.id == "map") {
 						if(typeof(map) != 'undefined')
