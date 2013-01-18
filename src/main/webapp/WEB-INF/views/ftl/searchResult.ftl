@@ -270,7 +270,7 @@
 									<li class="rightTitle">Avg</li>
 									<#list searchResults["result"].allHotels as hotel>
 										<li class="productName" style="position: static !important;">
-											<a href="#productNameLink" class="tooltip-hover" id="id6c0"><@chopstring val=hotel.name /></a>
+											<a onclick="popup();" href="#rooms" class="tooltip-hover" id="id6c0"><@chopstring val=hotel.name /></a>
 										</li>
 										<li class="productPrice">$${hotel.lowestAvgRate?round!0.00}</li>									
 									</#list>
@@ -391,7 +391,7 @@
                                     Lowest Average Price: <span style="" class="averageRate">$${hotel.lowestAvgRate!0.00}</span>
                                 </h2>
                                 <h2 class="productTitle">
-                                    <a onclick="$('#About').jqmShow();" href="#" >${hotel.name!''}</a>
+                                    <a onclick="popup();" href="#rooms" >${hotel.name!''}</a>
                                 </h2>
                                 <div class="clear">
                                 </div>
@@ -399,20 +399,20 @@
                             <!-- / search results box header with gradient background, hotel name, price -->
                             <!-- the product information summary section, including the thumbnail, star rating, and text. -->
                             <div class="resultsDescription">
-                                <#if (hotel.hotelDetails.photos?size > 0)> <a href="#photoLink">
+                                <#if (hotel.hotelDetails.photos?size > 0)> <a onclick="popup();" href="#rooms">
                                     <img src="${hotel.hotelDetails.photos[0].url!''}" width="100" height="74" alt=""
                                         class="productThumb" />
                                 </a></#if>
                                 <div class="productSummary">
                                     <p>
                                         <img width="71" height="14" alt="Star Rating" src="http://www.neworleans.com/common/images/star_2_0.gif" />${hotel.hotelDetails.areaDescription!''}
-                                        (<a href="${hotel.hotelDetails.mapUrl!''}">Map</a>)&nbsp;<a href="#">Photos</a>&nbsp;
+                                        (<a onclick="popup();" href="#map">Map</a>)&nbsp;<a onclick="popup();" href="#photos">Photos</a>&nbsp;
                                     </p>
                                     <p>
                                         ${hotel.hotelDetails.description!''}
                                     </p>
                                     <p>
-                                        <a href="#">more hotel info</a>
+                                        <a onclick="popup();" href="#rooms">more hotel info</a>
                                     </p>
                                     <div>
                                         <img width="82" height="17" border="0" alt="" src="http://www.neworleans.com/images/BEU-ticket-2.png"
@@ -453,7 +453,7 @@
                                         <#list hotel.roomTypes as roomType>
                                         <tr class="cyl-HotelRow hasPromos  hasSale">
                                             <td rowspan="1" class="productCol">
-                                                <a class="showRoomDetail" href="#">${roomType.name!''}</a>
+                                                <a class="showRoomDetail" onclick="popup();" href="#rooms">${roomType.name!''}</a>
                                                 <br />
                                                 <span class="promo">${roomType.promoDesc!''}</span> (<a href="#" class="showPromoDetail">details</a>)
                                             </td>
@@ -752,7 +752,7 @@
     <div class="ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all"
         id="ui-datepicker-div">
     </div>
-<div id="About" class="jqmWindow"></div>
+<div id="Details" class="jqmWindow"></div>
 </body>
 
  <script>
@@ -761,10 +761,11 @@
 		hash.w.css('height', windowHeight-35).show();
 }
 
-  $().ready(function () {
-  
-    $('#About').jqm({ ajax: 'http://test.www.neworleans.com:8080/details.html', overlay:0 , onShow:varHeight });
-});
+  function popup(){
+var url="/details.html";
+$('#Details').jqm({ ajax: url,overlay:0, onShow:varHeight });
+$('#Details').jqmShow();
+} 
     
   </script>
 </html>
