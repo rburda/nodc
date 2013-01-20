@@ -124,6 +124,17 @@ public class SearchController
 	}
 	
 	
+	@RequestMapping(value = "/detailsJson", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public HotelDetail getHotelDetailsJson(
+			@RequestParam(value="hotelName", required=true) String hotelName,
+			HttpServletRequest clientRequest,
+			HttpServletResponse clientResponse) throws Exception
+	{
+		return invService.getHotelDetails(hotelName);
+	}
+		
+		
 	@RequestMapping(value="/health", method=RequestMethod.GET)
 	public @ResponseBody String healthCheck()
 	{
