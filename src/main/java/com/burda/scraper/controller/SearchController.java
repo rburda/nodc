@@ -24,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.burda.scraper.inventory.InventoryService;
 import com.burda.scraper.model.SearchParams;
 import com.burda.scraper.model.SortType;
+import com.burda.scraper.model.persisted.HotelDetail;
 
 /**
  * Handles requests for the application home page.
@@ -106,6 +107,22 @@ public class SearchController
 		clientResponse.addCookie(createSessionIdCookie(sessionId));
 		return new ModelAndView("searchResult", model);
 	}	
+	
+	@RequestMapping(value = "/details", method = RequestMethod.GET)
+	@ResponseBody
+	public ModelAndView getHotelDetails(
+			@RequestParam(value="hotelName", required=true) String hotelName,
+			@ModelAttribute("details") ModelMap model,
+			HttpServletRequest clientRequest,
+			HttpServletResponse clientResponse) throws Exception
+	{
+		String sessionId = findSessionId(clientRequest);
+		model.put("hotelDetail",  invService.getHotelDetails(hotelName));
+		
+		clientResponse.addCookie(createSessionIdCookie(sessionId));
+		return new ModelAndView("hotelDetailPopup", model);
+	}
+	
 	
 	@RequestMapping(value="/health", method=RequestMethod.GET)
 	public @ResponseBody String healthCheck()

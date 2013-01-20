@@ -5,8 +5,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,9 +13,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import com.burda.scraper.dao.HotelDetailCacheKey;
+import com.burda.scraper.dao.HotelDetailDAO;
 import com.burda.scraper.model.SearchParams;
 import com.burda.scraper.model.SearchResult;
 import com.burda.scraper.model.SortType;
+import com.burda.scraper.model.persisted.HotelDetail;
 import com.burda.scraper.model.persisted.InventorySource;
 import com.google.code.ssm.api.format.SerializationType;
 import com.google.common.collect.Lists;
@@ -29,6 +30,9 @@ public class InventoryServiceImpl implements InventoryService
   @Autowired
   @Qualifier("defaultMemcachedClient") 
   private com.google.code.ssm.Cache cache;
+  
+  @Autowired
+  private HotelDetailDAO hotelDetailDAO;
   
   private static final Logger logger = LoggerFactory.getLogger(InventoryServiceImpl.class);
   
@@ -109,6 +113,12 @@ public class InventoryServiceImpl implements InventoryService
 		}
 		
 		return sr;
+	}
+	
+	@Override
+	public HotelDetail getHotelDetails(String hotelName)
+	{
+		return hotelDetailDAO.getHotelDetail(new HotelDetailCacheKey(hotelName));
 	}
 	
 	public void setNODCInventorySource(NODCWarehouse invSource)
