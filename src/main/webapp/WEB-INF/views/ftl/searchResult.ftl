@@ -763,7 +763,7 @@
 
 function popup(link,hotelName){
 hotelName = hotelName.replace(/\s/g,"%20");
-var url="/details.html#"+link+"?hotelName="+hotelName;
+var url="/details.html"+"?hotelName="+hotelName+"#"+link;
 //alert(url);
 
 $('#Details').jqm({ ajax: url,overlay:0, onShow:varHeight });
