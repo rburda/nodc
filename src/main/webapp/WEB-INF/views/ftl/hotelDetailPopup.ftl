@@ -160,18 +160,18 @@ selectedHotelDetailTab = "";
 
 		<div class="description">
 			<div class="productThumb">
-				<img src="http://www.neworleans.com/new-orleans-hotels/le-pavillon/med_main.jpg" alt="Royal Sonesta Hotel " class="productThumb" />
+				<img src="http://www.neworleans.com/new-orleans-hotels/le-pavillon/med_main.jpg" alt=${hotelDetail.name} class="productThumb" />
 			</div>
 			<div class="productSummary">
-    			<h1 class="fn org hotel-title">Royal Sonesta Hotel</h1>
+    			<h1 class="fn org hotel-title">${hotelDetail.name}</h1>
 				<div class="rating productStars"><img src="http://www.neworleans.com/images/star-rating-4_5.png" alt="4.50" /></div>
 				<div class="adr">
-					<div class="address1 street-address">300 Bourbon St.</div>
+					<div class="address1 street-address">${hotelDetail.address1}</div>
 					<div class="address2 extended-address"></div>
-					<div class="cityStatePC"><span class="locality">New Orleans</span>, <span class="region">LA</span> <span class="postal-code">70130</span></div>
+					<div class="cityStatePC"><span class="locality">${hotelDetail.city}</span>, <span class="region">${hotelDetail.state}</span> <span class="postal-code">92121</span></div>
                     <div class="tel">NewOrleans.com Reservation Hotline: 1-855-639-6756</div>
 				</div>
-                <p>The only 4.5-star hotel on Bourbon Street, the Royal Sonesta Hotel in the French Quarter delivers an unforgettable New Orleans experience. </p>
+                <p>Location: ${hotelDetail.areaDescription}</p>
 			</div>
 			<div class="clear"></div>
 		</div>
@@ -201,7 +201,7 @@ selectedHotelDetailTab = "";
         		<h4>Deluxe Double</h4>
 				        		
 		<img class="photo previewThumb productThumb" src="/room-details/images/RS_deluxe-double.jpg" alt="Royal Sonesta Deluxe Double" height='188' width='250' />
-									<p>This spacious <b>Royal Sonesta</b> room has <b>two double beds</b> that come with pillow-top mattresses. The d꤯r is elegant and features antique-reproduction art and furnishings. There is a view of either the street or inner courtyard. There is a satellite TV as well as a table and two chairs. Coffeemakers can be requested and are subject to availability.</p><p>The marble bathrooms have <b>a combined shower/bathtub</b> and designer toiletries.</p>				<strong>Amenities Include:</strong> 
+									<p>This spacious <b>Royal Sonesta</b> room has <b>two double beds</b> that come with pillow-top mattresses. The dê¤¯r is elegant and features antique-reproduction art and furnishings. There is a view of either the street or inner courtyard. There is a satellite TV as well as a table and two chairs. Coffeemakers can be requested and are subject to availability.</p><p>The marble bathrooms have <b>a combined shower/bathtub</b> and designer toiletries.</p>				<strong>Amenities Include:</strong> 
 													Air conditioning,									Iron / Ironing board,									In-room safe,									Mini bar,									Alarm clock,									Climate control,									Complimentary newspaper,									Rollaway bed (On request),									Crib (On request),									Daily maid service,									Turndown service,									High-Speed Internet access (Complimentary),									Wireless Internet access (Complimentary),									Hair dryer,									Combined shower and bathtub,									Complimentary toiletries,									Television,									Cable / Satellite television channels,									Radio,									CD player,									Video game console and games,									Multi-line telephone,									Voice Mail,									Wake-up Calls,									Pillowtop mattresses,									Premium bedding				    		</div>
 			
 			<div class="clear"></div>
@@ -212,7 +212,7 @@ selectedHotelDetailTab = "";
         		<h4>Deluxe King</h4>
 				        		
 		<img class="photo previewThumb productThumb" src="/room-details/images/RS_deluxe.jpg" alt="Royal Sonesta Deluxe" height='188' width='250' />
-									<p>This spacious <b>Royal Sonesta</b> room has <b>one king bed</b> that comes with a pillow-top mattress. The d꤯r is elegant and features antique-reproduction art and furnishings. There is a view of either the street or inner courtyard. There is a satellite TV as well as a table and two chairs. Coffeemakers can be requested and are subject to availability.</p><p>The marble bathrooms have <b>a combined shower/bathtub</b> and designer toiletries.</p>				<strong>Amenities Include:</strong> 
+									<p>This spacious <b>Royal Sonesta</b> room has <b>one king bed</b> that comes with a pillow-top mattress. The dê¤¯r is elegant and features antique-reproduction art and furnishings. There is a view of either the street or inner courtyard. There is a satellite TV as well as a table and two chairs. Coffeemakers can be requested and are subject to availability.</p><p>The marble bathrooms have <b>a combined shower/bathtub</b> and designer toiletries.</p>				<strong>Amenities Include:</strong> 
 													Air conditioning,									Iron / Ironing board,									In-room safe,									Mini bar,									Alarm clock,									Climate control,									Complimentary newspaper,									Rollaway bed (On request),									Crib (On request),									Daily maid service,									Turndown service,									High-Speed Internet access (Complimentary),									Wireless Internet access (Complimentary),									Hair dryer,									Combined shower and bathtub,									Complimentary toiletries,									Television,									Cable / Satellite television channels,									Radio,									CD player,									Video game console and games,									Multi-line telephone,									Voice Mail,									Wake-up Calls,									Pillowtop mattresses,									Premium bedding				    		</div>
 			
 			<div class="clear"></div>
@@ -223,7 +223,7 @@ selectedHotelDetailTab = "";
         		<h4>Standard</h4>
 				        		
 		<img class="photo previewThumb productThumb" src="/room-details/images/RS_standard.jpg" alt="Royal Sonesta Standard " height='188' width='250' />
-									<p>This <b>Royal Sonesta</b> room has one king, one queen or two double beds. The d꤯r is elegant and features antique-reproduction art and furnishings. There is a view from the windows of either the street or inner courtyard. Guests will enjoy a satellite TV. Coffeemakers can be requested and are subject to availability.</p><p>The marble bathrooms have <b>a combined shower/bathtub</b>.</p>				<strong>Amenities Include:</strong> 
+									<p>This <b>Royal Sonesta</b> room has one king, one queen or two double beds. The dê¤¯r is elegant and features antique-reproduction art and furnishings. There is a view from the windows of either the street or inner courtyard. Guests will enjoy a satellite TV. Coffeemakers can be requested and are subject to availability.</p><p>The marble bathrooms have <b>a combined shower/bathtub</b>.</p>				<strong>Amenities Include:</strong> 
 													Air conditioning,									Iron / Ironing board,									In-room safe,									Alarm clock,									Climate control,									Complimentary newspaper,									Daily maid service,									Turndown service,									Window opens,									High-Speed Internet access (Complimentary),									Wireless Internet access (Complimentary),									Hair dryer,									Combined shower and bathtub,									Complimentary toiletries,									Television,									Cable / Satellite television channels,									Radio,									CD player,									Video game console and games,									Multi-line telephone,									Voice Mail,									Wake-up Calls,									Premium bedding				    		</div>
 			
 			<div class="clear"></div>
@@ -234,7 +234,7 @@ selectedHotelDetailTab = "";
         		<h4>R-Club Concierge Accommodations</h4>
 				        		
 		<img class="photo previewThumb productThumb" src="/room-details/images/RS_deluxe.jpg" alt="Royal Sonesta Deluxe" height='188' width='250' />
-									<p>The decor in this <b>Royal Sonesta</b> room reflects traditional French Quarter design. Featuring <b>one king bed or two double beds</b> with pillowtop mattresses and a seating area with two chairs and a small table. Along with R-Club Concierge Accommodations, this room has daily maid service, turndown service and wake-up calls.</p><p>The bathroom has a <b>combined shower and tub</b>.</p><p>R-Club guests enjoy:</p><p>In the Private Club Lounge:</p><p>ՠ24-hour concierge service<span class="Apple-converted-space"> <br />ՠBreakfast beginning at 6:00 a.m. <br />ՠAfternoon coffee and tea service accompanied by fresh baked goods <br />ՠCocktail and hors d'oeuvres offered from 5:00 p.m. to 8:00 p.m. <br />ՠAssortment of magazines and daily newspapers for your reading pleasure <br />ՠWireless Internet <br />ՠiMac guest computer <br />ՠ52-inch flat-screen television </span></p><p><span class="Apple-converted-space">In the room</span>:<span class="Apple-converted-space"> </span></p><p>ՠFresh flowers in-room daily<span class="Apple-converted-space"> <br />ՠLuxurious bed and bath linens <br />ՠDeluxe robes and bath amenities <br />ՠPersonal in-room safe <br />ՠComplimentary newspaper daily <br />ՠMorning and evening housekeeping service <br />ՠComplimentary bottled water </span></p>				<strong>Amenities Include:</strong> 
+									<p>The decor in this <b>Royal Sonesta</b> room reflects traditional French Quarter design. Featuring <b>one king bed or two double beds</b> with pillowtop mattresses and a seating area with two chairs and a small table. Along with R-Club Concierge Accommodations, this room has daily maid service, turndown service and wake-up calls.</p><p>The bathroom has a <b>combined shower and tub</b>.</p><p>R-Club guests enjoy:</p><p>In the Private Club Lounge:</p><p>Õ 24-hour concierge service<span class="Apple-converted-space"> <br />Õ Breakfast beginning at 6:00 a.m. <br />Õ Afternoon coffee and tea service accompanied by fresh baked goods <br />Õ Cocktail and hors d'oeuvres offered from 5:00 p.m. to 8:00 p.m. <br />Õ Assortment of magazines and daily newspapers for your reading pleasure <br />Õ Wireless Internet <br />Õ iMac guest computer <br />Õ 52-inch flat-screen television </span></p><p><span class="Apple-converted-space">In the room</span>:<span class="Apple-converted-space"> </span></p><p>Õ Fresh flowers in-room daily<span class="Apple-converted-space"> <br />Õ Luxurious bed and bath linens <br />Õ Deluxe robes and bath amenities <br />Õ Personal in-room safe <br />Õ Complimentary newspaper daily <br />Õ Morning and evening housekeeping service <br />Õ Complimentary bottled water </span></p>				<strong>Amenities Include:</strong> 
 													Air conditioning,									Complimentary breakfast,									Iron / Ironing board,									In-room safe,									Alarm clock,									Complimentary newspaper,									Complimentary bottled water,									Robes,									Slippers,									Daily maid service,									Turndown service,									Wireless Internet access (Complimentary),									Hair dryer,									Combined shower and bathtub,									Complimentary toiletries,									Flatscreen television,									Wake-up Calls,									Premium bedding				    		</div>
 			
 			<div class="clear"></div>
@@ -253,7 +253,7 @@ selectedHotelDetailTab = "";
 	    			</div> <!-- /roomsTab -->
 				<div id="description" class="expertTab tabbed-item">
     				<h2>Description</h2>
-    				<p>The <b>Royal Sonesta Hotel</b> is the premiere French Quarter hotel on Bourbon Street ֠a premium hotel with 4.5-star accommodations and a staff well versed in the art of Southern hospitality. At the epicenter of Bourbon Street, the Royal Sonesta Hotel in the French Quarter puts you smack in the middle of what's happening in New Orleans, from the madness of New Years' Eve and Mardi Gras to the everyday revelry and culture that makes the French Quarter one of the most unique neighborhoods in the world.</p><p>There's a reason New Orleans locals make the <b>Royal Sonesta</b> their home away from home during big events like Mardi Gras and New Year's Eve: the Old World elegance and charm of this quintessentially New Orleans hotel, topped by the Royal Sonesta's unquestionably hip vibe. See: Irvin Mayfield's Jazz Playhouse, the swanky lounge inside the Royal Sonesta. You'll hear live music (at no charge) seven nights a week here (including sets with the Grammy award-winning Mr. Mayfield himself); the Saturday brass band set followed by the Burlesque Ballroom midnight show is one of the favorite weekly gigs in New Orleans.</p><p>And did we mention the Royal Sonesta's famous wrought iron balconies? The balconies at the Royal Sonesta Hotel offer a birds-eye view of the world-class spectacle on Bourbon Street. But make no mistake ֠the Royal Sonesta is a top French Quarter hotel, offering travelers both all-access to the nightlife in New Orleans as well as a quiet oasis to enjoy and recover from it. The Royal Sonesta's rooftop pool is a destination in itself, offering stunning views of the French Quarter.</p><p>No visit to New Orleans is complete without trying jambalaya, red beans and rice, or a roast beef po-boy, and the Royal Sonesta's Desire Bistro &amp; Oyster Bar serves New Orleans classics more for breakfast, lunch and dinner. Our favorite seat in the house? At the curved raw bar, tossing back a raw dozen or two oysters.</p><p>Opened in June 2012, Restaurant R'evolution inside the Royal Sonesta hotel is one of the most ambitious new restaurants New Orleans has seen in years. The multi-faceted restaurant is the work of Louisiana uber-chef John Folse and former Chicago restaurateur/chef Rick Tramonto, and offers diners imaginative and historic interpretations of classic Creole and Cajun cuisine.</p><p> </p><p><i>Hotel tags: New Orleans hotel on Bourbon Street, hotels in the French Quarter, Restaurant R'Evolution, Irvin Mayfield's Jazz Playhouse, best New Orleans hotels, rooftop pool</i></p>    			</div> <!-- /description -->
+    				<p>The <b>Royal Sonesta Hotel</b> is the premiere French Quarter hotel on Bourbon Street Ö a premium hotel with 4.5-star accommodations and a staff well versed in the art of Southern hospitality. At the epicenter of Bourbon Street, the Royal Sonesta Hotel in the French Quarter puts you smack in the middle of what's happening in New Orleans, from the madness of New Years' Eve and Mardi Gras to the everyday revelry and culture that makes the French Quarter one of the most unique neighborhoods in the world.</p><p>There's a reason New Orleans locals make the <b>Royal Sonesta</b> their home away from home during big events like Mardi Gras and New Year's Eve: the Old World elegance and charm of this quintessentially New Orleans hotel, topped by the Royal Sonesta's unquestionably hip vibe. See: Irvin Mayfield's Jazz Playhouse, the swanky lounge inside the Royal Sonesta. You'll hear live music (at no charge) seven nights a week here (including sets with the Grammy award-winning Mr. Mayfield himself); the Saturday brass band set followed by the Burlesque Ballroom midnight show is one of the favorite weekly gigs in New Orleans.</p><p>And did we mention the Royal Sonesta's famous wrought iron balconies? The balconies at the Royal Sonesta Hotel offer a birds-eye view of the world-class spectacle on Bourbon Street. But make no mistake Ö the Royal Sonesta is a top French Quarter hotel, offering travelers both all-access to the nightlife in New Orleans as well as a quiet oasis to enjoy and recover from it. The Royal Sonesta's rooftop pool is a destination in itself, offering stunning views of the French Quarter.</p><p>No visit to New Orleans is complete without trying jambalaya, red beans and rice, or a roast beef po-boy, and the Royal Sonesta's Desire Bistro &amp; Oyster Bar serves New Orleans classics more for breakfast, lunch and dinner. Our favorite seat in the house? At the curved raw bar, tossing back a raw dozen or two oysters.</p><p>Opened in June 2012, Restaurant R'evolution inside the Royal Sonesta hotel is one of the most ambitious new restaurants New Orleans has seen in years. The multi-faceted restaurant is the work of Louisiana uber-chef John Folse and former Chicago restaurateur/chef Rick Tramonto, and offers diners imaginative and historic interpretations of classic Creole and Cajun cuisine.</p><p> </p><p><i>Hotel tags: New Orleans hotel on Bourbon Street, hotels in the French Quarter, Restaurant R'Evolution, Irvin Mayfield's Jazz Playhouse, best New Orleans hotels, rooftop pool</i></p>    			</div> <!-- /description -->
     			<div id="hotelDetails" class="hotelDetailsTab tabbed-item">
 					<h2>Hotel Details</h2>
 																																																												
@@ -306,15 +306,15 @@ selectedHotelDetailTab = "";
 				<div style="width: 293px; float: left;">
 				<div class="feature-container"><strong class="feature-name">Number of Rooms:</strong> <p>483.</p></div>
 					<div class="feature-container"><strong class="feature-name">Casino:</strong> <p>No.</p></div>
-					<div class="feature-container"><strong class="feature-name">Restaurants:</strong> <p>Desire Bistro &amp; Oyster Bar is a casual street bistro and one of the most famous restaurants in New Orleans, featuring fresh Louisiana seafood. Open daily for breakfast, lunch and dinner.  Restaurant Rӥvolution, set to open in March 2012, created by world-renowned chefs John Folse and Rick Tramonto.</p></div>
+					<div class="feature-container"><strong class="feature-name">Restaurants:</strong> <p>Desire Bistro &amp; Oyster Bar is a casual street bistro and one of the most famous restaurants in New Orleans, featuring fresh Louisiana seafood. Open daily for breakfast, lunch and dinner.  Restaurant RÓ¥volution, set to open in March 2012, created by world-renowned chefs John Folse and Rick Tramonto.</p></div>
 					<div class="feature-container"><strong class="feature-name">Entertainment:</strong> <p>Irvin Mayfield's Jazz Playhouse, a world-class music destination with live Jazz 7 nights a week. Nightly performances begin at 8:00 p.m. and on Sundays at 7:00 p.m.</p></div>
 					<div class="feature-container"><strong class="feature-name">Nightlife:</strong> <p>Irvin Mayfield's Jazz Playhouse, Le Booze, overlooks Bourbon St, is one of the best spots that locals like to meet and greet on Bourbon Street. Open Monday - Thursday, 2:00 p.m. - until morning, and Friday - Sunday, 12:00 p.m. - until morning. Daiquiri Delight Shop.</p></div>
-					<div class="feature-container"><strong class="feature-name">Attractions:</strong> <p>French Quarter, Jackson Square, French Market, Jackson Brewery, Riverwalk, Aquarium of the Americas, Audubon Zoo, Insectarium, Harrahӳ Casino, Louisiana State Museum, Mardi Gras World, Preservation Hall, National WWII Museum, New Orleans Museum of Art, Garden District and many more. Plus the many bistros, boutiques, antique shops, art galleries, historic sites, live entertainment that are all within walking distance.</p></div>
+					<div class="feature-container"><strong class="feature-name">Attractions:</strong> <p>French Quarter, Jackson Square, French Market, Jackson Brewery, Riverwalk, Aquarium of the Americas, Audubon Zoo, Insectarium, HarrahÓ³ Casino, Louisiana State Museum, Mardi Gras World, Preservation Hall, National WWII Museum, New Orleans Museum of Art, Garden District and many more. Plus the many bistros, boutiques, antique shops, art galleries, historic sites, live entertainment that are all within walking distance.</p></div>
 					<div class="feature-container"><strong class="feature-name">Pool:</strong> <p>Heated outdoor pool located on the third-floor with a deck that overlooks the tropical courtyard.</p></div>
 					<div class="feature-container"><strong class="feature-name">Health Club or Fitness Equipment:</strong> <p>Cybex training equipment is offered on the second-floor fitness room.</p></div>
 					<div class="feature-container"><strong class="feature-name">Tennis Courts:</strong> <p>No.</p></div>
 					<div class="feature-container"><strong class="feature-name">Spa:</strong> <p>Spa services are available poolside seasonally and in-room by request.</p></div>
-					<div class="feature-container"><strong class="feature-name">Shops:</strong> <p><b>:</b>  Located in PJӳ Coffee Caf鬠the gift shop has souvenirs, cookbooks and logo wear.</p></div>
+					<div class="feature-container"><strong class="feature-name">Shops:</strong> <p><b>:</b>  Located in PJÓ³ Coffee Café¬ the gift shop has souvenirs, cookbooks and logo wear.</p></div>
 					<div class="feature-container"><strong class="feature-name">Wedding Services:</strong> <p>Can design weddings and receptions from small, intimate occasions to the most lavish affair.  Wedding planners can create uniquely personal events, from bridal showers and rehearsal dinners to bachelor or bachelorette parties.</p></div>
 					<div class="feature-container"><strong class="feature-name">Business Center:</strong> <p>Yes.</p></div>
 					<div class="feature-container"><strong class="feature-name">Convention Rooms:</strong> <p>Yes.</p></div>
@@ -523,20 +523,20 @@ selectedHotelDetailTab = "";
         	}
 			
 			function stripAccents(r) {
-                r = r.replace(new RegExp("[ᢢ坢, 'g'),"a");
-				r = r.replace(new RegExp("[AÄ]", 'g'),"A");
-                r = r.replace(new RegExp("[骪읢, 'g'),"e");
-				r = r.replace(new RegExp("[ɉˋ]", 'g'),"E");
-                r = r.replace(new RegExp("[�ݢ, 'g'),"i");
-				r = r.replace(new RegExp("[͍Ϗ]", 'g'),"I");
-                r = r.replace(new RegExp("񢬠'g'),"n");
-				r = r.replace(new RegExp("Ѣ, 'g'),"N");
-                r = r.replace(new RegExp("[򳴶]", 'g'),"o");
-				r = r.replace(new RegExp("[ӓՖ]", 'g'),"O");
-                r = r.replace(new RegExp("[񺻼]", 'g'),"u");
-				r = r.replace(new RegExp("[ښܜ]", 'g'),"u");
-                r = r.replace(new RegExp("[��, 'g'),"y");
-				r = r.replace(new RegExp("[ޝ", 'g'),"Y");
+                r = r.replace(new RegExp("[á¢¢å¢, 'g'),"a");
+				r = r.replace(new RegExp("[AÃ„]", 'g'),"A");
+                r = r.replace(new RegExp("[éªªì¢, 'g'),"e");
+				r = r.replace(new RegExp("[É‰Ë‹]", 'g'),"E");
+                r = r.replace(new RegExp("[ï¿½Ý¢, 'g'),"i");
+				r = r.replace(new RegExp("[ÍÏ]", 'g'),"I");
+                r = r.replace(new RegExp("ñ¢¬ 'g'),"n");
+				r = r.replace(new RegExp("Ñ¢, 'g'),"N");
+                r = r.replace(new RegExp("[ò³´¶]", 'g'),"o");
+				r = r.replace(new RegExp("[Ó“Õ–]", 'g'),"O");
+                r = r.replace(new RegExp("[ñº»¼]", 'g'),"u");
+				r = r.replace(new RegExp("[ÚšÜœ]", 'g'),"u");
+                r = r.replace(new RegExp("[ï¿½ï¿½, 'g'),"y");
+				r = r.replace(new RegExp("[Þ", 'g'),"Y");
 				return r;
 			}
     	</script>
