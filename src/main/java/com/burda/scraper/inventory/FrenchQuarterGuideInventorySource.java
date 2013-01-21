@@ -3,6 +3,11 @@ package com.burda.scraper.inventory;
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -42,6 +47,8 @@ public class FrenchQuarterGuideInventorySource implements Warehouse
 	private static final Logger logger = LoggerFactory.getLogger(FrenchQuarterGuideInventorySource.class);		
 	private static final DateTimeFormatter STAY_DATE_FORMAT = DateTimeFormat.forPattern("MM/dd/yyyy");
 	
+	private static final ExecutorService asyncResultsThreadPool = Executors.newCachedThreadPool();
+	
 	private HotelDetailDAO hotelDetailDAO;
 	private SourceHotelDAO sourceHotelDAO;
 	
@@ -51,16 +58,43 @@ public class FrenchQuarterGuideInventorySource implements Warehouse
 	
 	@Override
 	public Collection<Hotel> 
-		getInitialResultsAndAsyncContinue(HttpServletRequest request, SearchParams params) throws Exception
+		getInitialResultsAndAsyncContinue(HttpServletRequest request, final SearchParams params) throws Exception
 	{
 		Collection<Hotel> hotels = Lists.newArrayList();
-		HttpResponse resp = queryHotelsViaHttpClient(params);
-		if (resp != null)
+		List<Callable<Collection<Hotel>>> workers = Lists.newArrayList();
+		for (int i=1; i < 7; i++)
 		{
-			byte[] html = EntityUtils.toByteArray(resp.getEntity());
-			hotels = createHotels(params, html);
-		}		
-
+			final int idx = i;
+			workers.add(new Callable<Collection<Hotel>>()
+			{
+				@Override
+				public Collection<Hotel> call() throws Exception
+				{
+					HttpResponse resp = queryHotelsViaHttpClient(params, idx);
+					Collection<Hotel> indResult = Lists.newArrayList();
+					if (resp != null)
+					{
+						byte[] html = EntityUtils.toByteArray(resp.getEntity());
+						indResult = createHotels(params, html);
+					}
+					return indResult;
+				}
+			});
+		}
+		
+		for (Future<Collection<Hotel>> result: asyncResultsThreadPool.invokeAll(workers, 10, TimeUnit.SECONDS))
+		{
+			try
+			{
+				Collection<Hotel> indResultHotels = result.get();
+				if (indResultHotels != null)
+					hotels.addAll(indResultHotels);
+			}
+			catch (Exception e)
+			{
+				logger.error("Unable to add in results", e);
+			}
+		}
 		cache.set(params.getSessionId()+InventorySource.FQG.name(), (60*180), hotels, SerializationType.JSON);
 		logger.debug("fqg complete");
 		return hotels;
@@ -145,7 +179,7 @@ public class FrenchQuarterGuideInventorySource implements Warehouse
 	}
 	
 
-	private HttpResponse queryHotelsViaHttpClient(SearchParams sp)
+	private HttpResponse queryHotelsViaHttpClient(SearchParams sp, int page)
 	{
 		URIBuilder builder = new URIBuilder();
 		builder
@@ -160,7 +194,7 @@ public class FrenchQuarterGuideInventorySource implements Warehouse
 				.addParameter("rs_curr_code", "")
 				.addParameter("rs_m_km", "")
 				.addParameter("needLiveRates", "true")
-				.addParameter("rs_page", "1")
+				.addParameter("rs_page", String.valueOf(page))
 				.addParameter("rs_sort", "mp")
 				.addParameter("refid", "5057")
 				.addParameter("disableCache","");
