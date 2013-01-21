@@ -130,13 +130,16 @@ selectedHotelDetailTab = "";
 				// Initially set opacity on thumbs and add
 				// additional styling for hover effect on thumbs
 				var onMouseOutOpacity = 0.67;
+				cyljq.getScript('http://www.neworleans.com/common/js/jquery/jquery.opacityrollover.js',function(){
+
 				$('#thumbs ul.thumbs li').opacityrollover({
 					mouseOutOpacity:   onMouseOutOpacity,
 					mouseOverOpacity:  1.0,
 					fadeSpeed:         'fast',
 					exemptionSelector: '.selected'
 				});
-				
+				});
+				cyljq.getScript('http://www.neworleans.com/common/js/jquery/jquery.galleriffic.js',function(){
 				// Initialize Advanced Galleriffic Gallery
 				var gallery = $('#thumbs').galleriffic({
 					delay:                     2500,
@@ -167,6 +170,7 @@ selectedHotelDetailTab = "";
 							.eq(nextIndex).fadeTo('fast', 1.0);
 					}
 				});
+				});
 												$('#videoModal').jqm({overlay: 20, toTop: true});
 												//initMaps();
 							});
@@ -182,7 +186,7 @@ selectedHotelDetailTab = "";
 
 		<div class="description">
 			<div class="productThumb">
-				<img src="http://www.neworleans.com/new-orleans-hotels/le-pavillon/med_main.jpg" alt=${hotelDetail.name} class="productThumb" />
+				<img src='${hotelDetail.photos[0].url}' alt=${hotelDetail.name} class="productThumb" />
 			</div>
 			<div class="productSummary">
     			<h1 class="fn org hotel-title">${hotelDetail.name}</h1>
@@ -386,39 +390,14 @@ selectedHotelDetailTab = "";
 			<div id="caption" class="caption-container"></div>
 		</div>
 		<div id="thumbs" class="navigation">
-			<ul class='thumbs noscript'><li><a class="thumb" href="/slideshows/hotels/royal-sonesta/RoyalSenesta1.jpg" title="Royal Sonesta">
-	<img src="/slideshows/hotels/royal-sonesta/RoyalSenesta1.jpg" alt="Royal Sonesta" />
-</a></li><li><a class="thumb" href="/slideshows/hotels/royal-sonesta/RoyalSenesta2.JPG" title="Royal Sonesta">
-	<img src="/slideshows/hotels/royal-sonesta/RoyalSenesta2.JPG" alt="Royal Sonesta" />
-</a></li><li><a class="thumb" href="/slideshows/hotels/royal-sonesta/RoyalSenesta3.JPG" title="Royal Sonesta">
-	<img src="/slideshows/hotels/royal-sonesta/RoyalSenesta3.JPG" alt="Royal Sonesta" />
-</a></li><li><a class="thumb" href="/slideshows/hotels/royal-sonesta/RoyalSenesta4.JPG" title="Royal Sonesta">
-	<img src="/slideshows/hotels/royal-sonesta/RoyalSenesta4.JPG" alt="Royal Sonesta" />
-</a></li><li><a class="thumb" href="/slideshows/hotels/royal-sonesta/RoyalSenesta5.JPG" title="Royal Sonesta">
-	<img src="/slideshows/hotels/royal-sonesta/RoyalSenesta5.JPG" alt="Royal Sonesta" />
-</a></li><li><a class="thumb" href="/slideshows/hotels/royal-sonesta/RoyalSenesta6.JPG" title="Royal Sonesta">
-	<img src="/slideshows/hotels/royal-sonesta/RoyalSenesta6.JPG" alt="Royal Sonesta" />
-</a></li><li><a class="thumb" href="/slideshows/hotels/royal-sonesta/lobby.jpg" title="Royal Sonesta">
-	<img src="/slideshows/hotels/royal-sonesta/lobby.jpg" alt="Royal Sonesta" />
-</a></li><li><a class="thumb" href="/slideshows/hotels/royal-sonesta/dining.jpg" title="Royal Sonesta">
-	<img src="/slideshows/hotels/royal-sonesta/dining.jpg" alt="Royal Sonesta" />
-</a></li><li><a class="thumb" href="/slideshows/hotels/royal-sonesta/sittingarea.jpg" title="Royal Sonesta">
-	<img src="/slideshows/hotels/royal-sonesta/sittingarea.jpg" alt="Royal Sonesta" />
-</a></li><li><a class="thumb" href="/slideshows/hotels/royal-sonesta/double.jpg" title="Royal Sonesta">
-	<img src="/slideshows/hotels/royal-sonesta/double.jpg" alt="Royal Sonesta" />
-</a></li><li><a class="thumb" href="/slideshows/hotels/royal-sonesta/room.jpg" title="Royal Sonesta">
-	<img src="/slideshows/hotels/royal-sonesta/room.jpg" alt="Royal Sonesta" />
-</a></li><li><a class="thumb" href="/slideshows/hotels/royal-sonesta/room2.jpg" title="Royal Sonesta">
-	<img src="/slideshows/hotels/royal-sonesta/room2.jpg" alt="Royal Sonesta" />
-</a></li><li><a class="thumb" href="/slideshows/hotels/royal-sonesta/room3.jpg" title="Royal Sonesta">
-	<img src="/slideshows/hotels/royal-sonesta/room3.jpg" alt="Royal Sonesta" />
-</a></li><li><a class="thumb" href="/slideshows/hotels/royal-sonesta/room4.jpg" title="Royal Sonesta">
-	<img src="/slideshows/hotels/royal-sonesta/room4.jpg" alt="Royal Sonesta" />
-</a></li><li><a class="thumb" href="/slideshows/hotels/royal-sonesta/suite.jpg" title="Royal Sonesta">
-	<img src="/slideshows/hotels/royal-sonesta/suite.jpg" alt="Royal Sonesta" />
-</a></li><li><a class="thumb" href="/slideshows/hotels/royal-sonesta/suite2.jpg" title="Royal Sonesta">
-	<img src="/slideshows/hotels/royal-sonesta/suite2.jpg" alt="Royal Sonesta" />
-</a></li></ul>		</div>
+			<ul class='thumbs noscript'>
+			<#list hotelDetail.photos as photo>
+			<li><a class="thumb" href='${photo.url}' title='${hotelDetail.name}'>
+			<img src='${photo.url}' alt='${hotelDetail.name}' />
+			</a></li>
+			</#list>
+			</ul>		
+		</div>
 		<div class="clear"></div>
 		<!-- end module 164201 -->
 					</div> <!-- /photosTab -->
