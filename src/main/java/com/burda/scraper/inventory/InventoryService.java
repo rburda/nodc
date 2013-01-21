@@ -10,8 +10,8 @@ import com.burda.scraper.model.persisted.HotelDetail;
 public interface InventoryService
 {
 	void search(HttpServletRequest request, SearchParams params) throws Exception;
-	
-	SearchResult getUpdatedResults(String sessionId, SortType sortBy, Integer page);
-	
+		
 	HotelDetail getHotelDetails(String hotelName);
+
+	SearchResult getAggragatedResults(String sessionId, SortType sortBy, Integer page);
 }

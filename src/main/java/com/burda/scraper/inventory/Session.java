@@ -1,6 +1,7 @@
 package com.burda.scraper.inventory;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -15,6 +16,7 @@ import com.burda.scraper.model.SortType;
 import com.burda.scraper.model.persisted.InventorySource;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 
 public class Session implements Serializable
 {
@@ -23,7 +25,6 @@ public class Session implements Serializable
 	
 	private SearchParams params;
 	private Map<InventorySource, Boolean> completeStatusMap = Maps.newConcurrentMap();
-	private Map<InventorySource, SearchResult> searchResultMap = Maps.newConcurrentMap();
 	private SortType currentSort;
 	private int currentPage = 1;
 	private boolean sortAsc;
@@ -44,17 +45,6 @@ public class Session implements Serializable
 	public void setSearchParams(SearchParams params)
 	{
 		this.params = params;
-	}
-	
-	public Map<InventorySource, SearchResult> getSearchResultMap()
-	{
-		return Maps.newHashMap(searchResultMap);
-	}
-	
-	public void setSearchResultMap(Map<InventorySource, SearchResult> map)
-	{
-		this.searchResultMap.clear();
-		this.searchResultMap.putAll(map);
 	}
 	
 	public Map<InventorySource, Boolean> getCompleteStatusMap()
@@ -113,25 +103,19 @@ public class Session implements Serializable
 			sortAsc = true;
 		this.currentSort = sortType;			
 	}
-	
-	@JsonIgnore
-	public final void addToResults(InventorySource iSource, SearchResult results)
-	{
-		searchResultMap.put(iSource,  results);
-	}
 		
 	@JsonIgnore
-	public final SearchResult getSearchResults()
+	public final SearchResult getSearchResults(Multimap<InventorySource, Hotel> rawResults)
 	{	
 		SearchResult aggragatedResult = new SearchResult(params);
-		SearchResult fqgResult = searchResultMap.get(com.burda.scraper.model.persisted.InventorySource.FQG);
-		SearchResult nodcResult = searchResultMap.get(com.burda.scraper.model.persisted.InventorySource.NODC);
+		Collection<Hotel> fqgResult = rawResults.get(com.burda.scraper.model.persisted.InventorySource.FQG);
+		Collection<Hotel> nodcResult = rawResults.get(com.burda.scraper.model.persisted.InventorySource.NODC);
 		List<Hotel> aggragatedHotels = Lists.newArrayList();
 		if (fqgResult != null)
-			aggragatedHotels.addAll(fqgResult.getAllHotels());
+			aggragatedHotels.addAll(fqgResult);
 		if (nodcResult != null)
 		{
-			for (Hotel h: nodcResult.getAllHotels())
+			for (Hotel h: nodcResult)
 			{
 				Iterator<Hotel> fqgHotels = aggragatedHotels.iterator();
 				boolean found = false;
@@ -145,7 +129,7 @@ public class Session implements Serializable
 					}
 				}
 			}
-			aggragatedHotels.addAll(nodcResult.getAllHotels());	
+			aggragatedHotels.addAll(nodcResult);	
 		}
 		
 		aggragatedResult.currentPage = currentPage;

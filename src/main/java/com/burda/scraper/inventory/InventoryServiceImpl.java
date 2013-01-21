@@ -1,5 +1,6 @@
 package com.burda.scraper.inventory;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -15,13 +16,16 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.burda.scraper.dao.HotelDetailCacheKey;
 import com.burda.scraper.dao.HotelDetailDAO;
+import com.burda.scraper.model.Hotel;
 import com.burda.scraper.model.SearchParams;
 import com.burda.scraper.model.SearchResult;
 import com.burda.scraper.model.SortType;
 import com.burda.scraper.model.persisted.HotelDetail;
 import com.burda.scraper.model.persisted.InventorySource;
 import com.google.code.ssm.api.format.SerializationType;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Multimap;
 
 public class InventoryServiceImpl implements InventoryService
 {	
@@ -34,7 +38,8 @@ public class InventoryServiceImpl implements InventoryService
   @Autowired
   private HotelDetailDAO hotelDetailDAO;
   
-  private static final Logger logger = LoggerFactory.getLogger(InventoryServiceImpl.class);
+  private static final Logger logger = LoggerFactory.getLogger(InventoryServiceImpl.class);  
+  private static final ExecutorService executor = Executors.newCachedThreadPool();
   
 	private NODCWarehouse nodcInventorySource;
 	private FrenchQuarterGuideInventorySource fqgInventorySource;
@@ -42,59 +47,48 @@ public class InventoryServiceImpl implements InventoryService
 	@Override
 	public void search(
 			final HttpServletRequest request, final SearchParams params) throws Exception
-	{
-		ExecutorService executor = Executors.newFixedThreadPool(2);
-		
-		List<Callable<SearchResult>> workers = Lists.newArrayList();
-		workers.add(new Callable<SearchResult>(){
+	{		
+		List<Callable<Collection<Hotel>>> workers = Lists.newArrayList();
+		workers.add(new Callable<Collection<Hotel>>(){
 
 			@Override
-			public SearchResult call() throws Exception
+			public Collection<Hotel> call() throws Exception
 			{
-				return nodcInventorySource.getResults(request, params);
+				return nodcInventorySource.getInitialResultsAndAsyncContinue(request, params);
 			}});
-		workers.add(new Callable<SearchResult>(){
+		workers.add(new Callable<Collection<Hotel>>(){
 
 			@Override
-			public SearchResult call() throws Exception
+			public Collection<Hotel> call() throws Exception
 			{
-				return fqgInventorySource.getResults(request, params);
+				return fqgInventorySource.getInitialResultsAndAsyncContinue(request, params);
 			}});
 		//List<Future<SearchResult>> workerResults = executor.invokeAll(workers, 15, TimeUnit.SECONDS);
-		List<Future<SearchResult>> workerResults = executor.invokeAll(workers);
-
+		List<Future<Collection<Hotel>>> workerResults = executor.invokeAll(workers);
+		workerResults.get(0);
+		workerResults.get(1);
+		//executor.shutdown();
+		
 		Session session = new Session(params);
-		Future<SearchResult> nodcResult = workerResults.get(0);
-		Future<SearchResult> fqgResult = workerResults.get(1);
-		if (nodcResult.isCancelled())
-			logger.warn("Unable to get NODC results before timeout");
-		else
-			session.addToResults(InventorySource.NODC, nodcResult.get());	
-		if (fqgResult.isCancelled())
-			logger.warn("Unable to get FQG results before timeout");
-		else
-			session.addToResults(InventorySource.FQG, fqgResult.get());	
-
-		executor.shutdown();
 		session.setCurrentPage(1);
 		session.setCurrentSort(SortType.DEFAULT);
 		cache.set(params.getSessionId(), SESSION_CACHE_TIMEOUT_IN_SECONDS, session, SerializationType.JSON );
 	}
 	
 	@Override
-	public SearchResult getUpdatedResults(String sessionId, SortType sortBy, Integer page) 
+	public SearchResult getAggragatedResults(String sessionId, SortType sortBy, Integer page) 
 	{
 		SearchResult sr = null;
-		Session s = null;
-		try
-		{
-			s = cache.get(sessionId,  SerializationType.JSON);
-		}
-		catch (Exception e)
-		{
-			logger.error("Unable to retrieve session: " + sessionId + " from cache", e);
-		}
-		
+		Session s = getFromCache(sessionId);
+		Multimap<InventorySource, Hotel> rawResults = HashMultimap.create();
+		Collection<Hotel> nodcHotels = (Collection<Hotel>)getFromCache(sessionId+InventorySource.NODC.name());
+		Collection<Hotel> fqgHotels = (Collection<Hotel>)getFromCache(sessionId+InventorySource.FQG.name());
+		if (nodcHotels == null)
+			nodcHotels = Lists.newArrayList();
+		if (fqgHotels == null)
+			fqgHotels = Lists.newArrayList();
+		rawResults.putAll(InventorySource.NODC, nodcHotels);
+		rawResults.putAll(InventorySource.FQG, fqgHotels);
 		if (s != null)
 		{
 			if (page != null)
@@ -109,7 +103,7 @@ public class InventoryServiceImpl implements InventoryService
 			{
 				logger.error("error saving updated session", e);
 			}
-			sr = s.getSearchResults();
+			sr = s.getSearchResults(rawResults);
 		}
 		
 		return sr;
@@ -130,4 +124,18 @@ public class InventoryServiceImpl implements InventoryService
 	{
 		this.fqgInventorySource = invSource;
 	}	
+	
+	private final <T> T getFromCache(String key)
+	{
+		T result = null;
+		try
+		{
+			result = (T)cache.get(key,  SerializationType.JSON);
+		}
+		catch (Exception e)
+		{
+			logger.error("unable to retrieve: " + key + " from cache", e);
+		}
+		return result;
+	}
 }

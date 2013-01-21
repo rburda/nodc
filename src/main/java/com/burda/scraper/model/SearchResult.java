@@ -13,6 +13,7 @@ import com.google.common.collect.Lists;
 
 public class SearchResult
 {
+	private SearchParams searchParams;
 	public Date startDate;
 	public Date endDate;
 	public int numRooms;
@@ -30,12 +31,18 @@ public class SearchResult
 	
 	public SearchResult(SearchParams sp)
 	{
+		this.searchParams = sp;
 		this.startDate = sp.getCheckInDate().toDate();
 		this.endDate = sp.getCheckOutDate().toDate();
 		this.numRooms = sp.getNumRooms();
 		this.numAdults = sp.getNumAdults1() + sp.getNumAdults2() + sp.getNumAdults3() + sp.getNumAdults4();
 		this.numChildren = sp.getNumChildren1() + sp.getNumChildren2() + sp.getNumChildren3() + sp.getNumChildren4();
 		this.currentPage = 1;
+	}
+	
+	public SearchParams getSearchParams()
+	{
+		return searchParams;
 	}
 	
 	public Date getStartDate()

@@ -8,6 +8,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpUtils;
 
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
+import org.joda.time.Period;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +28,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.burda.scraper.inventory.InventoryService;
 import com.burda.scraper.model.SearchParams;
+import com.burda.scraper.model.SearchResult;
 import com.burda.scraper.model.SortType;
 import com.burda.scraper.model.persisted.HotelDetail;
+import com.google.common.base.Joiner;
 
 /**
  * Handles requests for the application home page.
@@ -34,6 +41,8 @@ public class SearchController
 {
 	private static final Logger logger = LoggerFactory.getLogger(SearchController.class);
 	private static final AtomicLong SESSION_SALT = new AtomicLong();
+	private static DateTimeFormatter CHECK_IN_OUT_FORMAT = DateTimeFormat.forPattern("MM/dd/yyyy");
+
 	
 	@Autowired
 	@Qualifier("inventoryService")
@@ -61,7 +70,7 @@ public class SearchController
 				+ "({\"redirectURL\": \""+host+"\\/results" +  "\"})";
 		clientResponse.setContentType("application/json");
 		clientResponse.getOutputStream().write(callback.getBytes());
-		clientResponse.addCookie(createSessionIdCookie(sessionId));
+		createCookies(request, clientResponse, sp);
 	}
 
 	@RequestMapping(value = "/search", method={RequestMethod.GET, RequestMethod.POST}, produces="application/javascript")
@@ -75,9 +84,9 @@ public class SearchController
 		String sessionId = findSessionId(request);
 		sp.setSessionId(sessionId);
 		invService.search(request, sp);
-		model.put("result", invService.getUpdatedResults(sessionId, null, null));
+		model.put("result", invService.getAggragatedResults(sessionId, null, null));
 		
-		clientResponse.addCookie(createSessionIdCookie(sessionId));
+		createCookies(request, clientResponse, sp);
 		return new ModelAndView("searchResult", model);
 	}	
 	
@@ -102,9 +111,10 @@ public class SearchController
 			HttpServletResponse clientResponse) throws Exception
 	{		
 		String sessionId = findSessionId(clientRequest);
-		model.put("result", invService.getUpdatedResults(sessionId, sortType, page));
+		SearchResult searchResult = invService.getAggragatedResults(sessionId, sortType, page); 
+		model.put("result", searchResult);
 		
-		clientResponse.addCookie(createSessionIdCookie(sessionId));
+		createCookies(clientRequest, clientResponse, searchResult.getSearchParams());
 		return new ModelAndView("searchResult", model);
 	}	
 	
@@ -116,10 +126,7 @@ public class SearchController
 			HttpServletRequest clientRequest,
 			HttpServletResponse clientResponse) throws Exception
 	{
-		String sessionId = findSessionId(clientRequest);
 		model.put("hotelDetail",  invService.getHotelDetails(hotelName));
-		
-		clientResponse.addCookie(createSessionIdCookie(sessionId));
 		return new ModelAndView("hotelDetailPopup", model);
 	}
 	
@@ -143,18 +150,14 @@ public class SearchController
 	
 	private static final String findSessionId(HttpServletRequest request)
 	{
-		String id = findCookieValue(request, "parent_cookie");
-		if (id != null)
+		String id = findCookieValue(request, "sessionid");
+		if (id == null)
 		{
-			int idx = id.indexOf("___");
-			if (idx >=0)
-				id = id.substring(0, idx);
-		}
-		else
-		{
-			id = findCookieValue(request, "sessionid");
+			id = findCookieValue(request, "parent_jsession_id"); 
 			if (id == null)
+			{
 				id = String.valueOf(System.currentTimeMillis() + SESSION_SALT.getAndIncrement());
+			}			
 		}
 		logger.error("sessionid == " + id);
 		return id;
@@ -175,13 +178,71 @@ public class SearchController
 		return null;
 	}
 	
-	private static final Cookie createSessionIdCookie(String sessionId)
+	private static final void createCookies(
+			HttpServletRequest req, HttpServletResponse resp, SearchParams params)
 	{
-		Cookie sessionIdCookie = new Cookie("sessionid", sessionId);
-		//sessionIdCookie.setDomain(".neworleans.com");
+		Cookie sessionIdCookie = new Cookie("sessionid", findSessionId(req));
 		sessionIdCookie.setMaxAge(-1);
 		sessionIdCookie.setSecure(false);
+		resp.addCookie(sessionIdCookie);
 		
-		return sessionIdCookie;
+		if (params == null)
+			return;
+		
+		int maxCookieAge = (int)new Duration(new DateTime(), new DateTime().plusMonths(1)).getStandardSeconds();
+		
+		Cookie checkInDate = new Cookie("CHECKINDATE", CHECK_IN_OUT_FORMAT.print(params.getCheckInDate()));
+		setStdCookieValues(checkInDate, maxCookieAge);
+		resp.addCookie(checkInDate);
+
+		Cookie checkOutDate = new Cookie("CHECKOUTDATE", CHECK_IN_OUT_FORMAT.print(params.getCheckOutDate()));
+		setStdCookieValues(checkOutDate, maxCookieAge);
+		resp.addCookie(checkOutDate);
+		
+		Cookie numRooms = new Cookie("numRooms", String.valueOf(params.getNumRooms()));
+		setStdCookieValues(numRooms, maxCookieAge);
+		resp.addCookie(numRooms);
+		
+		Cookie numAdults = new Cookie("numAdults", Joiner.on(",").join(
+				params.getNumAdults1(), params.getNumAdults2(), params.getNumAdults3(), params.getNumAdults4()));
+		setStdCookieValues(numAdults, maxCookieAge);
+		resp.addCookie(numAdults);
+		
+		Cookie numChildren = new Cookie("numChildren", 
+				Joiner.on(",").join(
+						params.getNumChildren1(), params.getNumChildren2(), params.getNumChildren3(), params.getNumChildren4()));
+		setStdCookieValues(numChildren, maxCookieAge);
+		resp.addCookie(numChildren);
+		
+		Cookie childrenAgesRoom1 = new Cookie("ChildrenAgesRoom1", 
+				Joiner.on(",").join(
+						params.getRoom1ChildAge1(), params.getRoom1ChildAge2(), params.getRoom1ChildAge3()));
+		setStdCookieValues(childrenAgesRoom1, maxCookieAge);
+		resp.addCookie(childrenAgesRoom1);
+
+		Cookie childrenAgesRoom2 = new Cookie("ChildrenAgesRoom2", 
+				Joiner.on(",").join(
+						params.getRoom2ChildAge1(), params.getRoom2ChildAge2(), params.getRoom2ChildAge3()));
+		setStdCookieValues(childrenAgesRoom2, maxCookieAge);
+		resp.addCookie(childrenAgesRoom2);
+		
+		Cookie childrenAgesRoom3 = new Cookie("ChildrenAgesRoom3", 
+				Joiner.on(",").join(
+						params.getRoom3ChildAge1(), params.getRoom3ChildAge2(), params.getRoom3ChildAge3()));
+		setStdCookieValues(childrenAgesRoom3, maxCookieAge);
+		resp.addCookie(childrenAgesRoom3);
+		
+		Cookie childrenAgesRoom4 = new Cookie("ChildrenAgesRoom4", 
+				Joiner.on(",").join(
+						params.getRoom4ChildAge1(), params.getRoom4ChildAge2(), params.getRoom4ChildAge3()));
+		setStdCookieValues(childrenAgesRoom4, maxCookieAge);
+		resp.addCookie(childrenAgesRoom4);
+	}
+	
+	private static void setStdCookieValues(Cookie c, int maxCookieAge)
+	{
+		c.setMaxAge(maxCookieAge);
+		c.setSecure(false);
+		c.setDomain(".neworleans.com");
 	}
 }

@@ -1,6 +1,7 @@
 package com.burda.scraper.inventory;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +22,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.burda.scraper.dao.HotelDetailCacheKey;
 import com.burda.scraper.dao.HotelDetailDAO;
@@ -29,7 +32,9 @@ import com.burda.scraper.model.Hotel;
 import com.burda.scraper.model.RoomType;
 import com.burda.scraper.model.SearchParams;
 import com.burda.scraper.model.SearchResult;
+import com.burda.scraper.model.persisted.InventorySource;
 import com.burda.scraper.model.persisted.SourceHotel;
+import com.google.code.ssm.api.format.SerializationType;
 import com.google.common.collect.Lists;
 
 public class FrenchQuarterGuideInventorySource implements Warehouse
@@ -40,24 +45,29 @@ public class FrenchQuarterGuideInventorySource implements Warehouse
 	private HotelDetailDAO hotelDetailDAO;
 	private SourceHotelDAO sourceHotelDAO;
 	
+  @Autowired
+  @Qualifier("defaultMemcachedClient") 
+  private com.google.code.ssm.Cache cache;
+	
 	@Override
-	public SearchResult getResults(HttpServletRequest request, SearchParams params) throws Exception
+	public Collection<Hotel> 
+		getInitialResultsAndAsyncContinue(HttpServletRequest request, SearchParams params) throws Exception
 	{
-		SearchResult result = new SearchResult(params);
+		Collection<Hotel> hotels = Lists.newArrayList();
 		HttpResponse resp = queryHotelsViaHttpClient(params);
 		if (resp != null)
 		{
 			byte[] html = EntityUtils.toByteArray(resp.getEntity());
-			result = createHotels(params, html);
+			hotels = createHotels(params, html);
 		}		
+
+		cache.set(params.getSessionId()+InventorySource.FQG.name(), (60*180), hotels, SerializationType.JSON);
 		logger.debug("fqg complete");
-		return result;
+		return hotels;
 	}
 	
-	private SearchResult createHotels(SearchParams params, byte[] html) throws Exception
+	private Collection<Hotel> createHotels(SearchParams params, byte[] html) throws Exception
 	{
-		SearchResult result = new SearchResult(params);
-		
 		Document document = Jsoup.parse(
 				new String(html), "http://secure.rezserver.com/js/ajax/city_page_redesign/getResults.php");
 		
@@ -113,9 +123,7 @@ public class FrenchQuarterGuideInventorySource implements Warehouse
 			}
 			hotels.add(hotel);
 		}
-		result.setAllHotels(hotels);
-		
-		return result;
+		return hotels;
 	}
 	
 	private String createBookUrl(SearchParams sp, String[] idParts)

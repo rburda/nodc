@@ -10,33 +10,33 @@
    </appender>	
 	
 	<!-- Application Loggers -->
-	<logger name="com.burda.scraper">
+	<logger name="com.burda.scraper" additivity="false">
 		<level value="debug" />
 		<appender-ref ref="console" />
 	</logger>
 	
 	<!-- 3rdparty Loggers -->
-	<logger name="org.springframework.core">
+	<logger name="org.springframework.core" additivity="false">
 		<level value="info" />
 		<appender-ref ref="console" />
 	</logger>
 	
-	<logger name="org.springframework.beans">
+	<logger name="org.springframework.beans" additivity="false">
 		<level value="info" />
 		<appender-ref ref="console" />
 	</logger>
 	
-	<logger name="org.springframework.context">
+	<logger name="org.springframework.context" additivity="false">
 		<level value="info" />
 		<appender-ref ref="console" />
 	</logger>
 
-	<logger name="org.springframework.web">
+	<logger name="org.springframework.web" additivity="false" >
 		<level value="debug" />
 		<appender-ref ref="console" />
 	</logger>
 
-	<logger name="org.freemarker">
+	<logger name="org.freemarker" additivity="false">
 		<level value="debug" />
 		<appender-ref ref="console" />
 	</logger>
