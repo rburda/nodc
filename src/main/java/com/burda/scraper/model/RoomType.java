@@ -54,7 +54,11 @@ public class RoomType
 	
 	public boolean isPromoRate()
 	{
-		return !getAvgNightlyRate().equals(getAvgNightlyOriginalRate());
+		boolean isPromoRate = false;
+		if (avgNightlyOriginalRate != null)
+			if (!getAvgNightlyRate().equals(getAvgNightlyOriginalRate()))
+				isPromoRate = true;
+		return isPromoRate;
 	}
 
 	public String toString()
