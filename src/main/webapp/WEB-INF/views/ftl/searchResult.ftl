@@ -451,7 +451,9 @@
                                     </thead>
                                     <tbody>
                                         <#list hotel.roomTypes as roomType>
-                                        <tr class="cyl-HotelRow hasPromos  hasSale">
+										
+										<tr class="cyl-HotelRow <#if roomType.isPromoRate()> hasPromos  hasSale</#if>">
+																		
                                             <td rowspan="1" class="productCol">
                                                 <a class="showRoomDetail" onclick="popup('rooms', '${hotel.name}');" href="#rooms">${roomType.name!''}</a>
                                                 <br />
@@ -459,16 +461,20 @@
                                             </td>
                                             <#list roomType.dailyRates as dailyRate>
                                             <td class="dayCol">
-                                                <span class="originalRate">$${dailyRate.originalPrice!dailyRate.price}</span>
-                                                <br />
+                                                <span <#if roomType.isPromoRate()>class="originalRate"</#if>>$${dailyRate.originalPrice!dailyRate.price}</span>
+                                                <#if roomType.isPromoRate()>
+												<br />
                                                 <span class="promo">$${dailyRate.price!0.00}</span>
+												</#if>
                                             </td>
                                             </#list>
                                             <td rowspan="1" class="priceCol">
-                                                <span class="originalRate">$${roomType.avgNightlyOriginalRate!roomType.avgNightlyRate}</span>
+                                                <span <#if roomType.isPromoRate()> class="originalRate" </#if>>$${roomType.avgNightlyOriginalRate!roomType.avgNightlyRate}</span>
                                                 <br />
+												<#if roomType.isPromoRate()>
                                                 <span class="promo">$${roomType.avgNightlyRate!''}</span>
                                                 <br />
+												</#if>
                                                 <a style="position: relative;" class="pricetrigger" href="javascript:void(0);">view
                                                     total price</a>
                                                 <div class="child hotelDetailsPop" style="display: none">
