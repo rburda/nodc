@@ -116,8 +116,19 @@ public class NODCWarehouse implements Warehouse
 				HttpConnectionParams.setConnectionTimeout(httpParams, 45000);
 		    HttpConnectionParams.setSoTimeout(httpParams, 45000);	
 		    
-		    httpClient.execute(httpget);
-		    initSessionVars(httpClient.getCookieStore());
+		    HttpResponse resp = httpClient.execute(httpget);
+		    for (org.apache.http.cookie.Cookie c: httpClient.getCookieStore().getCookies())
+		    {
+		    	if (c.getName().equalsIgnoreCase("JSESSIONID"))
+		    		jsessionId = c.getValue();
+		    	else if (c.getName().equalsIgnoreCase("www_sid"))
+		    		wwwsid = c.getValue();
+		    }
+		    Document d = Jsoup.parse(EntityUtils.toString(resp.getEntity()));
+		    String rawUrl = d.select(".hotelSearchForm").first().attr("action");
+		    int idx = rawUrl.indexOf("wicket:interface=");
+		    if (idx >= 0)
+		    	wicketSessionPathForSearch = rawUrl.substring(idx+17, rawUrl.length());
 			}
 			catch (Exception e)
 			{
