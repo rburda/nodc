@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml">
 <head>
@@ -36,10 +35,8 @@
 				<script type="text/javascript">
 			/* <![CDATA[ */
 			//Google Maps loading
-			var lat1 = "299560";
-			var long1 = "-900679";
-			var lat = lat1.replace(/^(.*)(.{4})$/g, '$1.$2');
-            var lng = long1.replace(/^(.*)(.{4})$/g, '$1.$2');
+			var lat = ${hotelDetail.latitude};
+			var lng = ${hotelDetail.longitude};
 			var map;
 			
 			function initMaps() {
@@ -56,6 +53,30 @@
 				map.setCenter(new google.maps.LatLng(lat, lng), 15);
 				var mapMarker = new google.maps.Marker(new google.maps.LatLng(lat, lng));
           		map.addOverlay(mapMarker);
+				
+				
+				var infowindow = new google.maps.InfoWindow({
+				content: ""
+				});
+
+				latLng = new google.maps.LatLng(lat, lng)
+				var myOptions = {
+				zoom: 14,
+				center: latLng,
+				mapTypeId: google.maps.MapTypeId.ROADMAP
+				}
+				
+				var marker = new google.maps.Marker({
+					position: latLng,
+					map: map,
+					title:""
+				});
+				infoWindow.open(map, marker);
+
+				google.maps.event.addListener(marker, 'click', function() {
+				infowindow.open(map,marker);
+				});
+				
 			}
 			function resizeMap() {
 				map.checkResize();
@@ -64,6 +85,7 @@
 			
 			var $tabs;
 			jQuery().ready(function() {
+			initMaps();
 				if (typeof selectedHotelDetailTab != 'undefined')
 {
 if(selectedHotelDetailTab.indexOf("#map") > -1) {
@@ -108,13 +130,16 @@ selectedHotelDetailTab = "";
 				// Initially set opacity on thumbs and add
 				// additional styling for hover effect on thumbs
 				var onMouseOutOpacity = 0.67;
+				cyljq.getScript('http://www.neworleans.com/common/js/jquery/jquery.opacityrollover.js',function(){
+
 				$('#thumbs ul.thumbs li').opacityrollover({
 					mouseOutOpacity:   onMouseOutOpacity,
 					mouseOverOpacity:  1.0,
 					fadeSpeed:         'fast',
 					exemptionSelector: '.selected'
 				});
-				
+				});
+				cyljq.getScript('http://www.neworleans.com/common/js/jquery/jquery.galleriffic.js',function(){
 				// Initialize Advanced Galleriffic Gallery
 				var gallery = $('#thumbs').galleriffic({
 					delay:                     2500,
@@ -145,8 +170,9 @@ selectedHotelDetailTab = "";
 							.eq(nextIndex).fadeTo('fast', 1.0);
 					}
 				});
+				});
 												$('#videoModal').jqm({overlay: 20, toTop: true});
-												initMaps();
+												//initMaps();
 							});
 			
 			
@@ -160,7 +186,7 @@ selectedHotelDetailTab = "";
 
 		<div class="description">
 			<div class="productThumb">
-				<img src="http://www.neworleans.com/new-orleans-hotels/le-pavillon/med_main.jpg" alt=${hotelDetail.name} class="productThumb" />
+				<img src='${hotelDetail.photos[0].url}' alt=${hotelDetail.name} class="productThumb" />
 			</div>
 			<div class="productSummary">
     			<h1 class="fn org hotel-title">${hotelDetail.name}</h1>
@@ -234,7 +260,7 @@ selectedHotelDetailTab = "";
         		<h4>R-Club Concierge Accommodations</h4>
 				        		
 		<img class="photo previewThumb productThumb" src="/room-details/images/RS_deluxe.jpg" alt="Royal Sonesta Deluxe" height='188' width='250' />
-									<p>The decor in this <b>Royal Sonesta</b> room reflects traditional French Quarter design. Featuring <b>one king bed or two double beds</b> with pillowtop mattresses and a seating area with two chairs and a small table. Along with R-Club Concierge Accommodations, this room has daily maid service, turndown service and wake-up calls.</p><p>The bathroom has a <b>combined shower and tub</b>.</p><p>R-Club guests enjoy:</p><p>In the Private Club Lounge:</p><p>Õ 24-hour concierge service<span class="Apple-converted-space"> <br />Õ Breakfast beginning at 6:00 a.m. <br />Õ Afternoon coffee and tea service accompanied by fresh baked goods <br />Õ Cocktail and hors d'oeuvres offered from 5:00 p.m. to 8:00 p.m. <br />Õ Assortment of magazines and daily newspapers for your reading pleasure <br />Õ Wireless Internet <br />Õ iMac guest computer <br />Õ 52-inch flat-screen television </span></p><p><span class="Apple-converted-space">In the room</span>:<span class="Apple-converted-space"> </span></p><p>Õ Fresh flowers in-room daily<span class="Apple-converted-space"> <br />Õ Luxurious bed and bath linens <br />Õ Deluxe robes and bath amenities <br />Õ Personal in-room safe <br />Õ Complimentary newspaper daily <br />Õ Morning and evening housekeeping service <br />Õ Complimentary bottled water </span></p>				<strong>Amenities Include:</strong> 
+									<p>The decor in this <b>Royal Sonesta</b> room reflects traditional French Quarter design. Featuring <b>one king bed or two double beds</b> with pillowtop mattresses and a seating area with two chairs and a small table. Along with R-Club Concierge Accommodations, this room has daily maid service, turndown service and wake-up calls.</p><p>The bathroom has a <b>combined shower and tub</b>.</p><p>R-Club guests enjoy:</p><p>In the Private Club Lounge:</p><p>Õ 24-hour concierge service<span class="Apple-converted-space"> <br />Õ Breakfast beginning at 6:00 a.m. <br />Õ Afternoon coffee and tea service accompanied by fresh baked goods <br />Õ Cocktail and hors d'oeuvres offered from 5:00 p.m. to 8:00 p.m. <br />Õ Assortment of magazines and daily newspapers for your reading pleasure <br />Õ Wireless Internet <br />Õ iMac guest computer <br />Õ 52-inch flat-screen television </span></p><p><span class="Apple-converted-space">In the room</span>:<span class="Apple-converted-space"> </span></p><p>Õ Fresh flowers in-room daily<span class="Apple-converted-space"> <br />Õ Luxurious bed and bath linens <br />Õ Deluxe robes and bath amenities <br />Õ Personal in-room safe <br />Õ Complimentary newspaper daily <br />Õ Morning and evening housekeeping service <br />Õ Complimentary bottled water </span></p>				<strong>Amenities Include:</strong> 
 													Air conditioning,									Complimentary breakfast,									Iron / Ironing board,									In-room safe,									Alarm clock,									Complimentary newspaper,									Complimentary bottled water,									Robes,									Slippers,									Daily maid service,									Turndown service,									Wireless Internet access (Complimentary),									Hair dryer,									Combined shower and bathtub,									Complimentary toiletries,									Flatscreen television,									Wake-up Calls,									Premium bedding				    		</div>
 			
 			<div class="clear"></div>
@@ -253,7 +279,7 @@ selectedHotelDetailTab = "";
 	    			</div> <!-- /roomsTab -->
 				<div id="description" class="expertTab tabbed-item">
     				<h2>Description</h2>
-    				<p>The <b>Royal Sonesta Hotel</b> is the premiere French Quarter hotel on Bourbon Street Ö a premium hotel with 4.5-star accommodations and a staff well versed in the art of Southern hospitality. At the epicenter of Bourbon Street, the Royal Sonesta Hotel in the French Quarter puts you smack in the middle of what's happening in New Orleans, from the madness of New Years' Eve and Mardi Gras to the everyday revelry and culture that makes the French Quarter one of the most unique neighborhoods in the world.</p><p>There's a reason New Orleans locals make the <b>Royal Sonesta</b> their home away from home during big events like Mardi Gras and New Year's Eve: the Old World elegance and charm of this quintessentially New Orleans hotel, topped by the Royal Sonesta's unquestionably hip vibe. See: Irvin Mayfield's Jazz Playhouse, the swanky lounge inside the Royal Sonesta. You'll hear live music (at no charge) seven nights a week here (including sets with the Grammy award-winning Mr. Mayfield himself); the Saturday brass band set followed by the Burlesque Ballroom midnight show is one of the favorite weekly gigs in New Orleans.</p><p>And did we mention the Royal Sonesta's famous wrought iron balconies? The balconies at the Royal Sonesta Hotel offer a birds-eye view of the world-class spectacle on Bourbon Street. But make no mistake Ö the Royal Sonesta is a top French Quarter hotel, offering travelers both all-access to the nightlife in New Orleans as well as a quiet oasis to enjoy and recover from it. The Royal Sonesta's rooftop pool is a destination in itself, offering stunning views of the French Quarter.</p><p>No visit to New Orleans is complete without trying jambalaya, red beans and rice, or a roast beef po-boy, and the Royal Sonesta's Desire Bistro &amp; Oyster Bar serves New Orleans classics more for breakfast, lunch and dinner. Our favorite seat in the house? At the curved raw bar, tossing back a raw dozen or two oysters.</p><p>Opened in June 2012, Restaurant R'evolution inside the Royal Sonesta hotel is one of the most ambitious new restaurants New Orleans has seen in years. The multi-faceted restaurant is the work of Louisiana uber-chef John Folse and former Chicago restaurateur/chef Rick Tramonto, and offers diners imaginative and historic interpretations of classic Creole and Cajun cuisine.</p><p> </p><p><i>Hotel tags: New Orleans hotel on Bourbon Street, hotels in the French Quarter, Restaurant R'Evolution, Irvin Mayfield's Jazz Playhouse, best New Orleans hotels, rooftop pool</i></p>    			</div> <!-- /description -->
+    				<p>The <b>Royal Sonesta Hotel</b> is the premiere French Quarter hotel on Bourbon Street Ö a premium hotel with 4.5-star accommodations and a staff well versed in the art of Southern hospitality. At the epicenter of Bourbon Street, the Royal Sonesta Hotel in the French Quarter puts you smack in the middle of what's happening in New Orleans, from the madness of New Years' Eve and Mardi Gras to the everyday revelry and culture that makes the French Quarter one of the most unique neighborhoods in the world.</p><p>There's a reason New Orleans locals make the <b>Royal Sonesta</b> their home away from home during big events like Mardi Gras and New Year's Eve: the Old World elegance and charm of this quintessentially New Orleans hotel, topped by the Royal Sonesta's unquestionably hip vibe. See: Irvin Mayfield's Jazz Playhouse, the swanky lounge inside the Royal Sonesta. You'll hear live music (at no charge) seven nights a week here (including sets with the Grammy award-winning Mr. Mayfield himself); the Saturday brass band set followed by the Burlesque Ballroom midnight show is one of the favorite weekly gigs in New Orleans.</p><p>And did we mention the Royal Sonesta's famous wrought iron balconies? The balconies at the Royal Sonesta Hotel offer a birds-eye view of the world-class spectacle on Bourbon Street. But make no mistake Ö the Royal Sonesta is a top French Quarter hotel, offering travelers both all-access to the nightlife in New Orleans as well as a quiet oasis to enjoy and recover from it. The Royal Sonesta's rooftop pool is a destination in itself, offering stunning views of the French Quarter.</p><p>No visit to New Orleans is complete without trying jambalaya, red beans and rice, or a roast beef po-boy, and the Royal Sonesta's Desire Bistro &amp; Oyster Bar serves New Orleans classics more for breakfast, lunch and dinner. Our favorite seat in the house? At the curved raw bar, tossing back a raw dozen or two oysters.</p><p>Opened in June 2012, Restaurant R'evolution inside the Royal Sonesta hotel is one of the most ambitious new restaurants New Orleans has seen in years. The multi-faceted restaurant is the work of Louisiana uber-chef John Folse and former Chicago restaurateur/chef Rick Tramonto, and offers diners imaginative and historic interpretations of classic Creole and Cajun cuisine.</p><p> </p><p><i>Hotel tags: New Orleans hotel on Bourbon Street, hotels in the French Quarter, Restaurant R'Evolution, Irvin Mayfield's Jazz Playhouse, best New Orleans hotels, rooftop pool</i></p>    			</div> <!-- /description -->
     			<div id="hotelDetails" class="hotelDetailsTab tabbed-item">
 					<h2>Hotel Details</h2>
 																																																												
@@ -314,7 +340,7 @@ selectedHotelDetailTab = "";
 					<div class="feature-container"><strong class="feature-name">Health Club or Fitness Equipment:</strong> <p>Cybex training equipment is offered on the second-floor fitness room.</p></div>
 					<div class="feature-container"><strong class="feature-name">Tennis Courts:</strong> <p>No.</p></div>
 					<div class="feature-container"><strong class="feature-name">Spa:</strong> <p>Spa services are available poolside seasonally and in-room by request.</p></div>
-					<div class="feature-container"><strong class="feature-name">Shops:</strong> <p><b>:</b>  Located in PJÓ³ Coffee Café¬ the gift shop has souvenirs, cookbooks and logo wear.</p></div>
+					<div class="feature-container"><strong class="feature-name">Shops:</strong> <p><b>:</b>  Located in PJÓ³ Coffee Café¬ the gift shop has souvenirs, cookbooks and logo wear.</p></div>
 					<div class="feature-container"><strong class="feature-name">Wedding Services:</strong> <p>Can design weddings and receptions from small, intimate occasions to the most lavish affair.  Wedding planners can create uniquely personal events, from bridal showers and rehearsal dinners to bachelor or bachelorette parties.</p></div>
 					<div class="feature-container"><strong class="feature-name">Business Center:</strong> <p>Yes.</p></div>
 					<div class="feature-container"><strong class="feature-name">Convention Rooms:</strong> <p>Yes.</p></div>
@@ -364,39 +390,14 @@ selectedHotelDetailTab = "";
 			<div id="caption" class="caption-container"></div>
 		</div>
 		<div id="thumbs" class="navigation">
-			<ul class='thumbs noscript'><li><a class="thumb" href="/slideshows/hotels/royal-sonesta/RoyalSenesta1.jpg" title="Royal Sonesta">
-	<img src="/slideshows/hotels/royal-sonesta/RoyalSenesta1.jpg" alt="Royal Sonesta" />
-</a></li><li><a class="thumb" href="/slideshows/hotels/royal-sonesta/RoyalSenesta2.JPG" title="Royal Sonesta">
-	<img src="/slideshows/hotels/royal-sonesta/RoyalSenesta2.JPG" alt="Royal Sonesta" />
-</a></li><li><a class="thumb" href="/slideshows/hotels/royal-sonesta/RoyalSenesta3.JPG" title="Royal Sonesta">
-	<img src="/slideshows/hotels/royal-sonesta/RoyalSenesta3.JPG" alt="Royal Sonesta" />
-</a></li><li><a class="thumb" href="/slideshows/hotels/royal-sonesta/RoyalSenesta4.JPG" title="Royal Sonesta">
-	<img src="/slideshows/hotels/royal-sonesta/RoyalSenesta4.JPG" alt="Royal Sonesta" />
-</a></li><li><a class="thumb" href="/slideshows/hotels/royal-sonesta/RoyalSenesta5.JPG" title="Royal Sonesta">
-	<img src="/slideshows/hotels/royal-sonesta/RoyalSenesta5.JPG" alt="Royal Sonesta" />
-</a></li><li><a class="thumb" href="/slideshows/hotels/royal-sonesta/RoyalSenesta6.JPG" title="Royal Sonesta">
-	<img src="/slideshows/hotels/royal-sonesta/RoyalSenesta6.JPG" alt="Royal Sonesta" />
-</a></li><li><a class="thumb" href="/slideshows/hotels/royal-sonesta/lobby.jpg" title="Royal Sonesta">
-	<img src="/slideshows/hotels/royal-sonesta/lobby.jpg" alt="Royal Sonesta" />
-</a></li><li><a class="thumb" href="/slideshows/hotels/royal-sonesta/dining.jpg" title="Royal Sonesta">
-	<img src="/slideshows/hotels/royal-sonesta/dining.jpg" alt="Royal Sonesta" />
-</a></li><li><a class="thumb" href="/slideshows/hotels/royal-sonesta/sittingarea.jpg" title="Royal Sonesta">
-	<img src="/slideshows/hotels/royal-sonesta/sittingarea.jpg" alt="Royal Sonesta" />
-</a></li><li><a class="thumb" href="/slideshows/hotels/royal-sonesta/double.jpg" title="Royal Sonesta">
-	<img src="/slideshows/hotels/royal-sonesta/double.jpg" alt="Royal Sonesta" />
-</a></li><li><a class="thumb" href="/slideshows/hotels/royal-sonesta/room.jpg" title="Royal Sonesta">
-	<img src="/slideshows/hotels/royal-sonesta/room.jpg" alt="Royal Sonesta" />
-</a></li><li><a class="thumb" href="/slideshows/hotels/royal-sonesta/room2.jpg" title="Royal Sonesta">
-	<img src="/slideshows/hotels/royal-sonesta/room2.jpg" alt="Royal Sonesta" />
-</a></li><li><a class="thumb" href="/slideshows/hotels/royal-sonesta/room3.jpg" title="Royal Sonesta">
-	<img src="/slideshows/hotels/royal-sonesta/room3.jpg" alt="Royal Sonesta" />
-</a></li><li><a class="thumb" href="/slideshows/hotels/royal-sonesta/room4.jpg" title="Royal Sonesta">
-	<img src="/slideshows/hotels/royal-sonesta/room4.jpg" alt="Royal Sonesta" />
-</a></li><li><a class="thumb" href="/slideshows/hotels/royal-sonesta/suite.jpg" title="Royal Sonesta">
-	<img src="/slideshows/hotels/royal-sonesta/suite.jpg" alt="Royal Sonesta" />
-</a></li><li><a class="thumb" href="/slideshows/hotels/royal-sonesta/suite2.jpg" title="Royal Sonesta">
-	<img src="/slideshows/hotels/royal-sonesta/suite2.jpg" alt="Royal Sonesta" />
-</a></li></ul>		</div>
+			<ul class='thumbs noscript'>
+			<#list hotelDetail.photos as photo>
+			<li><a class="thumb" href='${photo.url}' title='${hotelDetail.name}'>
+			<img src='${photo.url}' alt='${hotelDetail.name}' />
+			</a></li>
+			</#list>
+			</ul>		
+		</div>
 		<div class="clear"></div>
 		<!-- end module 164201 -->
 					</div> <!-- /photosTab -->
@@ -529,7 +530,7 @@ selectedHotelDetailTab = "";
 				r = r.replace(new RegExp("[É‰Ë‹]", 'g'),"E");
                 r = r.replace(new RegExp("[ï¿½Ý¢, 'g'),"i");
 				r = r.replace(new RegExp("[ÍÏ]", 'g'),"I");
-                r = r.replace(new RegExp("ñ¢¬ 'g'),"n");
+                r = r.replace(new RegExp("ñ¢¬ 'g'),"n");
 				r = r.replace(new RegExp("Ñ¢, 'g'),"N");
                 r = r.replace(new RegExp("[ò³´¶]", 'g'),"o");
 				r = r.replace(new RegExp("[Ó“Õ–]", 'g'),"O");
