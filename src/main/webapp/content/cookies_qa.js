@@ -3,21 +3,33 @@
 		function() 
 		{
 	        c = document.cookie.split('; ');
-        	jsession = '';
-        	wwwsid = '';
 	        for(i=c.length-1; i>=0; i--)
 	        {
 	           C = c[i].split('=');
 	           if (C[0] == 'JSESSIONID')
 	           {
-	        	   jsession = C[0]+"="+C[1];  
+	        	   var jsession = C[0]+"="+C[1];  
 	           }	   
 	           else if (C[0]=='www_sid')
 	           {
-	        	   wwwsid= C[0]+"="+C[1];
+	        	   var wwwsid= C[0]+"="+C[1];
 	           }
 	        }
-            document.cookie = 'parent_cookie='+jsession+"___"+wwwsid+';domain=.www.neworleans.com';
-            cyljq('.hotelSearchForm').attr("action", "http://qa-nodcsearch.elasticbeanstalk.com/startSearch");
+	        if (typeof window.nodcActionUpdated === 'undefined')
+	        {
+		        origAction = cyljq('.hotelSearchForm').attr("action");
+		        document.cookie = 
+		        	'parent_url='+origAction.substring(origAction.indexOf("?")+1, origAction.length)+';domain=.www.neworleans.com';
+	            if (typeof jsession !== 'undefined')
+	            {
+	            	document.cookie = 'parent_jsession_id='+jsession+";domain=.www.neworleans.com";
+	            }
+	            if (typeof wwwsid !== 'undefined')
+	            {
+	            	document.cookie = 'parent_sid='+wwwsid+";domain=.www.neworleans.com";
+	            }
+	            cyljq('.hotelSearchForm').attr("action", "http://qa-nodcsearch.elasticbeanstalk.com/startSearch");        	
+	        }
+            window.nodcActionUpdated=true;
 		});
 })();

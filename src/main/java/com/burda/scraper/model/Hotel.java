@@ -59,7 +59,7 @@ public class Hotel
 			if (lowest == null || rt.getAvgNightlyRate().compareTo(lowest) < 0)
 				lowest = rt.getAvgNightlyRate();
 		}
-		return lowest;
+		return (lowest == null ? BigDecimal.ZERO: lowest);
 	}
 	
 	public void addRoomType(RoomType rt)

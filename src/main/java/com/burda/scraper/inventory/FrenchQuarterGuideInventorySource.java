@@ -82,7 +82,7 @@ public class FrenchQuarterGuideInventorySource implements Warehouse
 			});
 		}
 		
-		for (Future<Collection<Hotel>> result: asyncResultsThreadPool.invokeAll(workers, 10, TimeUnit.SECONDS))
+		for (Future<Collection<Hotel>> result: asyncResultsThreadPool.invokeAll(workers, 15, TimeUnit.SECONDS))
 		{
 			try
 			{

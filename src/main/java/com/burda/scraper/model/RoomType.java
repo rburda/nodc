@@ -51,6 +51,11 @@ public class RoomType
 	{
 		return dailyRates;
 	}
+	
+	public boolean isPromoRate()
+	{
+		return !getAvgNightlyRate().equals(getAvgNightlyOriginalRate());
+	}
 
 	public String toString()
 	{

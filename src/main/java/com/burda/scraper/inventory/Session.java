@@ -112,11 +112,23 @@ public class Session implements Serializable
 		Collection<Hotel> nodcResult = rawResults.get(com.burda.scraper.model.persisted.InventorySource.NODC);
 		List<Hotel> aggragatedHotels = Lists.newArrayList();
 		if (fqgResult != null)
-			aggragatedHotels.addAll(fqgResult);
+		{
+			for (Hotel h: fqgResult)
+				if (!h.getRoomTypes().isEmpty())
+					aggragatedHotels.add(h);
+		}
 		if (nodcResult != null)
 		{
-			for (Hotel h: nodcResult)
+			Iterator<Hotel> nodcHotels = nodcResult.iterator();
+			while (nodcHotels.hasNext())
 			{
+				Hotel h = nodcHotels.next();
+				if (h.getRoomTypes().isEmpty())
+				{
+					nodcHotels.remove();
+					continue;
+				}
+				
 				Iterator<Hotel> fqgHotels = aggragatedHotels.iterator();
 				boolean found = false;
 				while (fqgHotels.hasNext() && !found)

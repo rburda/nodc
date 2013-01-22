@@ -67,7 +67,6 @@ public class InventoryServiceImpl implements InventoryService
 		List<Future<Collection<Hotel>>> workerResults = executor.invokeAll(workers);
 		workerResults.get(0);
 		workerResults.get(1);
-		//executor.shutdown();
 		
 		Session session = new Session(params);
 		session.setCurrentPage(1);

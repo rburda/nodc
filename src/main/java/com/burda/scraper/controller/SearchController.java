@@ -1,5 +1,6 @@
 package com.burda.scraper.controller;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -8,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpUtils;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Period;
@@ -32,6 +34,7 @@ import com.burda.scraper.model.SearchResult;
 import com.burda.scraper.model.SortType;
 import com.burda.scraper.model.persisted.HotelDetail;
 import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 
 /**
  * Handles requests for the application home page.
@@ -70,7 +73,7 @@ public class SearchController
 				+ "({\"redirectURL\": \""+host+"\\/results" +  "\"})";
 		clientResponse.setContentType("application/json");
 		clientResponse.getOutputStream().write(callback.getBytes());
-		createCookies(request, clientResponse, sp);
+		createResponseCookies(request, clientResponse, sp);
 	}
 
 	@RequestMapping(value = "/search", method={RequestMethod.GET, RequestMethod.POST}, produces="application/javascript")
@@ -86,7 +89,7 @@ public class SearchController
 		invService.search(request, sp);
 		model.put("result", invService.getAggragatedResults(sessionId, null, null));
 		
-		createCookies(request, clientResponse, sp);
+		createResponseCookies(request, clientResponse, sp);
 		return new ModelAndView("searchResult", model);
 	}	
 	
@@ -114,7 +117,7 @@ public class SearchController
 		SearchResult searchResult = invService.getAggragatedResults(sessionId, sortType, page); 
 		model.put("result", searchResult);
 		
-		createCookies(clientRequest, clientResponse, searchResult.getSearchParams());
+		createResponseCookies(clientRequest, clientResponse, searchResult.getSearchParams());
 		return new ModelAndView("searchResult", model);
 	}	
 	
@@ -178,9 +181,12 @@ public class SearchController
 		return null;
 	}
 	
-	private static final void createCookies(
+	private static final void createResponseCookies(
 			HttpServletRequest req, HttpServletResponse resp, SearchParams params)
 	{
+		for (Cookie c: createParentCookies(req))
+			resp.addCookie(c);
+		
 		Cookie sessionIdCookie = new Cookie("sessionid", findSessionId(req));
 		sessionIdCookie.setMaxAge(-1);
 		sessionIdCookie.setSecure(false);
@@ -237,6 +243,36 @@ public class SearchController
 						params.getRoom4ChildAge1(), params.getRoom4ChildAge2(), params.getRoom4ChildAge3()));
 		setStdCookieValues(childrenAgesRoom4, maxCookieAge);
 		resp.addCookie(childrenAgesRoom4);
+	}
+	
+	private static Collection<Cookie> createParentCookies(HttpServletRequest req)
+	{
+		Collection<Cookie> cookies = Lists.newArrayList();
+		String parentJSessionId = req.getParameter("parent_jesssion_id");
+		String parentUrl = req.getParameter("parent_url");
+		String parentSid = req.getParameter("parent_sid");
+		if (!StringUtils.isEmpty(parentJSessionId))
+		{
+			Cookie parentJSessionIdCookie = new Cookie("parent_jsession_id", parentJSessionId);
+			parentJSessionIdCookie.setMaxAge(-1);
+			parentJSessionIdCookie.setSecure(false);
+			cookies.add(parentJSessionIdCookie);
+		}
+		if (!StringUtils.isEmpty(parentUrl))
+		{
+			Cookie parentUrlCookie = new Cookie("parent_url", parentUrl);
+			parentUrlCookie.setMaxAge(-1);
+			parentUrlCookie.setSecure(false);
+			cookies.add(parentUrlCookie);			
+		}
+		if (!StringUtils.isEmpty(parentSid))
+		{
+			Cookie parentSidCookie = new Cookie("parent_sid", parentSid);
+			parentSidCookie.setMaxAge(-1);
+			parentSidCookie.setSecure(false);
+			cookies.add(parentSidCookie);			
+		}		
+		return cookies;
 	}
 	
 	private static void setStdCookieValues(Cookie c, int maxCookieAge)

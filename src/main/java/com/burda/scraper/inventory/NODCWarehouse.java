@@ -58,12 +58,12 @@ public class NODCWarehouse implements Warehouse
 	private static final Logger logger = LoggerFactory.getLogger(NODCWarehouse.class);
 	
 	private static final ExecutorService asyncResultsThreadPool = Executors.newCachedThreadPool();
-	
+
 	private static final class SessionInfo
 	{
-		final String jsessionId;
-		final String wwwsid;
-		final String wicketSessionPathForSearch;
+		String jsessionId;
+		String wwwsid;
+		String wicketSessionPathForSearch;
 		
 		private SessionInfo()
 		{
@@ -75,21 +75,55 @@ public class NODCWarehouse implements Warehouse
 		
 		private SessionInfo(HttpServletRequest servletRequest)
 		{
-			String cValue = findCookieValue(servletRequest, "parent_jsession_id");
+			initSessionVars(servletRequest);
+			if (StringUtils.isEmpty(jsessionId) || StringUtils.isEmpty(wwwsid) || StringUtils.isEmpty(wicketSessionPathForSearch))
+				createNewSession();
+		}
+	
+		private void initSessionVars(Object cookieStore)
+		{
+			String cValue = findCookieValue(cookieStore, "parent_jsession_id");
 			if (cValue.indexOf("=") >= 0)
 				cValue = cValue.substring(cValue.indexOf("=")+1, cValue.length());
 			jsessionId = cValue;
 			
-			cValue = findCookieValue(servletRequest, "parent_sid");
+			cValue = findCookieValue(cookieStore, "parent_sid");
 			if (cValue.indexOf("=") >= 0)
 				cValue = cValue.substring(cValue.indexOf("=")+1, cValue.length());
 			wwwsid = cValue;
 			
-			cValue = findCookieValue(servletRequest, "parent_url");
+			cValue = findCookieValue(cookieStore, "parent_url");
 			if (cValue.indexOf("=") >= 0)
 				cValue = cValue.substring(cValue.indexOf("=")+1, cValue.length());
-			wicketSessionPathForSearch = cValue;
+			wicketSessionPathForSearch = cValue;	
 		}
+		
+		private void createNewSession()
+		{
+			URIBuilder builder = new URIBuilder();
+			builder
+					.setScheme("http")
+					.setHost("www.neworleans.com")
+					.setPath("/mytrip/app/HotelSearchWidget/")
+					.addParameter("skin", "homeHotel");
+			
+			try
+			{
+				HttpGet httpget = new HttpGet(builder.build());
+				
+				DefaultHttpClient httpClient = new DefaultHttpClient();
+				HttpParams httpParams = httpClient.getParams();
+				HttpConnectionParams.setConnectionTimeout(httpParams, 45000);
+		    HttpConnectionParams.setSoTimeout(httpParams, 45000);	
+		    
+		    httpClient.execute(httpget);
+		    initSessionVars(httpClient.getCookieStore());
+			}
+			catch (Exception e)
+			{
+				logger.error("Unable to create new session", e);
+			}
+		}	
 	}
 	
 	private static final class CustomRedirectStrategy extends DefaultRedirectStrategy 
@@ -211,7 +245,7 @@ public class NODCWarehouse implements Warehouse
 		}
 		cache.set(createCacheKey(params), (60*180), hotels, SerializationType.JSON);
 		initialResultsComplete.countDown();
-		logger.debug("nodc complete");
+		logger.debug("nodc initial results complete (" + hotels.size() + ") hotels returned");
 		return hotels;
 	}
 
@@ -239,7 +273,9 @@ public class NODCWarehouse implements Warehouse
 					if (response != null)
 					{
 						Document document = Jsoup.parse(response, "http://www.neworleans.com/mytrip/app");
-						addToResults(params, createHotelsNODC(params, document), initialResultsComplete);
+						Collection<Hotel> asyncResult = createHotelsNODC(params, document);
+						addToResults(params, asyncResult,  initialResultsComplete);
+						logger.debug("asyncResult returned: " + (asyncResult != null ? asyncResult.size() : 0) + " addl results");
 					}
 					return null;
 				}});
@@ -491,21 +527,43 @@ public class NODCWarehouse implements Warehouse
 		return response;		
 	}
 	
-	private static final String findCookieValue(HttpServletRequest request, String cookieName)
+	private static final String findCookieValue(Object cookieStore, String cookieName)
 	{
 		String value = "";
-		if (request != null && request.getCookies() != null)
+		if (cookieStore != null)
 		{
-			for (Cookie c: request.getCookies())
+			if (cookieStore instanceof HttpServletRequest)
 			{
-				if (c.getName().equals(cookieName))
+				HttpServletRequest request = (HttpServletRequest)cookieStore;
+				if (request.getCookies() != null)
 				{
-					value = c.getValue();
-					break;
-				}
-			}			
+					for (Cookie c: request.getCookies())
+					{
+						if (c.getName().equals(cookieName))
+						{
+							value = c.getValue();
+							break;
+						}
+					}			
+				}				
+			}
+			else 
+			{
+				CookieStore httpClientCookieStore = (CookieStore)cookieStore;
+				if (httpClientCookieStore.getCookies() != null)
+				{
+					for (org.apache.http.cookie.Cookie c: httpClientCookieStore.getCookies())
+					{
+						if (c.getName().equals(cookieName))
+						{
+							value = c.getValue();
+							break;
+						}
+					}			
+				}					
+			}
 		}
-		return value;	
+		return value;		
 	}
 	
 	private static final String toS(int x)

@@ -15,13 +15,21 @@
 	        	   var wwwsid= C[0]+"="+C[1];
 	           }
 	        }
-	        origAction = cyljq('.hotelSearchForm').attr("action");
-	        document.cookie = 
-	        	'parent_url='+origAction.substring(origAction.indexOf("?")+1, origAction.length)+';domain=.www.neworleans.com';
-            if (typeof jsession !== 'undefined')
-            	document.cookie = 'parent_jsession_id='+jsession+";domain=.www.neworleans.com";
-            if (typeof wwwsid !== 'undefined')
-            	document.cookie = 'parent_sid='+wwwsid+";domain=.www.neworleans.com";
-            cyljq('.hotelSearchForm').attr("action", "http://test.www.neworleans.com:8080/startSearch");
+	        if (typeof window.nodcActionUpdated === 'undefined')
+	        {
+		        origAction = cyljq('.hotelSearchForm').attr("action");
+		        document.cookie = 
+		        	'parent_url='+origAction.substring(origAction.indexOf("?")+1, origAction.length)+';domain=.www.neworleans.com';
+	            if (typeof jsession !== 'undefined')
+	            {
+	            	document.cookie = 'parent_jsession_id='+jsession+";domain=.www.neworleans.com";
+	            }
+	            if (typeof wwwsid !== 'undefined')
+	            {
+	            	document.cookie = 'parent_sid='+wwwsid+";domain=.www.neworleans.com";
+	            }
+	        	cyljq('.hotelSearchForm').attr("action", "http://test.www.neworleans.com:8080/startSearch");      	
+	        }
+            window.nodcActionUpdated=true;
 		});
 })();
