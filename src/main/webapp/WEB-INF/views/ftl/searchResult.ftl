@@ -17,6 +17,8 @@
     <link type="text/css" rel="stylesheet" href="http://www.neworleans.com/mytrip/style/checkout.css" />
     <link type="text/css" rel="stylesheet" href="http://www.neworleans.com/style/globaless.css" />
     <link type="text/css" rel="stylesheet" href="style/searchstyle.css" />
+	
+	<script src="http://www.neworleans.com/common/js/jquery/jquery-core.js" type="text/javascript"></script>
     <!-- Following Script tags are added because this page is expected to have JQModalWindow -->
     <script src="http://neworleans.com/common/js/jquery/jquery-core.js" type="text/javascript"></script>
     <!--<script src="http://neworleans.com/common/js/jquery/jquery-modal.js" type="text/javascript"></script>-->
@@ -85,6 +87,138 @@
 	 		});
 	 		
 	</script>
+	
+	<script type="text/javascript" id="com-vegas-athena-components-browse-hotel-HotelBrowseRoomRatePanel-0">
+/* */
+$(window).load(
+function(event)
+{
+if (!$.jqm)
+return;
+if (!window.RoomRatePanel)
+{
+// initialize
+window.mwCSS =
+{
+position : 'absolute',
+offsetTop : 130,
+offsetLeft : 111
+};
+var scope = $('#devSearchContent');
+var totalPriceLinks = $("a.pricetrigger",$("#devSearchContent"));
+totalPriceLinks.live("click",function(e){
+try
+{
+VDCtoTL.tlAddEvent(e);
+}
+catch (err)
+{
+}
+var lx = e.clientX, ly = this.offsetTop;
+if (mwCSS)
+{
+var cssObj =
+{
+position : mwCSS.position,
+top : ly
+- mwCSS.offsetTop,
+left : lx
+- mwCSS.offsetLeft
+};
+$(
+'div.CSScontainer',
+$('#mwplaceholder'))
+.css(cssObj);
+}
+window.RoomRatePanel =
+{
+onShow : function(
+callback)
+{
+var placeholder = $('#mwplaceholder');
+var contentid = e.target.name;
+//alert(contentid);
+if (contentid)
+{
+var newEl = $(
+'#'
++ contentid
++ ' .child')
+.clone(
+true);
+$(
+'.CSScontainer div.content',
+placeholder[0])
+.empty()
+.html(
+newEl);
+}
+$('.CSScontainer',
+placeholder)
+.css(mwCSS)
+.show();
+// for IE, modify the overlay such that it will be a white background. This will remove the flash effect.
+if ($.browser.msie)
+{
+$(
+'div.jqmOverlay')
+.css(
+{
+'background-color' : '#FFF'
+});
+}
+},
+onClose : function(e)
+{
+try
+{
+VDCtoTL
+.tlAddEvent(e);
+}
+catch (e)
+{
+}
+$target = $(e.target);
+if ($target
+.hasClass('pricejqmClose'))
+$(
+'div.CSScontainer',
+$('#mwplaceholder')[0])
+.jqmHide();
+}
+};
+$(
+'div.CSScontainer',
+$('#mwplaceholder')[0])
+.jqm(
+{
+overlay : 1,
+modal : false,
+onShow : window.RoomRatePanel.onShow
+})
+.jqmShow();
+$("#devSearchContent")
+.click(
+RoomRatePanel.onClose);
+$('a.moreInfoLink',
+scope[0])
+.click(
+function(e)
+{
+var url = (window.location.href
+.indexOf("vegas.com") == -1 ? 'http://www.neworleans.com/includes/pop_servicefees_popup.html'
+: 'http://www.neworleans.com/incl/q12003/pop_servicefees_popup.html');
+window
+.open(
+url,
+'termsandconditions',
+'width=630,height=270,scrollbars=yes');
+});
+});
+}
+});
+/* */
+</script>
 	
     <script type="text/javascript" src="http://neworleans.com/javascript/tealeaf.js"></script>       
     <!--<link type="text/css" rel="stylesheet" href="http://neworleans.com/common/css/jquery/jqModal.css" />-->
@@ -383,6 +517,7 @@
 											</#if>
                     <!-- / pagination -->
                     <div>
+					<#assign hotelId=0>
                         <#list searchResults["result"].filteredHotels as hotel>
                         <div class="searchResult">
                             <!-- search results box header with gradient background, hotel name, price -->
@@ -450,6 +585,9 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+										<#assign roomId = 200>
+										<#assign roomId1 = 100>
+										
                                         <#list hotel.roomTypes as roomType>
 										
 										<tr class="cyl-HotelRow <#if roomType.isPromoRate()> hasPromos  hasSale</#if>">
@@ -475,20 +613,25 @@
                                                 <span class="promo">$${roomType.avgNightlyRate!''}</span>
                                                 <br />
 												</#if>
-                                                <a style="position: relative;" class="pricetrigger" href="javascript:void(0);">view
-                                                    total price</a>
-                                                <div class="child hotelDetailsPop" style="display: none">
-                                                    <p>
-                                                        Room Charges: <span>$135.01</span><br />
-                                                        Taxes &amp; Fees: <span>$21.64</span><br />
-                                                    </p>
-                                                    (<a class="moreInfoLink" href="javascript:void(0);">more info</a>)
-                                                    <p class="totalLine">
-                                                        Total Price: <span>${roomType.totalPrice!''}</span>
-                                                    </p>
-                                                    <a class="pricejqmClose" href="javascript:void(0);">Close Window</a>
-                                                    <br />
-                                                </div>
+                                                <a href="javascript:void(0);" class="pricetrigger" id="${hotelId}${roomId1}" name="${hotelId}${roomId}" style="position:relative;" contentref="${hotelId}${roomId}">view total price
+												</a>
+												<div style="display:none;" id="${hotelId}${roomId}">
+												<div class="child hotelDetailsPop">
+												<p>
+												Room Charges:
+												<span>$95.20</span><br />
+												Taxes &amp; Fees:
+												<span>$16.23</span><br />
+												</p>
+												(<a href="javascript:void(0);" class="moreInfoLink">more info</a>)
+												<p class="totalLine">
+												Total Price:
+												<span>${roomType.totalPrice!''}</span>
+												</p>
+												<a href="javascript:void(0);" class="pricejqmClose">Close Window
+												</a><br />
+												</div>
+												</div>
                                             </td>
                                             <td rowspan="1" class="bookItCol">
                                                 <input type="button" border="0" value="" onclick="parent.location='${roomType.bookItUrl}'"
@@ -499,6 +642,8 @@
                                         </tr>
                                         <tr style="display: none">
                                         </tr>
+										<#assign roomId = roomId+1>
+										<#assign roomId1 = roomId1+1>
                                         </#list>
                                     </tbody>
                                 </table>
@@ -513,6 +658,7 @@
                                 <!-- / clearing -->
                             </div>
                         </div>
+						<#assign hotelId=hotelId+1>
                         </#list>
                     </div>
                     <div>
