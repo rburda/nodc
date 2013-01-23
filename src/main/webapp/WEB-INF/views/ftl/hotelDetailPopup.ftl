@@ -279,7 +279,9 @@ selectedHotelDetailTab = "";
 	    			</div> <!-- /roomsTab -->
 				<div id="description" class="expertTab tabbed-item">
     				<h2>Description</h2>
-    				<p>The <b>Royal Sonesta Hotel</b> is the premiere French Quarter hotel on Bourbon Street Ö a premium hotel with 4.5-star accommodations and a staff well versed in the art of Southern hospitality. At the epicenter of Bourbon Street, the Royal Sonesta Hotel in the French Quarter puts you smack in the middle of what's happening in New Orleans, from the madness of New Years' Eve and Mardi Gras to the everyday revelry and culture that makes the French Quarter one of the most unique neighborhoods in the world.</p><p>There's a reason New Orleans locals make the <b>Royal Sonesta</b> their home away from home during big events like Mardi Gras and New Year's Eve: the Old World elegance and charm of this quintessentially New Orleans hotel, topped by the Royal Sonesta's unquestionably hip vibe. See: Irvin Mayfield's Jazz Playhouse, the swanky lounge inside the Royal Sonesta. You'll hear live music (at no charge) seven nights a week here (including sets with the Grammy award-winning Mr. Mayfield himself); the Saturday brass band set followed by the Burlesque Ballroom midnight show is one of the favorite weekly gigs in New Orleans.</p><p>And did we mention the Royal Sonesta's famous wrought iron balconies? The balconies at the Royal Sonesta Hotel offer a birds-eye view of the world-class spectacle on Bourbon Street. But make no mistake Ö the Royal Sonesta is a top French Quarter hotel, offering travelers both all-access to the nightlife in New Orleans as well as a quiet oasis to enjoy and recover from it. The Royal Sonesta's rooftop pool is a destination in itself, offering stunning views of the French Quarter.</p><p>No visit to New Orleans is complete without trying jambalaya, red beans and rice, or a roast beef po-boy, and the Royal Sonesta's Desire Bistro &amp; Oyster Bar serves New Orleans classics more for breakfast, lunch and dinner. Our favorite seat in the house? At the curved raw bar, tossing back a raw dozen or two oysters.</p><p>Opened in June 2012, Restaurant R'evolution inside the Royal Sonesta hotel is one of the most ambitious new restaurants New Orleans has seen in years. The multi-faceted restaurant is the work of Louisiana uber-chef John Folse and former Chicago restaurateur/chef Rick Tramonto, and offers diners imaginative and historic interpretations of classic Creole and Cajun cuisine.</p><p> </p><p><i>Hotel tags: New Orleans hotel on Bourbon Street, hotels in the French Quarter, Restaurant R'Evolution, Irvin Mayfield's Jazz Playhouse, best New Orleans hotels, rooftop pool</i></p>    			</div> <!-- /description -->
+    				<p>
+					${hotelDetail.description}
+					</p>    			</div> <!-- /description -->
     			<div id="hotelDetails" class="hotelDetailsTab tabbed-item">
 					<h2>Hotel Details</h2>
 																																																												
@@ -472,7 +474,7 @@ selectedHotelDetailTab = "";
 		    	<script language="javascript" src="/javascript/coremetrics/v40/eluminate.js" type="text/javascript"></script>
     	<script language="javascript" src="/javascript/coremetrics/cmcustom.js" type="text/javascript"></script>
     	<script language="javascript" src="/javascript/coremetrics/cmxCustomGlobal.js" type="text/javascript"></script>
-		<script type="text/javascript">
+		<!--<script type="text/javascript">
         	var cmJv="1.5";
         
         	//setup variables for cmx calls
@@ -540,7 +542,7 @@ selectedHotelDetailTab = "";
 				r = r.replace(new RegExp("[Þ", 'g'),"Y");
 				return r;
 			}
-    	</script>
+    	</script>-->
 	    </div>
     <div class="clear"></div>  
  <!-- </div> <!-- /main-content -->
