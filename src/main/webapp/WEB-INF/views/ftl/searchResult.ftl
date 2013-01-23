@@ -19,10 +19,10 @@
     <link type="text/css" rel="stylesheet" href="style/searchstyle.css" />
     <!-- Following Script tags are added because this page is expected to have JQModalWindow -->
     <script src="http://neworleans.com/common/js/jquery/jquery-core.js" type="text/javascript"></script>
-    <script src="http://neworleans.com/common/js/jquery/jquery-modal.js" type="text/javascript"></script>
+    <!--<script src="http://neworleans.com/common/js/jquery/jquery-modal.js" type="text/javascript"></script>-->
     <script type="text/javascript" src="http://neworleans.com/common/js/jquery/jquery-ui.js"></script>
     <script type="text/javascript" src="http://neworleans.com/common/js/jquery/jquery-scrollTo.js"></script> 
-    <script type="text/javascript" src="http://neworleans.com/common/js/jquery/jquery-modal.js"></script>    
+    <!--<script type="text/javascript" src="http://neworleans.com/common/js/jquery/jquery-modal.js"></script>-->    
     <script type="text/javascript" src="http://neworleans.com/common/js/jquery/jquery.galleriffic.js"></script>
     <script type="text/javascript" src="http://neworleans.com/common/js/jquery/jquery.opacityrollover.js"></script>
     <script type="text/javascript" src="http://neworleans.com/common/js/outside-wicket/widget-lib.js"></script>    
@@ -87,7 +87,7 @@
 	</script>
 	
     <script type="text/javascript" src="http://neworleans.com/javascript/tealeaf.js"></script>       
-    <link type="text/css" rel="stylesheet" href="http://neworleans.com/common/css/jquery/jqModal.css" />
+    <!--<link type="text/css" rel="stylesheet" href="http://neworleans.com/common/css/jquery/jqModal.css" />-->
     <script src="http://neworleans.com/mytrip/common/js/adtag_docwrite_util.js" type="text/javascript"></script>
     <script type="text/javascript" charset="UTF-8" src="http://maps.gstatic.com/cat_js/intl/en_us/mapfiles/api-3/8/12/%7Bcommon,util%7D.js"></script>
     <script type="text/javascript" charset="UTF-8" src="http://maps.gstatic.com/cat_js/intl/en_us/mapfiles/api-3/8/12/%7Bstats%7D.js"></script>
@@ -772,7 +772,7 @@ hotelName = hotelName.replace(/\s/g,"%20");
 var url="/details"+"?hotelName="+hotelName+"#"+link;
 //alert(url);
 
-$('#Details').jqm({ ajax: url,overlay:0, onShow:varHeight });
+$('#Details').jqm({ ajax: url,overlay:1, onShow:varHeight });
 $('#Details').jqmShow();
 }
 
