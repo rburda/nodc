@@ -35,8 +35,8 @@
 				<script type="text/javascript">
 			/* <![CDATA[ */
 			//Google Maps loading
-			var lat = ${hotelDetail.latitude};
-			var lng = ${hotelDetail.longitude};
+			var lat = ${hotelDetail.latitude!'0.0'};
+			var lng = ${hotelDetail.longitude!'0.0'};
 			var map;
 			
 			function initMaps() {
@@ -85,7 +85,9 @@
 			
 			var $tabs;
 			jQuery().ready(function() {
+			if(lat>0.0 && lng>0.0){
 			initMaps();
+			}
 				if (typeof selectedHotelDetailTab != 'undefined')
 {
 if(selectedHotelDetailTab.indexOf("#map") > -1) {
@@ -186,18 +188,18 @@ selectedHotelDetailTab = "";
 
 		<div class="description">
 			<div class="productThumb">
-				<img src='${hotelDetail.photos[0].url}' alt=${hotelDetail.name} class="productThumb" />
+				<img src= '<#if (hotelDetail.photos?size > 0)>${hotelDetail.photos[0].url!''}</#if>' alt="${hotelDetail.name!''}" class="productThumb" />
 			</div>
 			<div class="productSummary">
-    			<h1 class="fn org hotel-title">${hotelDetail.name}</h1>
+    			<h1 class="fn org hotel-title">${hotelDetail.name!''}</h1>
 				<div class="rating productStars"><img src="http://www.neworleans.com/images/star-rating-4_5.png" alt="4.50" /></div>
 				<div class="adr">
-					<div class="address1 street-address">${hotelDetail.address1}</div>
+					<div class="address1 street-address">${hotelDetail.address1!''}</div>
 					<div class="address2 extended-address"></div>
-					<div class="cityStatePC"><span class="locality">${hotelDetail.city}</span>, <span class="region">${hotelDetail.state}</span> <span class="postal-code">92121</span></div>
+					<div class="cityStatePC"><span class="locality">${hotelDetail.city!''}</span>, <span class="region">${hotelDetail.state!''}</span> <span class="postal-code">92121</span></div>
                     <div class="tel">NewOrleans.com Reservation Hotline: 1-855-639-6756</div>
 				</div>
-                <p>Location: ${hotelDetail.areaDescription}</p>
+                <p>Location: ${hotelDetail.areaDescription!''}</p>
 			</div>
 			<div class="clear"></div>
 		</div>
@@ -280,7 +282,7 @@ selectedHotelDetailTab = "";
 				<div id="description" class="expertTab tabbed-item">
     				<h2>Description</h2>
     				<p>
-					${hotelDetail.description}
+					${hotelDetail.description!''}
 					</p>    			</div> <!-- /description -->
     			<div id="hotelDetails" class="hotelDetailsTab tabbed-item">
 					<h2>Hotel Details</h2>
@@ -383,6 +385,7 @@ selectedHotelDetailTab = "";
     			    			<div id="photos" class="photosTab tabbed-item">
 					
 		<!-- module 164201 -->
+		
 		<div id="gallery" class="photo_content">
 			<div id="controls" class="controls"></div>
 			<div class="slideshow-container">
@@ -391,15 +394,19 @@ selectedHotelDetailTab = "";
 			</div>
 			<div id="caption" class="caption-container"></div>
 		</div>
+		<#if (hotelDetail.photos?size > 0)>
 		<div id="thumbs" class="navigation">
 			<ul class='thumbs noscript'>
+			 
 			<#list hotelDetail.photos as photo>
-			<li><a class="thumb" href='${photo.url}' title='${hotelDetail.name}'>
-			<img src='${photo.url}' alt='${hotelDetail.name}' />
+			<li><a class="thumb" href='${photo.url!''}' title='${hotelDetail.name!''}'>
+			<img src='${photo.url!''}' alt='${hotelDetail.name!''}' />
 			</a></li>
 			</#list>
 			</ul>		
 		</div>
+					</#if>
+
 		<div class="clear"></div>
 		<!-- end module 164201 -->
 					</div> <!-- /photosTab -->
@@ -409,7 +416,7 @@ selectedHotelDetailTab = "";
 						var playlist = new Object();
 						var playerParams = {
                         	version: "9.0.115",
-                        	url: "/video/player.swf",
+                        	url: "http://www.neworleans.com/video/player.swf",
                         	placeholder: 'videoBox',
                         	popup: true,
         					modalWindow: '#videoModal'
@@ -417,7 +424,7 @@ selectedHotelDetailTab = "";
 					</script>
 					
 		<!-- start video royal_sonesta_2_v4_1Mbps -->
-		<script type="text/javascript">
+		<!--<script type="text/javascript">
 			playlist['royal_sonesta_2_v4_1Mbps'] = {
 				streamer: 'rtmp://fms.6EF8.edgecastcdn.net/006EF8/neworleans/hotels/',
 				file: 'royal_sonesta_2_v4_1Mbps',
@@ -429,8 +436,8 @@ selectedHotelDetailTab = "";
 				width: '640',
 				ga: false
 			}
-		</script>
-		<a href="javascript:void('royal_sonesta_2_v4_1Mbps')" onclick="videoPlayer('PLAY',playlist['royal_sonesta_2_v4_1Mbps']); return false;">
+		</script>-->
+		<!--<a href="javascript:void('royal_sonesta_2_v4_1Mbps')" onclick="videoPlayer('PLAY',playlist['royal_sonesta_2_v4_1Mbps']); return false;">
     		<div style="padding: 10px;">
     			
 		
@@ -439,7 +446,7 @@ selectedHotelDetailTab = "";
 		</div>
 	    			<div class="videoLink">Royal Sonesta</div>
     		</div>
-		</a> <!-- end video royal_sonesta_2_v4_1Mbps -->
+		</a>--> <!-- end video royal_sonesta_2_v4_1Mbps -->
 						<div class="jqmWindow" id="videoModal">
                     	<div class="topRoundCorner">
                       	<div class="roundCorner1 roundCorner"></div>
