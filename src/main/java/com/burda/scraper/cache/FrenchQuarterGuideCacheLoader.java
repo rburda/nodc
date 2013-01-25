@@ -2,6 +2,7 @@ package com.burda.scraper.cache;
 
 import java.net.URI;
 import java.net.URLDecoder;
+import java.util.List;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -19,11 +20,13 @@ import org.slf4j.LoggerFactory;
 
 import com.burda.scraper.dao.HotelDetailCacheKey;
 import com.burda.scraper.dao.HotelDetailDAO;
+import com.burda.scraper.dao.RoomTypeDetailDAO;
 import com.burda.scraper.dao.SourceHotelDAO;
 import com.burda.scraper.model.Amenity;
 import com.burda.scraper.model.Photo;
 import com.burda.scraper.model.persisted.HotelDetail;
 import com.burda.scraper.model.persisted.InventorySource;
+import com.burda.scraper.model.persisted.RoomTypeDetail;
 import com.burda.scraper.model.persisted.SourceHotel;
 
 public class FrenchQuarterGuideCacheLoader
@@ -32,6 +35,7 @@ public class FrenchQuarterGuideCacheLoader
 	
 	private HotelDetailDAO hotelDetailDAO;
 	private SourceHotelDAO sourceHotelDAO;
+	private RoomTypeDetailDAO roomTypeDetailDAO;
 	
 	public void setSourceHotelDAO(SourceHotelDAO shDAO)
 	{
@@ -42,18 +46,18 @@ public class FrenchQuarterGuideCacheLoader
 	{
 		this.hotelDetailDAO = hdd;
 	}
+	
+	public void setRoomTypeDetailDAO(RoomTypeDetailDAO dao)
+	{
+		this.roomTypeDetailDAO = dao;
+	}
+	
 	public void loadCache() throws Exception
 	{
-		boolean hasMorePages = true;
-		int page = 1;
-		while (hasMorePages)
-		{
-			HttpResponse hotelSummaryResponse = queryGetHotelResults(page);
+
+			HttpResponse hotelSummaryResponse = queryGetHotelResults(1);
 			byte[] xml = EntityUtils.toByteArray(hotelSummaryResponse.getEntity());
 			Document xmlSummaryResults = Jsoup.parse(new String(xml), "", Parser.xmlParser());
-
-			int totalNumPages = Integer.valueOf(xmlSummaryResults.select("hotel_data").select("total_pages").first().ownText());
-			hasMorePages = (page++ < totalNumPages);			
 
 			for (Element hotelSummaryEl: xmlSummaryResults.select("hotel"))
 			{
@@ -69,14 +73,15 @@ public class FrenchQuarterGuideCacheLoader
 				byte[] xmlAsBytes = EntityUtils.toByteArray(hotelDetailResponse.getEntity());
 				Element detailsEl = Jsoup.parse(new String(xmlAsBytes), "", Parser.xmlParser()).select("result").first();
 				
-				HotelDetail details = hotelDetailDAO.getHotelDetail(new HotelDetailCacheKey(sourceHotel.getHotelName()));
+				HotelDetailCacheKey cacheKey = new HotelDetailCacheKey(sourceHotel.getHotelName());
+				HotelDetail details = hotelDetailDAO.getHotelDetail(cacheKey);
 				if (details == null)
 				{
 					details = new HotelDetail();
 					details.setName(sourceHotel.getHotelName());
 					details.setAddress1(detailsEl.select("address").first().ownText());
 				}
-							
+				
 				details.setDescription(URLDecoder.decode(detailsEl.select("description_full").first().ownText(), "UTF-8"));
 				details.setAreaDescription(detailsEl.select("district").first().ownText());
 				if (details.getCity() == null)
@@ -110,9 +115,30 @@ public class FrenchQuarterGuideCacheLoader
 						details.addAmenity(amenity);
 					}					
 				}
+				
+				if (details.getRoomTypeDetails().isEmpty())
+				{
+					for (Element roomTypeEl: detailsEl.select("rate"))
+					{
+						RoomTypeDetail rtd = new RoomTypeDetail();
+						rtd.setHotelName(sourceHotel.getHotelName());
+						rtd.setDescription(roomTypeEl.select("room_description").first().ownText());
+						rtd.setDetails(roomTypeEl.select("room_details").first().ownText());
+						rtd.setFeatures(roomTypeEl.select("room_facilities").first().ownText());
+						rtd.setName(roomTypeEl.select("room_title").first().ownText());
+						for (Element photoEl: roomTypeEl.select("room_photo_data").first().select("photo"))
+						{
+							Photo p = new Photo();
+							p.url = photoEl.select("full").first().ownText();
+							rtd.addPhoto(p);
+						}
+						details.addRoomTypeDetail(rtd);
+					}
+				}
+				
+				logger.error("saving: "+ sourceHotel.getHotelName());
 				hotelDetailDAO.save(details);
-			}
-		}		
+			}	
 	}
 	
 	/**
@@ -155,7 +181,7 @@ public class FrenchQuarterGuideCacheLoader
 	private HttpResponse queryGetHotelResults(int page)
 	{
 		URIBuilder builder = new URIBuilder();
-		builder
+		/*builder
 				.setScheme("https")
 				.setHost("secure.rezserver.com")
 				.setPath("/api/hotel/getResults")
@@ -165,6 +191,15 @@ public class FrenchQuarterGuideCacheLoader
 				.addParameter("check_in", new DateTime().plusDays(60).toString(DateTimeFormat.forPattern("MM/dd/yyyy")))
 				.addParameter("check_out", new DateTime().plusDays(61).toString(DateTimeFormat.forPattern("MM/dd/yyyy")))
 				.addParameter("page", String.valueOf(page));
+		*/
+		builder
+			.setScheme("http")
+			.setHost("api.rezserver.com")
+			.setPath("/api/hotel/getStaticHotels")
+			.addParameter("api_key", "5f871629935ff113b876b4bcb1ca70e4")
+			.addParameter("refid", "5057")
+			.addParameter("city_id", "3000008434")
+			.addParameter("limit", String.valueOf(500));	
 		HttpResponse response = null;
 		try
 		{

@@ -1,0 +1,48 @@
+Setup NODC Scraper
+-----------------------------
+1. Login to account: https://194223483005.signin.aws.amazon.com/console (username/pwd)
+2. DynamoDB
+   -- Setup tables (Read Throughput 10: Write Throughput 5)
+3. Generate security key
+     --- IAM  ---> Groups ---> Create New Group
+     --- Name: neworleans.com
+     --- Permissions: Policy Generator
+            DynamoDB
+                Everything except (CreateTable, DeleteTable)
+                ARN: *
+            S3
+               Everything
+               ARN: *
+4. Create new user
+    --- IAM ---> Users ---> Create New User
+    --- Name: scraperapp
+    --- Download credentials
+    --- Add user to group (neworleanscom)
+
+5. Create Elastic Beanstalk
+     --- Elastic Beanstalk
+     --- Server Type: Tomcat 7
+     --- Create New Application (button upper right)
+           Application Name: scraper
+           Description: Search Results for NewOrleans.com
+           Container Type: 64bit Amazon Linux running Tomcat 7
+           Upload source: <war file>
+     --- Launch New Environment
+            Name: staging-nodcsearch.elasticbeanstalk.com
+            Instance Type: t1.micro
+            Existing Key pair: <TBD>
+            Email Address: reubeninvegas@gmail.com
+            Application Health URL: /health
+
+6. Setup Key Pair (for logging into ec2 instance)
+    --- EC2 ---> Key Pairs
+          Create Key Pair (name it)
+          Download .pem file; Place in .ssh folder
+               chmod 400 <.pem file>
+          Associate key pair with elastic beanstalk
+               Elastic BeanStalk
+                    Edit Configuration
+                         Existing KeyPair: <Name given to key pair above>
+         Test Login:
+             From Local Box
+                  ssh -i ~/.ssh/<name of .pem file> ec2-user@<server host name> (can be gotten from ec2 instance list or eclipse management)

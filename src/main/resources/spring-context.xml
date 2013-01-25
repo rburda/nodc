@@ -34,8 +34,13 @@
 	<bean name="awsS3Client" class="com.amazonaws.services.s3.AmazonS3Client">
 		<constructor-arg index="0">
 			<bean class="com.amazonaws.auth.BasicAWSCredentials">
-				<constructor-arg index="0" value="AKIAIGBN2TCGAEZF6UAQ" />
-				<constructor-arg index="1" value="c/THVw9PCgf4dmqLmVBBXzGx0aoyMWVPdxpKd5/3" />
+				<!--  
+					<constructor-arg index="0" value="AKIAIGBN2TCGAEZF6UAQ" />
+					<constructor-arg index="1" value="c/THVw9PCgf4dmqLmVBBXzGx0aoyMWVPdxpKd5/3" />
+			  -->  
+			    <constructor-arg index="0" value="AKIAJ7BT65UECG4TKJTA" />
+			    <constructor-arg index="1" value="0jHOMCMbe45nTthlAFcizIgAWuqd26oTCB7HhbGB" />
+ 
 			</bean>
 		</constructor-arg>
 	</bean>
@@ -43,14 +48,20 @@
 	<bean name="awsDynamoDbClient" class="com.amazonaws.services.dynamodb.AmazonDynamoDBAsyncClient">
 		<constructor-arg index="0">
 			<bean class="com.amazonaws.auth.BasicAWSCredentials">
+			<!-- 	
 				<constructor-arg index="0" value="AKIAIGBN2TCGAEZF6UAQ" />
 				<constructor-arg index="1" value="c/THVw9PCgf4dmqLmVBBXzGx0aoyMWVPdxpKd5/3" />
+			-->
+				<constructor-arg index="0" value="AKIAJ7BT65UECG4TKJTA" />
+			  <constructor-arg index="1" value="0jHOMCMbe45nTthlAFcizIgAWuqd26oTCB7HhbGB" />
+
 			</bean>
 		</constructor-arg>
 	</bean>
 
 	<bean id="hotelDetailDAO" class="com.burda.scraper.dao.HotelDetailDAO">
 		<property name="dynamoDBClient" ref="awsDynamoDbClient" />
+		<property name="roomTypeDetailDAO" ref="roomTypeDetailDAO" />
 	</bean>
 	
 	<bean id="masterHotelDAO" class="com.burda.scraper.dao.MasterHotelDAO">
@@ -60,10 +71,15 @@
 	<bean id="sourceHotelDAO" class="com.burda.scraper.dao.SourceHotelDAO">
 			<property name="dynamoDBClient" ref="awsDynamoDbClient" />	
 	</bean>
+
+	<bean id="roomTypeDetailDAO" class="com.burda.scraper.dao.RoomTypeDetailDAO">
+			<property name="dynamoDBClient" ref="awsDynamoDbClient" />	
+	</bean>
 	
 	<bean id="frenchQtrGuideCacheLoader" class="com.burda.scraper.cache.FrenchQuarterGuideCacheLoader" >
 		<property name="hotelDetailDAO" ref="hotelDetailDAO" />
 		<property name="sourceHotelDAO" ref="sourceHotelDAO" />
+		<property name="roomTypeDetailDAO" ref="roomTypeDetailDAO" />
 	</bean>
 	
 	<bean id="frenchQtrGuideOneTimeLoader" class="com.burda.scraper.cache.OneTimeHotelLoader">

@@ -36,6 +36,7 @@ public class HotelDetail implements Serializable
 	private String longitude;
 	private float rating;
 	private String mapUrl;
+	private List<RoomTypeDetail> roomTypeDetails = Lists.newArrayList();
 	private List<Photo> photos = Lists.newArrayList();
 	private List<Amenity> amenities = Lists.newArrayList();
 	
@@ -230,6 +231,25 @@ public class HotelDetail implements Serializable
 		{
 			logger.error("unable to deserialize amenities", e);
 		}
+	}
+	
+	@DynamoDBIgnore
+	public List<RoomTypeDetail> getRoomTypeDetails()
+	{
+		return roomTypeDetails;
+	}
+	
+	@DynamoDBIgnore	
+	public void setRoomTypeDetails(List<RoomTypeDetail> rtds)
+	{
+		this.roomTypeDetails = rtds;
+	}
+	
+	@DynamoDBIgnore
+	public void addRoomTypeDetail(RoomTypeDetail rtd)
+	{
+		if (!roomTypeDetails.contains(rtd))
+			this.roomTypeDetails.add(rtd);
 	}
 	
 	@DynamoDBIgnore
