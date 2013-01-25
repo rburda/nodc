@@ -303,7 +303,7 @@ url,
                 <!-- /links_cart -->
                 <div id="navigation">
                     <ul class="top_nav">
-                        <li title="home"><a href="/" title="New Orleans Home">Home</a> </li>
+                        <li title="home"><a href="http://www.neworleans.com" title="New Orleans Home">Home</a> </li>
                         <li class="selected" title="hotels"><a href="http://www.neworleans.com/new-orleans-hotels/"
                             title="New Orleans Hotels">Hotels</a> </li>
                         <li title="airhotel"><a href="http://www.neworleans.com/new-orleans-vacation-packages/"
@@ -539,8 +539,29 @@ url,
                                         class="productThumb" />
                                 </a></#if>
                                 <div class="productSummary">
-                                    <p>
-                                        <img width="71" height="14" alt="Star Rating" src="http://www.neworleans.com/common/images/star_2_0.gif" />${hotel.hotelDetails.areaDescription!''}
+								<#assign rating=hotel.hotelDetails.rating>
+								<#assign ratingSrc=''>
+                                    <p><#if rating == 1.0>
+									   <#assign ratingSrc='http://www.neworleans.com/common/images/star_1_0.gif'>
+									   <#elseif rating == 1.5>
+									   <#assign ratingSrc='http://www.neworleans.com/common/images/star_1_5.gif'>
+										<#elseif rating == 2.0>
+									   <#assign ratingSrc='http://www.neworleans.com/common/images/star_2_0.gif'>
+										<#elseif rating == 2.5>
+									   <#assign ratingSrc='http://www.neworleans.com/common/images/star_2_5.gif'>
+										<#elseif rating == 3.0>
+									   <#assign ratingSrc='http://www.neworleans.com/common/images/star_3_0.gif'>
+										<#elseif rating == 3.5>
+									   <#assign ratingSrc='http://www.neworleans.com/common/images/star_3_5.gif'>
+										<#elseif rating == 4.0>
+									   <#assign ratingSrc='http://www.neworleans.com/common/images/star_4_0.gif'>
+										<#elseif rating == 4.5>
+									   <#assign ratingSrc='http://www.neworleans.com/common/images/star_4_5.gif'>
+										<#elseif rating == 5.0>
+									   <#assign ratingSrc='http://www.neworleans.com/common/images/star_5_0.gif'>
+
+									   </#if>
+                                        <img width="71" height="14" alt="" src="${ratingSrc}" />${hotel.hotelDetails.areaDescription!''}
                                         (<a onclick="popup('map', '${hotel.name}');" href="#map">Map</a>)&nbsp;<a onclick="popup('photos', '${hotel.name}');" href="#photos">Photos</a>&nbsp;
                                     </p>
                                     <p>

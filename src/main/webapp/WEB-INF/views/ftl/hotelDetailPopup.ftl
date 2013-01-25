@@ -35,8 +35,11 @@
 				<script type="text/javascript">
 			/* <![CDATA[ */
 			//Google Maps loading
-			var lat = ${hotelDetail.latitude!'0.0'};
-			var lng = ${hotelDetail.longitude!'0.0'};
+			var lat="";
+			var lng="";
+			var empty="empty";
+			lat = ${hotelDetail.latitude!'empty'};
+			lng = ${hotelDetail.longitude!'empty'};
 			var map;
 			
 			function initMaps() {
@@ -85,8 +88,10 @@
 			
 			var $tabs;
 			jQuery().ready(function() {
-			if(lat>0.0 && lng>0.0){
-			initMaps();
+			if(lat==empty || lng==empty){
+
+			}else{
+						initMaps();
 			}
 				if (typeof selectedHotelDetailTab != 'undefined')
 {
@@ -192,14 +197,36 @@ selectedHotelDetailTab = "";
 			</div>
 			<div class="productSummary">
     			<h1 class="fn org hotel-title">${hotelDetail.name!''}</h1>
-				<div class="rating productStars"><img src="http://www.neworleans.com/images/star-rating-4_5.png" alt="4.50" /></div>
+				<#assign rating=hotelDetail.rating>
+								<#assign ratingSrc=''>
+                                    <p><#if rating == 1.0>
+									   <#assign ratingSrc='http://www.neworleans.com/common/images/star_1_0.gif'>
+									   <#elseif rating == 1.5>
+									   <#assign ratingSrc='http://www.neworleans.com/common/images/star_1_5.gif'>
+										<#elseif rating == 2.0>
+									   <#assign ratingSrc='http://www.neworleans.com/common/images/star_2_0.gif'>
+										<#elseif rating == 2.5>
+									   <#assign ratingSrc='http://www.neworleans.com/common/images/star_2_5.gif'>
+										<#elseif rating == 3.0>
+									   <#assign ratingSrc='http://www.neworleans.com/common/images/star_3_0.gif'>
+										<#elseif rating == 3.5>
+									   <#assign ratingSrc='http://www.neworleans.com/common/images/star_3_5.gif'>
+										<#elseif rating == 4.0>
+									   <#assign ratingSrc='http://www.neworleans.com/common/images/star_4_0.gif'>
+										<#elseif rating == 4.5>
+									   <#assign ratingSrc='http://www.neworleans.com/common/images/star_4_5.gif'>
+										<#elseif rating == 5.0>
+									   <#assign ratingSrc='http://www.neworleans.com/common/images/star_5_0.gif'>
+
+									   </#if>
+				<div class="rating productStars"><img src="${ratingSrc}" alt="" /></div>
 				<div class="adr">
 					<div class="address1 street-address">${hotelDetail.address1!''}</div>
 					<div class="address2 extended-address"></div>
-					<div class="cityStatePC"><span class="locality">${hotelDetail.city!''}</span>, <span class="region">${hotelDetail.state!''}</span> <span class="postal-code">92121</span></div>
+					<div class="cityStatePC"><span class="locality">${hotelDetail.city!''}</span> <span class="region">${hotelDetail.state!''}</span> <span class="postal-code">${hotelDetail.zip!''}</span></div>
                     <div class="tel">NewOrleans.com Reservation Hotline: 1-855-639-6756</div>
 				</div>
-                <p>Location: ${hotelDetail.areaDescription!''}</p>
+                <#if hotelDetail.areaDescription?has_content><p>Location: ${hotelDetail.areaDescription!''}</p></#if>
 			</div>
 			<div class="clear"></div>
 		</div>
