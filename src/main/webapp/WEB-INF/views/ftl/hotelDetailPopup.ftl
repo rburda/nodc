@@ -35,8 +35,11 @@
 				<script type="text/javascript">
 			/* <![CDATA[ */
 			//Google Maps loading
-			var lat = ${hotelDetail.latitude!'0.0'};
-			var lng = ${hotelDetail.longitude!'0.0'};
+			var lat="";
+			var lng="";
+			var empty="empty";
+			lat = ${hotelDetail.latitude!'empty'};
+			lng = ${hotelDetail.longitude!'empty'};
 			var map;
 			
 			function initMaps() {
@@ -85,8 +88,10 @@
 			
 			var $tabs;
 			jQuery().ready(function() {
-			if(lat>0.0 && lng>0.0){
-			initMaps();
+			if(lat==empty || lng==empty){
+
+			}else{
+						initMaps();
 			}
 				if (typeof selectedHotelDetailTab != 'undefined')
 {
