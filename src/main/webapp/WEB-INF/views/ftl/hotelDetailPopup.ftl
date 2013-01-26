@@ -431,6 +431,13 @@ ${roomType.features!''}
 		<!-- module 164201 -->
 		
 		<div id="gallery" class="photo_content">
+		<style type="text/css">
+    	#slideshow img
+    	{
+    		width: 370px;
+			height: 375px;
+    	}
+		</style>
 			<div id="controls" class="controls"></div>
 			<div class="slideshow-container">
 				<div id="loading" class="loader"></div>
