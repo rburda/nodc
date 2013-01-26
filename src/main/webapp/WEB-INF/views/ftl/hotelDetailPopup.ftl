@@ -237,7 +237,7 @@ selectedHotelDetailTab = "";
         <div class="clear"></div>
 		<div id="destinations">
 
-    		<div id="tabs" class="tab-row" style="width:668px;border-left-width: 0;border-right-width: 0;">
+    		<div id="tabs" class="tab-row" style="width:668px">
     			<ul class="tabList">
                 	<li><a href="#rooms"><span>Rooms</span></a></li>
 					<li><a href="#description"><span>Description</span></a></li>
@@ -248,64 +248,126 @@ selectedHotelDetailTab = "";
 					<li><a href="#deals-promos"><span>Deals</span></a></li>    				
                 </ul>
     			<div class="clear"></div>
-				<div id="rooms" class="roomsTab tabbed-item">
-    				<h2>Room Descriptions</h2>
-    				
-		    <div class="tabRoom" id="11658">
-    		<div class="tabText">
-        		<h4>Deluxe Double</h4>
-				        		
-		<img class="photo previewThumb productThumb" src="/room-details/images/RS_deluxe-double.jpg" alt="Royal Sonesta Deluxe Double" height='188' width='250' />
-									<p>This spacious <b>Royal Sonesta</b> room has <b>two double beds</b> that come with pillow-top mattresses. The dê¤¯r is elegant and features antique-reproduction art and furnishings. There is a view of either the street or inner courtyard. There is a satellite TV as well as a table and two chairs. Coffeemakers can be requested and are subject to availability.</p><p>The marble bathrooms have <b>a combined shower/bathtub</b> and designer toiletries.</p>				<strong>Amenities Include:</strong> 
-													Air conditioning,									Iron / Ironing board,									In-room safe,									Mini bar,									Alarm clock,									Climate control,									Complimentary newspaper,									Rollaway bed (On request),									Crib (On request),									Daily maid service,									Turndown service,									High-Speed Internet access (Complimentary),									Wireless Internet access (Complimentary),									Hair dryer,									Combined shower and bathtub,									Complimentary toiletries,									Television,									Cable / Satellite television channels,									Radio,									CD player,									Video game console and games,									Multi-line telephone,									Voice Mail,									Wake-up Calls,									Pillowtop mattresses,									Premium bedding				    		</div>
-			
-			<div class="clear"></div>
-		</div>
-	
-		<div class="tabRoom" id="11657">
-    		<div class="tabText">
-        		<h4>Deluxe King</h4>
-				        		
-		<img class="photo previewThumb productThumb" src="/room-details/images/RS_deluxe.jpg" alt="Royal Sonesta Deluxe" height='188' width='250' />
-									<p>This spacious <b>Royal Sonesta</b> room has <b>one king bed</b> that comes with a pillow-top mattress. The dê¤¯r is elegant and features antique-reproduction art and furnishings. There is a view of either the street or inner courtyard. There is a satellite TV as well as a table and two chairs. Coffeemakers can be requested and are subject to availability.</p><p>The marble bathrooms have <b>a combined shower/bathtub</b> and designer toiletries.</p>				<strong>Amenities Include:</strong> 
-													Air conditioning,									Iron / Ironing board,									In-room safe,									Mini bar,									Alarm clock,									Climate control,									Complimentary newspaper,									Rollaway bed (On request),									Crib (On request),									Daily maid service,									Turndown service,									High-Speed Internet access (Complimentary),									Wireless Internet access (Complimentary),									Hair dryer,									Combined shower and bathtub,									Complimentary toiletries,									Television,									Cable / Satellite television channels,									Radio,									CD player,									Video game console and games,									Multi-line telephone,									Voice Mail,									Wake-up Calls,									Pillowtop mattresses,									Premium bedding				    		</div>
-			
-			<div class="clear"></div>
-		</div>
-	
-		<div class="tabRoom" id="11659">
-    		<div class="tabText">
-        		<h4>Standard</h4>
-				        		
-		<img class="photo previewThumb productThumb" src="/room-details/images/RS_standard.jpg" alt="Royal Sonesta Standard " height='188' width='250' />
-									<p>This <b>Royal Sonesta</b> room has one king, one queen or two double beds. The dê¤¯r is elegant and features antique-reproduction art and furnishings. There is a view from the windows of either the street or inner courtyard. Guests will enjoy a satellite TV. Coffeemakers can be requested and are subject to availability.</p><p>The marble bathrooms have <b>a combined shower/bathtub</b>.</p>				<strong>Amenities Include:</strong> 
-													Air conditioning,									Iron / Ironing board,									In-room safe,									Alarm clock,									Climate control,									Complimentary newspaper,									Daily maid service,									Turndown service,									Window opens,									High-Speed Internet access (Complimentary),									Wireless Internet access (Complimentary),									Hair dryer,									Combined shower and bathtub,									Complimentary toiletries,									Television,									Cable / Satellite television channels,									Radio,									CD player,									Video game console and games,									Multi-line telephone,									Voice Mail,									Wake-up Calls,									Premium bedding				    		</div>
-			
-			<div class="clear"></div>
-		</div>
-	
-		<div class="tabRoom" id="12528">
-    		<div class="tabText">
-        		<h4>R-Club Concierge Accommodations</h4>
-				        		
-		<img class="photo previewThumb productThumb" src="/room-details/images/RS_deluxe.jpg" alt="Royal Sonesta Deluxe" height='188' width='250' />
-									<p>The decor in this <b>Royal Sonesta</b> room reflects traditional French Quarter design. Featuring <b>one king bed or two double beds</b> with pillowtop mattresses and a seating area with two chairs and a small table. Along with R-Club Concierge Accommodations, this room has daily maid service, turndown service and wake-up calls.</p><p>The bathroom has a <b>combined shower and tub</b>.</p><p>R-Club guests enjoy:</p><p>In the Private Club Lounge:</p><p>Õ 24-hour concierge service<span class="Apple-converted-space"> <br />Õ Breakfast beginning at 6:00 a.m. <br />Õ Afternoon coffee and tea service accompanied by fresh baked goods <br />Õ Cocktail and hors d'oeuvres offered from 5:00 p.m. to 8:00 p.m. <br />Õ Assortment of magazines and daily newspapers for your reading pleasure <br />Õ Wireless Internet <br />Õ iMac guest computer <br />Õ 52-inch flat-screen television </span></p><p><span class="Apple-converted-space">In the room</span>:<span class="Apple-converted-space"> </span></p><p>Õ Fresh flowers in-room daily<span class="Apple-converted-space"> <br />Õ Luxurious bed and bath linens <br />Õ Deluxe robes and bath amenities <br />Õ Personal in-room safe <br />Õ Complimentary newspaper daily <br />Õ Morning and evening housekeeping service <br />Õ Complimentary bottled water </span></p>				<strong>Amenities Include:</strong> 
-													Air conditioning,									Complimentary breakfast,									Iron / Ironing board,									In-room safe,									Alarm clock,									Complimentary newspaper,									Complimentary bottled water,									Robes,									Slippers,									Daily maid service,									Turndown service,									Wireless Internet access (Complimentary),									Hair dryer,									Combined shower and bathtub,									Complimentary toiletries,									Flatscreen television,									Wake-up Calls,									Premium bedding				    		</div>
-			
-			<div class="clear"></div>
-		</div>
-	
-		<div class="tabRoom" id="12602">
-    		<div class="tabText">
-        		<h4>Conti/Bienville Street Balcony</h4>
-				        		
-		<img class="photo previewThumb productThumb" src="/room-details/images/royalsonestabalcony.jpg" alt="Royal Sonesta Conti / Bienville Balcony Room" height='188' width='250' />
-									<p>The decor in this <b>Royal Sonesta</b> room reflects a traditional French Quarter design and features <b>one king bed</b> with pillowtop mattresses and king-size pillows. Guests will enjoy a wrought iron balcony overlooking either Conti or Bienville Street. Please note: This room does NOT overlook Bourbon Street. There is a desk and chair plus a seating area with two chairs and a small table.</p><p>The marble bathroom has a <b>combined shower and tub</b>.</p>				<strong>Amenities Include:</strong> 
-													Air conditioning,									Iron / Ironing board,									In-room safe,									Alarm clock,									Climate control,									Complimentary newspaper,									Daily maid service,									Turndown service,									Window opens,									High-Speed Internet access (Complimentary),									Wireless Internet access (Complimentary),									Hair dryer,									Combined shower and bathtub,									Complimentary toiletries,									Television,									Pay-Per-View movies,									Radio,									CD player,									Video game console and games,									Voice Mail,									Wake-up Calls,									Pillowtop mattresses,									Premium bedding				    		</div>
-			
-			<div class="clear"></div>
-		</div>
-	    			</div> <!-- /roomsTab -->
+				<div id="rooms" class="roomsTab">
+				
+    		
+<script type="text/javascript">
+if (!window.GRTP)
+{
+window.GRTP =
+{
+togglePromoDetails : function(clicked)
+{
+$(clicked).parents('div.jqRoomRates').find(
+'div.jqPromo').toggle();
+return false;
+}
+}
+}
+</script>
+<#list hotelDetail.roomTypeDetails as roomType>
+<div class="room_details">
+<div class="tabText">
+
+
+<div id="id8a1" class="jqRoomRates">
+<div id="id8a2" class="">
+
+</div>
+<div id="id8a3">
+<table cellspacing="0" cellpadding="0" border="0" class="hotelResults">
+<thead>
+<tr>
+<th class="productCol"><span>${roomType.name}</span>
+</th>
+<th class="dayCol">Sat
+</th><th class="dayCol">Sun
+</th>
+<th class="priceCol"><strong>Avg Nightly Rate
+</strong><br> per night, per room
+</th>
+<th class="bookItCol">&nbsp;</th>
+</tr>
+</thead>
+
+<tbody>
+
+
+
+<tr class="cyl-HotelRow ">
+
+<td rowspan="1" class="productCol">
+<span>${roomType.name}</span>
+  </td>
+
+<td class="dayCol">
+
+<span>$119</span>
+
+</td><td class="dayCol">
+
+<span>$105</span>
+
+</td>
+<td rowspan="1" class="priceCol">
+
+<span>$112.00</span>
+</td>
+
+<td rowspan="1" class="bookItCol"><input type="button" border="0" value="" onclick="_gaq.push(['_trackPageview', &quot;/neworleans/HOTEL/BookIt/The Cotton Exchange Hotel/Double&quot;]);var wcall=wicketAjaxGet('?wicket:interface=:11:browseItems:browseableProducts:1:itemContainer:hotelDetailPopupWin:content:tabPanels:roomsTab:roomTypes:0:roomRates:hotelRatesContainer:roomRatesContainer:roomRatesRepeater:0:roomRatesBodyContent:firstWeek:bookButtonColumn:bookButton::IBehaviorListener:0:-1',function() { }.bind(this),function() { }.bind(this), function() {return Wicket.$('id8a4') != null;}.bind(this));return !wcall;" id="id8a4" class="bookIt" alt="">
+</td>
+</tr>
+
+<tr class="jqRoomDetails" style="display:none">
+<td class="productCol" colspan="5">
+<div class="jqPromo">
+
+
+</div>
+<div class="clear"></div></td>
+</tr>
+
+
+
+</tbody>
+</table>
+</div>
+
+
+
+<!-- new promo group fragment 1 week -->
+
+
+
+
+
+</div>
+
+<div class="room_details">
+<div class="room_image">
+<#if (roomType.photos?size > 0)>
+<img src="${roomType.photos[0].url!''}">
+</#if>
+</div>
+<p>
+${roomType.details!''}
+</p>
+<#if roomType.features?has_content>
+<p class="amenities">
+<strong>Amenities Include:
+</strong>
+${roomType.features!''}
+</p>
+</#if>
+<div class="clear"></div>
+</div>
+<div class="clear"></div>
+</div>
+</div>
+</#list>
+
+
+</div> <!-- /roomsTab -->
 				<div id="description" class="expertTab tabbed-item">
     				<h2>Description</h2>
     				<p>
@@ -313,52 +375,7 @@ selectedHotelDetailTab = "";
 					</p>    			</div> <!-- /description -->
     			<div id="hotelDetails" class="hotelDetailsTab tabbed-item">
 					<h2>Hotel Details</h2>
-																																																												
-							
-							
-							
-									
-							
-									
-									
-									
-									
-									
-									
-									
-									
-									
-									
-									
-									
-									
-									
-									
-									
-									
-									
-									
-							
-									
-							
-									
-									
-									
-									
-									
-									
-									
-									
-							
-									
-							
-							
-									
-									
-									
-									
-									
-									
+						
 				    		    						
 				<div style="width: 293px; float: left;">
 				<div class="feature-container"><strong class="feature-name">Number of Rooms:</strong> <p>483.</p></div>
