@@ -7,6 +7,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -43,14 +44,19 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import com.burda.scraper.dao.HotelDetailCacheKey;
 import com.burda.scraper.dao.HotelDetailDAO;
 import com.burda.scraper.dao.SourceHotelDAO;
+import com.burda.scraper.model.Amenity;
 import com.burda.scraper.model.DailyRate;
 import com.burda.scraper.model.Hotel;
+import com.burda.scraper.model.Photo;
 import com.burda.scraper.model.RoomType;
 import com.burda.scraper.model.SearchParams;
+import com.burda.scraper.model.persisted.HotelDetail;
 import com.burda.scraper.model.persisted.InventorySource;
+import com.burda.scraper.model.persisted.RoomTypeDetail;
 import com.burda.scraper.model.persisted.SourceHotel;
 import com.google.code.ssm.api.format.SerializationType;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 public class NODCWarehouse implements Warehouse
 {
@@ -71,6 +77,7 @@ public class NODCWarehouse implements Warehouse
 			this.jsessionId = "";
 			this.wwwsid = "";
 			this.wicketSessionPathForSearch = "";
+			createNewSession();
 		}
 		
 		private SessionInfo(HttpServletRequest servletRequest)
@@ -215,25 +222,107 @@ public class NODCWarehouse implements Warehouse
 	public List<Hotel> getAllShellHotels() throws Exception
 	{
 		List<Hotel> hotels = Lists.newArrayList();
+		URIBuilder builder = new URIBuilder();
+		builder
+				.setScheme("http")
+				.setHost("www.neworleans.com")
+				.setPath("/new-orleans-hotels");
 		
-		SearchParams sp = SearchParams.oneRoomOneAdult(
-				new LocalDate().plusMonths(1), new LocalDate().plusMonths(1).plusDays(2));		
-		
-		String response = queryNODCHotelsViaHttpClient(new SessionInfo(), sp);
-		Document document = Jsoup.parse(response, "http://www.neworleans.com/mytrip/app");
-		for (Element hotelEl: document.select("[name=preferredProductId]").first().select("option"))
+		try
 		{
-			if (hotelEl.ownText().equalsIgnoreCase("All Hotels"))
-				continue;
+			HttpGet httpget = new HttpGet(builder.build());
 			
-			Hotel h = new Hotel();
-			SourceHotel source = new SourceHotel();
-			source.setExternalHotelId(hotelEl.val());
-			source.setHotelName(hotelEl.ownText());
-			source.setInvSource(com.burda.scraper.model.persisted.InventorySource.NODC);
-			h.setSource(source);
+			DefaultHttpClient httpClient = new DefaultHttpClient();
+			HttpParams httpParams = httpClient.getParams();
+			HttpConnectionParams.setConnectionTimeout(httpParams, 45000);
+	    HttpConnectionParams.setSoTimeout(httpParams, 45000);	
+	    
+	    HttpResponse resp = httpClient.execute(httpget);
+	    Document d = Jsoup.parse(EntityUtils.toString(resp.getEntity()));
+	    for (Element hotelLink: d.select(".product-price"))
+	    {
+	    	builder = new URIBuilder();
+	    	builder
+	    		.setScheme("http")
+	    		.setHost("www.neworleans.com")
+	    		.setPath(hotelLink.select(".product-title a").first().attr("href"));
+	    	resp = httpClient.execute(new HttpGet(builder.build()));
+	    	Document indHotelDoc = Jsoup.parse(EntityUtils.toString(resp.getEntity()));
+	
+				Hotel h = new Hotel();
+				h.setName(indHotelDoc.select(".hotel-title").first().ownText());
+				SourceHotel source = new SourceHotel();
+				
+				String extHotelId = indHotelDoc.select("[insertto=hotelWidgetPlaceholder]").first().attr("widget");
+				int idx = extHotelId.indexOf("productId=");
+				source.setExternalHotelId(extHotelId.substring(idx+10, extHotelId.length()));
+				source.setHotelName(h.getName());
+				source.setInvSource(com.burda.scraper.model.persisted.InventorySource.NODC);
+				h.setSource(source);
+				
+				HotelDetail detail = new HotelDetail();
+				h.setHotelDetails(detail);
+				detail.setName(h.getName());
+				detail.setDescription(indHotelDoc.select("#tabs #description").first().ownText());
+				detail.setAreaDescription(hotelLink.select(".product-area").first().ownText());
+				detail.setAddress1(indHotelDoc.select(".adr .address1").first().ownText());
+				detail.setCity(indHotelDoc.select(".adr .cityStatePC .locality").first().ownText());
+				detail.setState(indHotelDoc.select(".adr .cityStatePC .region").first().ownText());
+				detail.setZip(indHotelDoc.select(".adr .cityStatePC .postal-code").first().ownText());
+				detail.setLatitude(indHotelDoc.select("[property=v:latitude]").first().attr("content"));
+				detail.setLongitude(indHotelDoc.select("[property=v:longitude]").first().attr("content"));
+				detail.setRating(Float.valueOf(indHotelDoc.select(".productStars img").first().attr("alt")));
 			
-			hotels.add(h);
+				detail.clearAmenities();
+				for (Element amenityEl: indHotelDoc.select(".feature-container"))
+				{
+					Amenity a = new Amenity();
+					a.name = amenityEl.select(".feature-name").first().ownText();
+					Element descEl = amenityEl.select("p").first();
+					if (descEl != null)
+						a.description = descEl.ownText();
+					else
+						a.description = amenityEl.ownText();
+					detail.addAmenity(a);
+				}
+				
+				detail.clearPhotos();
+				for (Element photoEl: indHotelDoc.select("#thumbs .thumbs .thumb"))
+				{
+					Photo p = new Photo();
+					p.url = "http://www.neworleans.com"+photoEl.select("img").first().attr("src");
+					detail.addPhoto(p);
+				}
+					
+				for (Element roomEl: indHotelDoc.select(".tabRoom"))
+				{
+					RoomTypeDetail rtd = new RoomTypeDetail();
+					rtd.setName(roomEl.select(".tabText h4").first().ownText());
+					rtd.setHotelName(h.getName());
+					StringBuffer desc = new StringBuffer();
+					for (Element descEl: roomEl.select(".tabText p"))
+					{
+						desc.append("<p>");
+						desc.append(descEl.html());
+						desc.append("<\\p>");
+					}
+					rtd.setDetails(desc.toString());
+					rtd.setFeatures(roomEl.select(".tabText").first().ownText());
+					
+					Photo p = new Photo();
+					p.url = "http://www.neworleans.com"+roomEl.select(".tabText img").first().attr("src");
+					rtd.addPhoto(p);
+					detail.addRoomTypeDetail(rtd);
+				}
+				
+				
+				hotels.add(h);	    	
+	    }
+	    
+		}
+		catch (Exception e)
+		{
+			logger.error("Unable to query shell hotels", e);
 		}
 		
 		return hotels;
@@ -320,13 +409,7 @@ public class NODCWarehouse implements Warehouse
 				break;				
 			}
 			
-			Element hName = searchResult.select(".productTitle a").first();
-			//Element hDescription = searchResult.select(".productSummary p:eq(1)").first();	
-			//Element hArea = searchResult.select(".productSummary p:eq(0)").first();
-			//Element hMapUrl = searchResult.select(".productSummary p:eq(0) a").first();
-			//Element hMoreInfoUrl = searchResult.select(".productSummary p:eq(2) a:eq(0)").first();
-			//Element hPhotosUrl = searchResult.select(".productSummary p:eq(0) a:eq(1)").first();
-			
+			Element hName = searchResult.select(".productTitle a").first();			
 			Hotel hotel = new Hotel();
 			
 			String extHotelId = 
@@ -390,50 +473,6 @@ public class NODCWarehouse implements Warehouse
 		}	
 		
 		return hotels;
-	}
-	
-	private String calculateStandardUrl(Element el)
-	{
-		String onclick = el.attr("onclick");
-		int beginIdx = onclick.indexOf("?");
-		int endIdx = onclick.indexOf("',");
-		
-		return onclick.substring(beginIdx+1, endIdx);			
-	}
-	
-	private String calculatePhotosUrl(Element photoUrl)
-	{
-		String onclick = photoUrl.attr("onclick");
-		int beginIdx = onclick.indexOf("?");
-		int endIdx = onclick.indexOf("',");
-		
-		return onclick.substring(beginIdx+1, endIdx);			
-	}
-	
-	private String calculateMoreInfoUrl(Element moreInfoUrl)
-	{
-		String onclick = moreInfoUrl.attr("onclick");
-		int beginIdx = onclick.indexOf("?");
-		int endIdx = onclick.indexOf("',");
-		
-		return onclick.substring(beginIdx+1, endIdx);			
-	}
-	
-	private String calculateMapUrl(Element mapUrl)
-	{
-		String onclick = mapUrl.attr("onclick");
-		int beginIdx = onclick.indexOf("?");
-		int endIdx = onclick.indexOf("',");
-		
-		return onclick.substring(beginIdx+1, endIdx);		
-	}
-	
-	private String calculateArea(Element area)
-	{
-		int beginIdx = area.ownText().indexOf("Area:");
-		int endIdx = area.ownText().indexOf("(");
-		
-		return area.ownText().substring(beginIdx, endIdx);
 	}
 	
 	private String calculateBookItUrl(Element bookIt)

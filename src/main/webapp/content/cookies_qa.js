@@ -28,7 +28,7 @@
 	            {
 	            	document.cookie = 'parent_sid='+wwwsid+";domain=.www.neworleans.com";
 	            }
-	            cyljq('.hotelSearchForm').attr("action", "http://qa-nodcsearch.elasticbeanstalk.com/startSearch");        	
+	            cyljq('.hotelSearchForm').attr("action", "http://book.www.neworleans.com/startSearch");        	
 	        }
             window.nodcActionUpdated=true;
 		});

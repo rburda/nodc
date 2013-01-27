@@ -201,6 +201,12 @@ public class HotelDetail implements Serializable
 		this.photos.add(p);
 	}
 	
+	@DynamoDBIgnore
+	public void clearPhotos()
+	{
+		this.photos.clear();
+	}
+	
 	@JsonIgnore
 	@DynamoDBAttribute(attributeName = "amenities_json")
 	public String getAmenitiesJsonString()
@@ -262,5 +268,11 @@ public class HotelDetail implements Serializable
 	public void addAmenity(Amenity a)
 	{
 		this.amenities.add(a);
+	}
+	
+	@DynamoDBIgnore
+	public void clearAmenities()
+	{
+		this.amenities.clear();
 	}
 }

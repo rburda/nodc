@@ -90,50 +90,45 @@ public class FrenchQuarterGuideCacheLoader
 					details.setState("");
 				if (details.getZip() == null)
 					details.setZip("");
-				if (details.getLatitude() == null)
-					details.setLatitude(detailsEl.select("latitude").first().ownText());
-				if (details.getLongitude() == null)
-					details.setLongitude(detailsEl.select("longitude").first().ownText());
+				details.setLatitude(detailsEl.select("latitude").first().ownText());
+				details.setLongitude(detailsEl.select("longitude").first().ownText());
 				details.setRating(Float.valueOf(detailsEl.select("star_rating").first().ownText()));
 
-				if (details.getPhotos().isEmpty())
+				details.clearPhotos();
+				for (Element photoEl: detailsEl.select("photo_data").first().select("photo"))
 				{
-					for (Element photoEl: detailsEl.select("photo_data").first().select("photo"))
-					{
-						Photo photo = new Photo();
-						photo.url = photoEl.ownText();
-						details.addPhoto(photo);
-					}					
-				}
+					Photo photo = new Photo();
+					photo.url = photoEl.ownText();
+					details.addPhoto(photo);
+				}					
 				
-				if (details.getAmenities().isEmpty())
+				details.clearAmenities();
+				for (Element topAmenityEl: detailsEl.select("top_amenities").first().select("amenity"))
 				{
-					for (Element topAmenityEl: detailsEl.select("top_amenities").first().select("amenity"))
-					{
-						Amenity amenity = new Amenity();
-						amenity.name = topAmenityEl.select("amenity_name").first().ownText();
-						details.addAmenity(amenity);
-					}					
-				}
+					Amenity amenity = new Amenity();
+					amenity.name = topAmenityEl.select("amenity_name").first().ownText();
+					details.addAmenity(amenity);
+				}					
 				
-				if (details.getRoomTypeDetails().isEmpty())
+				if (details.getRoomTypeDetails() != null && !details.getRoomTypeDetails().isEmpty())
+					roomTypeDetailDAO.delete(details.getRoomTypeDetails());
+				
+
+				for (Element roomTypeEl: detailsEl.select("rate"))
 				{
-					for (Element roomTypeEl: detailsEl.select("rate"))
+					RoomTypeDetail rtd = new RoomTypeDetail();
+					rtd.setHotelName(sourceHotel.getHotelName());
+					rtd.setDescription(roomTypeEl.select("room_description").first().ownText());
+					rtd.setDetails(roomTypeEl.select("room_details").first().ownText());
+					rtd.setFeatures(roomTypeEl.select("room_facilities").first().ownText());
+					rtd.setName(URLDecoder.decode(roomTypeEl.select("room_title").first().ownText(), "UTF-8"));
+					for (Element photoEl: roomTypeEl.select("room_photo_data").first().select("photo"))
 					{
-						RoomTypeDetail rtd = new RoomTypeDetail();
-						rtd.setHotelName(sourceHotel.getHotelName());
-						rtd.setDescription(roomTypeEl.select("room_description").first().ownText());
-						rtd.setDetails(roomTypeEl.select("room_details").first().ownText());
-						rtd.setFeatures(roomTypeEl.select("room_facilities").first().ownText());
-						rtd.setName(roomTypeEl.select("room_title").first().ownText());
-						for (Element photoEl: roomTypeEl.select("room_photo_data").first().select("photo"))
-						{
-							Photo p = new Photo();
-							p.url = photoEl.select("full").first().ownText();
-							rtd.addPhoto(p);
-						}
-						details.addRoomTypeDetail(rtd);
+						Photo p = new Photo();
+						p.url = photoEl.select("full").first().ownText();
+						rtd.addPhoto(p);
 					}
+					details.addRoomTypeDetail(rtd);
 				}
 				
 				logger.error("saving: "+ sourceHotel.getHotelName());
