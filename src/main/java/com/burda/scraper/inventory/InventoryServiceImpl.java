@@ -71,17 +71,17 @@ public class InventoryServiceImpl implements InventoryService
 		Session session = new Session(params);
 		session.setCurrentPage(1);
 		session.setCurrentSort(SortType.DEFAULT);
-		cache.set(params.getSessionId(), SESSION_CACHE_TIMEOUT_IN_SECONDS, session, SerializationType.JSON );
+		cache.set(params.getSessionInfo().getSessionId(), SESSION_CACHE_TIMEOUT_IN_SECONDS, session, SerializationType.JSON );
 	}
 	
 	@Override
-	public SearchResult getAggragatedResults(String sessionId, SortType sortBy, Integer page) 
+	public SearchResult getAggragatedResults(SessionInfo sessionInfo, SortType sortBy, Integer page) 
 	{
 		SearchResult sr = null;
-		Session s = getFromCache(sessionId);
+		Session s = getFromCache(sessionInfo.getSessionId());
 		Multimap<InventorySource, Hotel> rawResults = HashMultimap.create();
-		Collection<Hotel> nodcHotels = (Collection<Hotel>)getFromCache(sessionId+InventorySource.NODC.name());
-		Collection<Hotel> fqgHotels = (Collection<Hotel>)getFromCache(sessionId+InventorySource.FQG.name());
+		Collection<Hotel> nodcHotels = (Collection<Hotel>)getFromCache(sessionInfo.getSessionId()+InventorySource.NODC.name());
+		Collection<Hotel> fqgHotels = (Collection<Hotel>)getFromCache(sessionInfo.getSessionId()+InventorySource.FQG.name());
 		if (nodcHotels == null)
 			nodcHotels = Lists.newArrayList();
 		if (fqgHotels == null)
@@ -96,7 +96,7 @@ public class InventoryServiceImpl implements InventoryService
 				s.setCurrentSort(sortBy);
 			try
 			{
-				cache.set(sessionId, SESSION_CACHE_TIMEOUT_IN_SECONDS, s, SerializationType.JSON );
+				cache.set(sessionInfo.getSessionId(), SESSION_CACHE_TIMEOUT_IN_SECONDS, s, SerializationType.JSON );
 			}
 			catch (Exception e)
 			{

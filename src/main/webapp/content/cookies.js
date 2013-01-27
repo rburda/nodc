@@ -8,11 +8,11 @@
 	           C = c[i].split('=');
 	           if (C[0] == 'JSESSIONID')
 	           {
-	        	   var jsession = C[0]+"="+C[1];  
+	        	   var jsession = C[1];  
 	           }	   
 	           else if (C[0]=='www_sid')
 	           {
-	        	   var wwwsid= C[0]+"="+C[1];
+	        	   var wwwsid=  C[1];
 	           }
 	        }
 	        if (typeof window.nodcActionUpdated === 'undefined')

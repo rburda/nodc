@@ -1,18 +1,14 @@
 package com.burda.scraper.controller;
 
-import java.util.Collection;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpUtils;
 
-import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
-import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
@@ -27,14 +23,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.burda.scraper.inventory.InventoryService;
+import com.burda.scraper.inventory.SessionInfo;
 import com.burda.scraper.model.SearchParams;
 import com.burda.scraper.model.SearchResult;
 import com.burda.scraper.model.SortType;
 import com.burda.scraper.model.persisted.HotelDetail;
 import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
 
 /**
  * Handles requests for the application home page.
@@ -43,7 +40,6 @@ import com.google.common.collect.Lists;
 public class SearchController
 {
 	private static final Logger logger = LoggerFactory.getLogger(SearchController.class);
-	private static final AtomicLong SESSION_SALT = new AtomicLong();
 	private static DateTimeFormatter CHECK_IN_OUT_FORMAT = DateTimeFormat.forPattern("MM/dd/yyyy");
 
 	
@@ -62,8 +58,7 @@ public class SearchController
 			HttpServletRequest request, HttpServletResponse clientResponse) throws Exception
 	{
 		SearchParams sp = new SearchParams(params);
-		String sessionId = findSessionId(request);
-		sp.setSessionId(sessionId);
+		sp.setSessionInfo(new SessionInfo(request));
 		logger.debug("params == " + sp);
 		invService.search(request, sp);
 		
@@ -84,10 +79,9 @@ public class SearchController
 			HttpServletRequest request, HttpServletResponse clientResponse) throws Exception
 	{
 		SearchParams sp = new SearchParams(params);
-		String sessionId = findSessionId(request);
-		sp.setSessionId(sessionId);
+		sp.setSessionInfo(new SessionInfo(request));
 		invService.search(request, sp);
-		model.put("result", invService.getAggragatedResults(sessionId, null, null));
+		model.put("result", invService.getAggragatedResults(sp.getSessionInfo(), null, null));
 		
 		createResponseCookies(request, clientResponse, sp);
 		return new ModelAndView("searchResult", model);
@@ -113,11 +107,13 @@ public class SearchController
 			HttpServletRequest clientRequest,
 			HttpServletResponse clientResponse) throws Exception
 	{		
-		String sessionId = findSessionId(clientRequest);
-		SearchResult searchResult = invService.getAggragatedResults(sessionId, sortType, page); 
+		SessionInfo sessionInfo = new SessionInfo(clientRequest);
+		SearchResult searchResult = invService.getAggragatedResults(sessionInfo, sortType, page); 
+		if (searchResult == null)
+			return new ModelAndView(new RedirectView("http://www.neworleans.com"));
 		model.put("result", searchResult);
 		
-		createResponseCookies(clientRequest, clientResponse, searchResult.getSearchParams());
+		//createResponseCookies(clientRequest, clientResponse, null);
 		return new ModelAndView("searchResult", model);
 	}	
 	
@@ -151,49 +147,30 @@ public class SearchController
 		return "ok";
 	}
 	
-	private static final String findSessionId(HttpServletRequest request)
-	{
-		String id = findCookieValue(request, "sessionid");
-		if (id == null)
-		{
-			id = findCookieValue(request, "parent_jsession_id"); 
-			if (id == null)
-			{
-				id = String.valueOf(System.currentTimeMillis() + SESSION_SALT.getAndIncrement());
-			}			
-		}
-		logger.error("sessionid == " + id);
-		return id;
-	}	
-	private static final String findCookieValue(HttpServletRequest request, String cookieName)
-	{
-		if (request != null && request.getCookies() != null)
-		{
-			for (Cookie c: request.getCookies())
-			{
-				logger.debug(String.format("cookie: %1$s, value: %2$s", c.getName(), c.getValue()	));
-				if (c.getName().equals(cookieName))
-				{
-					return c.getValue();
-				}
-			}			
-		}
-		return null;
-	}
-	
 	private static final void createResponseCookies(
 			HttpServletRequest req, HttpServletResponse resp, SearchParams params)
 	{
-		for (Cookie c: createParentCookies(req))
-			resp.addCookie(c);
-		
-		Cookie sessionIdCookie = new Cookie("sessionid", findSessionId(req));
-		sessionIdCookie.setMaxAge(-1);
-		sessionIdCookie.setSecure(false);
-		resp.addCookie(sessionIdCookie);
-		
 		if (params == null)
 			return;
+		
+		Cookie sessionIdCookie = new Cookie(SessionInfo.SESSION_ID_COOKIE_NAME, params.getSessionInfo().getSessionId());
+		sessionIdCookie.setMaxAge(-1);
+		sessionIdCookie.setSecure(false);
+		sessionIdCookie.setDomain(".www.neworleans.com");
+		resp.addCookie(sessionIdCookie);
+		
+		Cookie wwwSidCookie = new Cookie(SessionInfo.WWW_SID_COOKIE_NAME, params.getSessionInfo().getWWWSid());
+		wwwSidCookie.setMaxAge(-1);
+		wwwSidCookie.setSecure(false);
+		wwwSidCookie.setDomain(".www.neworleans.com");
+		resp.addCookie(wwwSidCookie);
+		
+		Cookie wicketParentUrlCookie = new Cookie(SessionInfo.WICKET_SEARCH_COOKIE_NAME, params.getSessionInfo().getWicketSearchPath());
+		wicketParentUrlCookie.setMaxAge(-1);
+		wicketParentUrlCookie.setSecure(false);
+		wicketParentUrlCookie.setDomain(".www.neworleans.com");
+		resp.addCookie(wicketParentUrlCookie);
+		
 		
 		int maxCookieAge = (int)new Duration(new DateTime(), new DateTime().plusMonths(1)).getStandardSeconds();
 		
@@ -243,36 +220,6 @@ public class SearchController
 						params.getRoom4ChildAge1(), params.getRoom4ChildAge2(), params.getRoom4ChildAge3()));
 		setStdCookieValues(childrenAgesRoom4, maxCookieAge);
 		resp.addCookie(childrenAgesRoom4);
-	}
-	
-	private static Collection<Cookie> createParentCookies(HttpServletRequest req)
-	{
-		Collection<Cookie> cookies = Lists.newArrayList();
-		String parentJSessionId = req.getParameter("parent_jesssion_id");
-		String parentUrl = req.getParameter("parent_url");
-		String parentSid = req.getParameter("parent_sid");
-		if (!StringUtils.isEmpty(parentJSessionId))
-		{
-			Cookie parentJSessionIdCookie = new Cookie("parent_jsession_id", parentJSessionId);
-			parentJSessionIdCookie.setMaxAge(-1);
-			parentJSessionIdCookie.setSecure(false);
-			cookies.add(parentJSessionIdCookie);
-		}
-		if (!StringUtils.isEmpty(parentUrl))
-		{
-			Cookie parentUrlCookie = new Cookie("parent_url", parentUrl);
-			parentUrlCookie.setMaxAge(-1);
-			parentUrlCookie.setSecure(false);
-			cookies.add(parentUrlCookie);			
-		}
-		if (!StringUtils.isEmpty(parentSid))
-		{
-			Cookie parentSidCookie = new Cookie("parent_sid", parentSid);
-			parentSidCookie.setMaxAge(-1);
-			parentSidCookie.setSecure(false);
-			cookies.add(parentSidCookie);			
-		}		
-		return cookies;
 	}
 	
 	private static void setStdCookieValues(Cookie c, int maxCookieAge)

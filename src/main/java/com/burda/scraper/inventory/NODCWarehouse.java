@@ -61,89 +61,10 @@ import com.google.common.collect.Maps;
 public class NODCWarehouse implements Warehouse
 {
 	private static final DateFormat STAY_DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy");
-	private static final Logger logger = LoggerFactory.getLogger(NODCWarehouse.class);
+	static final Logger logger = LoggerFactory.getLogger(NODCWarehouse.class);
 	
 	private static final ExecutorService asyncResultsThreadPool = Executors.newCachedThreadPool();
 
-	private static final class SessionInfo
-	{
-		String jsessionId;
-		String wwwsid;
-		String wicketSessionPathForSearch;
-		
-		private SessionInfo()
-		{
-			//TODO: create a session
-			this.jsessionId = "";
-			this.wwwsid = "";
-			this.wicketSessionPathForSearch = "";
-			createNewSession();
-		}
-		
-		private SessionInfo(HttpServletRequest servletRequest)
-		{
-			initSessionVars(servletRequest);
-			if (StringUtils.isEmpty(jsessionId) || StringUtils.isEmpty(wwwsid) || StringUtils.isEmpty(wicketSessionPathForSearch))
-				createNewSession();
-		}
-	
-		private void initSessionVars(Object cookieStore)
-		{
-			String cValue = findCookieValue(cookieStore, "parent_jsession_id");
-			if (cValue.indexOf("=") >= 0)
-				cValue = cValue.substring(cValue.indexOf("=")+1, cValue.length());
-			jsessionId = cValue;
-			
-			cValue = findCookieValue(cookieStore, "parent_sid");
-			if (cValue.indexOf("=") >= 0)
-				cValue = cValue.substring(cValue.indexOf("=")+1, cValue.length());
-			wwwsid = cValue;
-			
-			cValue = findCookieValue(cookieStore, "parent_url");
-			if (cValue.indexOf("=") >= 0)
-				cValue = cValue.substring(cValue.indexOf("=")+1, cValue.length());
-			wicketSessionPathForSearch = cValue;	
-		}
-		
-		private void createNewSession()
-		{
-			URIBuilder builder = new URIBuilder();
-			builder
-					.setScheme("http")
-					.setHost("www.neworleans.com")
-					.setPath("/mytrip/app/HotelSearchWidget/")
-					.addParameter("skin", "homeHotel");
-			
-			try
-			{
-				HttpGet httpget = new HttpGet(builder.build());
-				
-				DefaultHttpClient httpClient = new DefaultHttpClient();
-				HttpParams httpParams = httpClient.getParams();
-				HttpConnectionParams.setConnectionTimeout(httpParams, 45000);
-		    HttpConnectionParams.setSoTimeout(httpParams, 45000);	
-		    
-		    HttpResponse resp = httpClient.execute(httpget);
-		    for (org.apache.http.cookie.Cookie c: httpClient.getCookieStore().getCookies())
-		    {
-		    	if (c.getName().equalsIgnoreCase("JSESSIONID"))
-		    		jsessionId = c.getValue();
-		    	else if (c.getName().equalsIgnoreCase("www_sid"))
-		    		wwwsid = c.getValue();
-		    }
-		    Document d = Jsoup.parse(EntityUtils.toString(resp.getEntity()));
-		    String rawUrl = d.select(".hotelSearchForm").first().attr("action");
-		    int idx = rawUrl.indexOf("wicket:interface=");
-		    if (idx >= 0)
-		    	wicketSessionPathForSearch = rawUrl.substring(idx+17, rawUrl.length());
-			}
-			catch (Exception e)
-			{
-				logger.error("Unable to create new session", e);
-			}
-		}	
-	}
-	
 	private static final class CustomRedirectStrategy extends DefaultRedirectStrategy 
 	{  
 		private String html = null;
@@ -333,14 +254,13 @@ public class NODCWarehouse implements Warehouse
 		getInitialResultsAndAsyncContinue(HttpServletRequest request, SearchParams params) throws Exception
 	{
 		CountDownLatch initialResultsComplete = new CountDownLatch(1);
-		SessionInfo sessionInfo = new SessionInfo(request);
-		String response = queryNODCHotelsViaHttpClient(sessionInfo, params);
+		String response = queryNODCHotelsViaHttpClient(params);
 
 		Collection<Hotel> hotels = Lists.newArrayList();		
 		if (response != null)
 		{
 			Document document = Jsoup.parse(response, "http://www.neworleans.com/mytrip/app");
-			getAdditionalResultsAsync(sessionInfo, params, document, initialResultsComplete);
+			getAdditionalResultsAsync(params, document, initialResultsComplete);
 			hotels = createHotelsNODC(params, document);
 		}
 		cache.set(createCacheKey(params), (60*180), hotels, SerializationType.JSON);
@@ -350,7 +270,7 @@ public class NODCWarehouse implements Warehouse
 	}
 
 	private void getAdditionalResultsAsync(
-			final SessionInfo sessionInfo, final SearchParams params, 
+			final SearchParams params, 
 			Document initialResults, final CountDownLatch initialResultsComplete ) throws Exception
 	{
 		final List<Callable<Void>> workers = Lists.newArrayList();
@@ -369,7 +289,7 @@ public class NODCWarehouse implements Warehouse
 							.setPath("/mytrip/app")
 							.addParameter("wicket:interface", link.attr("href").replace("?wicket:interface=", ""));
 
-					String response = getResults(builder, sessionInfo);
+					String response = getResults(builder, params.getSessionInfo());
 					if (response != null)
 					{
 						Document document = Jsoup.parse(response, "http://www.neworleans.com/mytrip/app");
@@ -485,14 +405,14 @@ public class NODCWarehouse implements Warehouse
 	}	
 	
 	
-	private static final String queryNODCHotelsViaHttpClient(SessionInfo sessionInfo, SearchParams sp)
+	private static final String queryNODCHotelsViaHttpClient(SearchParams sp)
 	{
 		URIBuilder builder = new URIBuilder();
 		builder
 				.setScheme("http")
 				.setHost("www.neworleans.com")
 				.setPath("/mytrip/app/SearchWidget/")
-				.addParameter("wicket:interface", sessionInfo.wicketSessionPathForSearch)
+				.addParameter("wicket:interface", sp.getSessionInfo().getWicketSearchPath())
 				.addParameter("productType", "HOTEL")
 				.addParameter("promoId", "")
 				.addParameter("mo", "")
@@ -525,7 +445,7 @@ public class NODCWarehouse implements Warehouse
 				.addParameter("json", "true")
 				.addParameter("jsoncallback", "jquery123")
 				.addParameter("componentAsWidget_searchWidgetForm_hf_0", "");				
-		return getResults(builder, sessionInfo);
+		return getResults(builder, sp.getSessionInfo());
 	}
 	
 	private static final String getResults(URIBuilder builder, SessionInfo sessionInfo)
@@ -536,18 +456,18 @@ public class NODCWarehouse implements Warehouse
 			HttpGet httpget = new HttpGet(builder.build());
 			CookieStore cookieStore = new BasicCookieStore(); 
 			
-			if (StringUtils.isNotEmpty(sessionInfo.jsessionId))
+			if (StringUtils.isNotEmpty(sessionInfo.getSessionId()))
 			{
 				BasicClientCookie cookie = 
-						new BasicClientCookie("JSESSIONID", sessionInfo.jsessionId);
+						new BasicClientCookie("JSESSIONID", sessionInfo.getSessionId());
 				cookie.setPath("/");
 				cookie.setDomain("www.neworleans.com");
 				cookieStore.addCookie(cookie);
 			}
-			if (StringUtils.isNotEmpty(sessionInfo.wwwsid))
+			if (StringUtils.isNotEmpty(sessionInfo.getWWWSid()))
 			{
 				BasicClientCookie cookie = 
-						new BasicClientCookie("www_sid", sessionInfo.wwwsid);
+						new BasicClientCookie("www_sid", sessionInfo.getWWWSid());
 				cookie.setPath("/");
 				cookie.setDomain("www.neworleans.com");
 				cookieStore.addCookie(cookie);				
@@ -577,7 +497,7 @@ public class NODCWarehouse implements Warehouse
 		return response;		
 	}
 	
-	private static final String findCookieValue(Object cookieStore, String cookieName)
+	static final String findCookieValue(Object cookieStore, String cookieName)
 	{
 		String value = "";
 		if (cookieStore != null)
@@ -665,6 +585,6 @@ public class NODCWarehouse implements Warehouse
 	
 	private String createCacheKey(SearchParams params)
 	{
-		return params.getSessionId()+InventorySource.NODC.name();
+		return params.getSessionInfo().getSessionId()+InventorySource.NODC.name();
 	}
 }

@@ -29,7 +29,7 @@ Setup NODC Scraper
            Upload source: <war file>
      --- Launch New Environment
             Name: staging-nodcsearch.elasticbeanstalk.com
-            Instance Type: t1.micro
+            Instance Type: t1.micro (550m min, 550m max, 64m)
             Existing Key pair: <TBD>
             Email Address: reubeninvegas@gmail.com
             Application Health URL: /health
@@ -46,3 +46,7 @@ Setup NODC Scraper
          Test Login:
              From Local Box
                   ssh -i ~/.ssh/<name of .pem file> ec2-user@<server host name> (can be gotten from ec2 instance list or eclipse management)
+            To access logs:
+               sudo su
+               cd /var/opt/tomcat7
+               tail -f catalina.log
