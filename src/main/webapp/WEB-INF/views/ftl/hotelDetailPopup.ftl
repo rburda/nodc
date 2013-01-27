@@ -374,49 +374,33 @@ ${roomType.features!''}
 					</p>    			</div> <!-- /description -->
     			<div id="hotelDetails" class="hotelDetailsTab tabbed-item">
 					<h2>Hotel Details</h2>
-						
-				    		    						
+				
+				<#if (hotelDetail.amenities?size > 0)>
+				
+				<#assign size=(hotelDetail.amenities?size)>
+				<#assign rem=size%2>
+				<#assign col1=0>
+				<#if rem==1>
+				<#assign col1=(size+1)/2>
+				<#else>
+				<#assign col1=size/2>
+				</#if>	
+				</#if>
 				<div style="width: 293px; float: left;">
-				<div class="feature-container"><strong class="feature-name">Number of Rooms:</strong> <p>483.</p></div>
-					<div class="feature-container"><strong class="feature-name">Casino:</strong> <p>No.</p></div>
-					<div class="feature-container"><strong class="feature-name">Restaurants:</strong> <p>Desire Bistro &amp; Oyster Bar is a casual street bistro and one of the most famous restaurants in New Orleans, featuring fresh Louisiana seafood. Open daily for breakfast, lunch and dinner.  Restaurant RÓ¥volution, set to open in March 2012, created by world-renowned chefs John Folse and Rick Tramonto.</p></div>
-					<div class="feature-container"><strong class="feature-name">Entertainment:</strong> <p>Irvin Mayfield's Jazz Playhouse, a world-class music destination with live Jazz 7 nights a week. Nightly performances begin at 8:00 p.m. and on Sundays at 7:00 p.m.</p></div>
-					<div class="feature-container"><strong class="feature-name">Nightlife:</strong> <p>Irvin Mayfield's Jazz Playhouse, Le Booze, overlooks Bourbon St, is one of the best spots that locals like to meet and greet on Bourbon Street. Open Monday - Thursday, 2:00 p.m. - until morning, and Friday - Sunday, 12:00 p.m. - until morning. Daiquiri Delight Shop.</p></div>
-					<div class="feature-container"><strong class="feature-name">Attractions:</strong> <p>French Quarter, Jackson Square, French Market, Jackson Brewery, Riverwalk, Aquarium of the Americas, Audubon Zoo, Insectarium, HarrahÓ³ Casino, Louisiana State Museum, Mardi Gras World, Preservation Hall, National WWII Museum, New Orleans Museum of Art, Garden District and many more. Plus the many bistros, boutiques, antique shops, art galleries, historic sites, live entertainment that are all within walking distance.</p></div>
-					<div class="feature-container"><strong class="feature-name">Pool:</strong> <p>Heated outdoor pool located on the third-floor with a deck that overlooks the tropical courtyard.</p></div>
-					<div class="feature-container"><strong class="feature-name">Health Club or Fitness Equipment:</strong> <p>Cybex training equipment is offered on the second-floor fitness room.</p></div>
-					<div class="feature-container"><strong class="feature-name">Tennis Courts:</strong> <p>No.</p></div>
-					<div class="feature-container"><strong class="feature-name">Spa:</strong> <p>Spa services are available poolside seasonally and in-room by request.</p></div>
-					<div class="feature-container"><strong class="feature-name">Shops:</strong> <p><b>:</b>  Located in PJÓ³ Coffee Café¬ the gift shop has souvenirs, cookbooks and logo wear.</p></div>
-					<div class="feature-container"><strong class="feature-name">Wedding Services:</strong> <p>Can design weddings and receptions from small, intimate occasions to the most lavish affair.  Wedding planners can create uniquely personal events, from bridal showers and rehearsal dinners to bachelor or bachelorette parties.</p></div>
-					<div class="feature-container"><strong class="feature-name">Business Center:</strong> <p>Yes.</p></div>
-					<div class="feature-container"><strong class="feature-name">Convention Rooms:</strong> <p>Yes.</p></div>
-					<div class="feature-container"><strong class="feature-name">Concierge:</strong> <p>Yes.</p></div>
-					<div class="feature-container"><strong class="feature-name">Child-care Facilities:</strong> <p>Yes.</p></div>
-					<div class="feature-container"><strong class="feature-name">Room Service:</strong> <p>Yes.</p></div>
-					<div class="feature-container"><strong class="feature-name">Maid service:</strong> <p>Yes.</p></div>
-					<div class="feature-container"><strong class="feature-name">Luggage service:</strong> <p>Yes.</p></div>
-		</div><div style="width: 293px; float: right;">			<div class="feature-container"><strong class="feature-name">Pets Allowed:</strong> Yes. Domesticated Pets under 30 lb, one time fee of $ 75.00</div>
-					<div class="feature-container"><strong class="feature-name">In-Room Internet Access:</strong> <p>Yes.</p></div>
-					<div class="feature-container"><strong class="feature-name">Complimentary Breakfast:</strong> <p>No.</p></div>
-					<div class="feature-container"><strong class="feature-name">24-hour Front Desk:</strong> <p>Yes.</p></div>
-					<div class="feature-container"><strong class="feature-name">Doorman:</strong> <p>Yes.</p></div>
-					<div class="feature-container"><strong class="feature-name">Security:</strong> <p>Yes.</p></div>
-					<div class="feature-container"><strong class="feature-name">Currency Exchange:</strong> <p>Yes.</p></div>
-					<div class="feature-container"><strong class="feature-name">Elevators:</strong> <p>Yes.</p></div>
-					<div class="feature-container"><strong class="feature-name">Safe-deposit boxes:</strong> <p>Yes.</p></div>
-					<div class="feature-container"><strong class="feature-name">Parking Garage:</strong> <p>Yes. Parking rates at $36.00 per night.</p></div>
-					<div class="feature-container"><strong class="feature-name">Free  Parking:</strong> <p>No.</p></div>
-					<div class="feature-container"><strong class="feature-name">Shuttle Service to the airport:</strong> <p>No.</p></div>
-					<div class="feature-container"><strong class="feature-name">Wheelchair Accessible Rooms:</strong> <p>Yes.</p></div>
-					<div class="feature-container"><strong class="feature-name">Check-in Time:</strong> <p>3 p.m.</p></div>
-					<div class="feature-container"><strong class="feature-name">Check-out Time:</strong> <p>Noon.</p></div>
-					<div class="feature-container"><strong class="feature-name">Minimum Age to Reserve a Room:</strong> <p>21.</p></div>
-					<div class="feature-container"><strong class="feature-name">Policies:</strong> <p>The maximum total number of guests (adults and children) in a room is four. The maximum number of guests in a multi-room suite varies.</p></div>
-					<div class="feature-container"><strong class="feature-name">Incidental Charges:</strong> <p>The hotel requires a credit card for incidental charges.   </p></div>
-					<div class="feature-container resort-fee"><strong class="feature-name">Resort Fee:</strong> Royal Sonesta Hotel has a $30.00 per room, per night resort fee. Tax may or may not be included. This fee is not included in your reservation and will be collected by the hotel at check-in.<br />The resort fee includes:<p>An additional $30 per room, per night, will be charged to all guests who stay during Mardi Gras (2/6/13 - 2/12/13).</p></div>
-			
-    </div>	
+				<#if (hotelDetail.amenities?size > 0)>
+				<#list 0..(col1-1) as i>
+				<div class="feature-container"><strong class="feature-name">${hotelDetail.amenities[i].name!''}</strong> <p>${hotelDetail.amenities[i].description!''}</p></div>
+				</#list>
+				</#if>
+				</div>
+				
+				<div style="width: 293px; float: right;">
+								<#if (hotelDetail.amenities?size > 0)>
+				<#list col1..(size-1) as i>
+				<div class="feature-container"><strong class="feature-name">${hotelDetail.amenities[i].name!''}</strong> <p>${hotelDetail.amenities[i].description!''}</p></div>
+				</#list>
+				</#if>
+				</div>	
 					<div class="clear"></div>
 				</div> <!-- /hotelDetails -->
     			
@@ -434,7 +418,7 @@ ${roomType.features!''}
     	#slideshow img
     	{
     		width: 370px;
-			height: 375px;
+			height: auto;
     	}
 		</style>
 			<div id="controls" class="controls"></div>
