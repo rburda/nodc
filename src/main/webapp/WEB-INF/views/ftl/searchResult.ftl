@@ -20,14 +20,14 @@
 	
 	<script src="http://www.neworleans.com/common/js/jquery/jquery-core.js" type="text/javascript"></script>
     <!-- Following Script tags are added because this page is expected to have JQModalWindow -->
-    <script src="http://neworleans.com/common/js/jquery/jquery-core.js" type="text/javascript"></script>
+    <script src="http://www.neworleans.com/common/js/jquery/jquery-core.js" type="text/javascript"></script>
     <!--<script src="http://neworleans.com/common/js/jquery/jquery-modal.js" type="text/javascript"></script>-->
-    <script type="text/javascript" src="http://neworleans.com/common/js/jquery/jquery-ui.js"></script>
-    <script type="text/javascript" src="http://neworleans.com/common/js/jquery/jquery-scrollTo.js"></script> 
+    <script type="text/javascript" src="http://www.neworleans.com/common/js/jquery/jquery-ui.js"></script>
+    <script type="text/javascript" src="http://www.neworleans.com/common/js/jquery/jquery-scrollTo.js"></script> 
     <!--<script type="text/javascript" src="http://neworleans.com/common/js/jquery/jquery-modal.js"></script>-->    
-    <script type="text/javascript" src="http://neworleans.com/common/js/jquery/jquery.galleriffic.js"></script>
-    <script type="text/javascript" src="http://neworleans.com/common/js/jquery/jquery.opacityrollover.js"></script>
-    <script type="text/javascript" src="http://neworleans.com/common/js/outside-wicket/widget-lib.js"></script>    
+    <script type="text/javascript" src="http://www.neworleans.com/common/js/jquery/jquery.galleriffic.js"></script>
+    <script type="text/javascript" src="http://www.neworleans.com/common/js/jquery/jquery.opacityrollover.js"></script>
+    <script type="text/javascript" src="http://www.neworleans.com/common/js/outside-wicket/widget-lib.js"></script>    
     <script src="http://platform.twitter.com/widgets.js"></script>
     <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
@@ -35,16 +35,24 @@
     <script src="http://maps.google.com/maps/api/js?key=AIzaSyATPZS76QxgLdfyWoC2f_v9yZYed1cTLZc&sensor=false" type="text/javascript"></script>
     <script type="text/javascript" src="http://www.neworleans.com/javascript/global.js"></script>
     <script type="text/javascript" src="http://neworleans.com/javascript/tealeaf.js"></script>
-    <script src="http://neworleans.com/common/js/jquery/cyl-tooltip.js" type="text/javascript"></script>
-    <script type="text/javascript" src="http://neworleans.com/video/player-helper.js"></script>
-    <script type="text/javascript" src="http://neworleans.com/video/swfobject.js"></script>
+    <script type="text/javascript" src="http://www.neworleans.com/video/player-helper.js"></script>
+    <script type="text/javascript" src="http://www.neworleans.com/video/swfobject.js"></script>
     <script src="http://maps.google.com/maps/api/js?sensor=false&amp;v=3.5" type="text/javascript"></script>
-    <script src="http://neworleans.com/common/js/mini_cart.js" type="text/javascript"></script>
-    <script type="text/javascript" src="http://neworleans.com/javascript/coremetrics/v40/eluminate.js"></script>
-    <script type="text/javascript" src="http://neworleans.com/javascript/coremetrics/cmcustom.js"></script>
-    <script type="text/javascript" src="http://neworleans.com/javascript/coremetrics/cmxCustomGlobal.js"></script>
+    <script src="http://www.neworleans.com/common/js/mini_cart.js" type="text/javascript"></script>
+    <script type="text/javascript" src="http://www.neworleans.com/javascript/coremetrics/v40/eluminate.js"></script>
+    <script type="text/javascript" src="http://www.neworleans.com/javascript/coremetrics/cmcustom.js"></script>
+    <script type="text/javascript" src="http://www.neworleans.com/javascript/coremetrics/cmxCustomGlobal.js"></script>
     <script type="text/javascript" src="js/search.js"></script>    
+	<script type="text/javascript" src="http://www.neworleans.com/common/js/jquery/cyl-tooltip.js"></script>
 	
+	
+<script type="text/javascript" id="tooltip">
+cyljq(document).ready(function()
+{
+cyljq("a.tooltip-hover").simpleToolTip();
+});
+</script>
+
 		<script type="text/javascript">
 	 		cyljq(document).ready(function() 
 	 		{
@@ -404,7 +412,8 @@ url,
 									<li class="rightTitle">Avg</li>
 									<#list searchResults["result"].allHotels as hotel>
 										<li class="productName" style="position: static !important;">
-											<a onclick="popup('rooms', '${hotel.name}');" href="#rooms" class="tooltip-hover" id="id6c0"><@chopstring val=hotel.name /></a>
+											<a href="#rooms" class="tooltip-hover" title="${hotel.name}" onclick="popup('rooms', '${hotel.name}');" id="id6c0"><@chopstring val=hotel.name /></a>
+										
 										</li>
 										<li class="productPrice">$${hotel.lowestAvgRate?round!0.00}</li>									
 									</#list>
