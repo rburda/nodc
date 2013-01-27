@@ -616,7 +616,7 @@ url,
                                             <td rowspan="1" class="productCol">
                                                 <a class="showRoomDetail" onclick="popup('rooms', '${hotel.name}');" href="#rooms">${roomType.name!''}</a>
                                                 <br />
-                                                <span class="promo">${roomType.promoDesc!''}</span> (<a href="#" class="showPromoDetail">details</a>)
+                                                <span class="promo">${roomType.promoDesc!''}</span> <#if roomType.isPromoRate()>(<a href="#" class="showPromoDetail">details</a>)</#if>
                                             </td>
                                             <#list roomType.dailyRates as dailyRate>
                                             <td class="dayCol">
