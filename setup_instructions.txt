@@ -48,5 +48,5 @@ Setup NODC Scraper
                   ssh -i ~/.ssh/<name of .pem file> ec2-user@<server host name> (can be gotten from ec2 instance list or eclipse management)
             To access logs:
                sudo su
-               cd /var/opt/tomcat7
+               cd /var/log/tomcat7
                tail -f catalina.log

@@ -54,19 +54,35 @@ public class InventoryServiceImpl implements InventoryService
 			@Override
 			public Collection<Hotel> call() throws Exception
 			{
-				return nodcInventorySource.getInitialResultsAndAsyncContinue(request, params);
+				Collection<Hotel> hotels = Lists.newArrayList();
+				try
+				{
+					hotels = nodcInventorySource.getInitialResultsAndAsyncContinue(request, params);
+				}
+				catch (Throwable t)
+				{
+					logger.error("unable to complete nodc inv. search", t);
+				}
+				return hotels;
 			}});
 		workers.add(new Callable<Collection<Hotel>>(){
 
 			@Override
 			public Collection<Hotel> call() throws Exception
 			{
-				return fqgInventorySource.getInitialResultsAndAsyncContinue(request, params);
+				Collection<Hotel> hotels = Lists.newArrayList();
+				try
+				{
+					hotels = fqgInventorySource.getInitialResultsAndAsyncContinue(request, params);
+				}
+				catch (Throwable t)
+				{
+					logger.error("Unable to complete fqg inv search", t);
+				}
+				return hotels;
 			}});
 		//List<Future<SearchResult>> workerResults = executor.invokeAll(workers, 15, TimeUnit.SECONDS);
-		List<Future<Collection<Hotel>>> workerResults = executor.invokeAll(workers);
-		workerResults.get(0);
-		workerResults.get(1);
+		executor.invokeAll(workers);
 		
 		Session session = new Session(params);
 		session.setCurrentPage(1);

@@ -329,7 +329,8 @@ public class NODCWarehouse implements Warehouse
 				break;				
 			}
 			
-			Element hName = searchResult.select(".productTitle a").first();			
+			Element hName = searchResult.select(".productTitle a").first();	
+			logger.error("parsing result for hotel: " + hName.ownText());
 			Hotel hotel = new Hotel();
 			
 			String extHotelId = 
@@ -392,6 +393,7 @@ public class NODCWarehouse implements Warehouse
 			hotels.add(hotel);
 		}	
 		
+		logger.error("returning " + hotels.size() + " initial results for nodc");
 		return hotels;
 	}
 	
@@ -509,10 +511,10 @@ public class NODCWarehouse implements Warehouse
 				{
 					for (Cookie c: request.getCookies())
 					{
+						logger.error("cookie submitted: " + c.getName() + ": " + c.getValue());
 						if (c.getName().equals(cookieName))
 						{
 							value = c.getValue();
-							break;
 						}
 					}			
 				}				
@@ -524,10 +526,10 @@ public class NODCWarehouse implements Warehouse
 				{
 					for (org.apache.http.cookie.Cookie c: httpClientCookieStore.getCookies())
 					{
+						logger.error("cookie submitted: " + c.getName() + ": " + c.getValue());
 						if (c.getName().equals(cookieName))
 						{
 							value = c.getValue();
-							break;
 						}
 					}			
 				}					

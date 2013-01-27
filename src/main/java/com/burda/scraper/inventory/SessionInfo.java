@@ -12,9 +12,13 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class SessionInfo
 {
+	private static Logger logger = LoggerFactory.getLogger(SessionInfo.class);
+	
 	public static final String SESSION_ID_COOKIE_NAME = "parent_jsession_id";
 	public static final String WWW_SID_COOKIE_NAME = "parent_sid";
 	public static final String WICKET_SEARCH_COOKIE_NAME = "parent_url";
@@ -36,7 +40,16 @@ public final class SessionInfo
 	{
 		initSessionVars(servletRequest);
 		if (StringUtils.isEmpty(jsessionId) || StringUtils.isEmpty(wwwsid) || StringUtils.isEmpty(wicketSessionPathForSearch))
+		{
+			logger.error("missing some session info...creating new");
+			logger.error("invalid jsessionid == " + jsessionId);
+			logger.error("invalid wwwsid == " + wwwsid);
+			logger.error("invalid wicketpath == " + wicketSessionPathForSearch);			
 			createNewSession();
+		}
+		logger.error("final jsessionid == " + jsessionId);
+		logger.error("final wwwsid == " + wwwsid);
+		logger.error("final wicketpath == " + wicketSessionPathForSearch);
 	}
 
 	public final String getSessionId()
