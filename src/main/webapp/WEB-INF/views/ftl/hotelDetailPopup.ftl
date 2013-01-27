@@ -244,8 +244,7 @@ selectedHotelDetailTab = "";
     				<li><a href="#hotelDetails"><span>Hotel Details</span></a></li>
 					<li><a href="#map"><span>Map</span></a></li>
    					<li><a href="#photos"><span>Photos</span></a></li>
-					<li><a href="#video"><span>Video</span></a></li>
-					<li><a href="#deals-promos"><span>Deals</span></a></li>    				
+					  				
                 </ul>
     			<div class="clear"></div>
 				<div id="rooms" class="roomsTab">
@@ -461,66 +460,7 @@ ${roomType.features!''}
 		<div class="clear"></div>
 		<!-- end module 164201 -->
 					</div> <!-- /photosTab -->
-				    							<div id="video" class="videoTab tabbed-item">
-					<h2>Video</h2>
-					<script type="text/javascript">
-						var playlist = new Object();
-						var playerParams = {
-                        	version: "9.0.115",
-                        	url: "http://www.neworleans.com/video/player.swf",
-                        	placeholder: 'videoBox',
-                        	popup: true,
-        					modalWindow: '#videoModal'
-            			};
-					</script>
-					
-		<!-- start video royal_sonesta_2_v4_1Mbps -->
-		<!--<script type="text/javascript">
-			playlist['royal_sonesta_2_v4_1Mbps'] = {
-				streamer: 'rtmp://fms.6EF8.edgecastcdn.net/006EF8/neworleans/hotels/',
-				file: 'royal_sonesta_2_v4_1Mbps',
-				type: 'rtmp',
-				image: '',
-				autostart: true,
-				title: 'Royal Sonesta',
-				height: '360',
-				width: '640',
-				ga: false
-			}
-		</script>-->
-		<!--<a href="javascript:void('royal_sonesta_2_v4_1Mbps')" onclick="videoPlayer('PLAY',playlist['royal_sonesta_2_v4_1Mbps']); return false;">
-    		<div style="padding: 10px;">
-    			
-		
-		<div class="playImage" style="background-image: url(/video/hotels/royal-sonesta/royal-sonesta.jpg); height: ">
-			<div class="playImageThumb"></div>
-		</div>
-	    			<div class="videoLink">Royal Sonesta</div>
-    		</div>
-		</a>--> <!-- end video royal_sonesta_2_v4_1Mbps -->
-						<div class="jqmWindow" id="videoModal">
-                    	<div class="topRoundCorner">
-                      	<div class="roundCorner1 roundCorner"></div>
-                        <div class="roundCorner2 roundCorner"></div>
-                        <div class="roundCorner3 roundCorner"></div>
-                        <div class="roundCorner4 roundCorner"></div>
-                        <div class="roundCorner5 roundCorner"></div>
-                      </div>
-                      <div class="videoModalContent" style="">
-                      	<a href="#" style="color: #FFFFFF; text-decoration: none; float: right;" class="jqmClose">Close Window X</a>
-                      	<div class="clear"></div>
-                      	<div id="videoBox"></div>
-                      </div>
-                      <div class="bottomRoundCorner">
-                      	<div class="roundCorner5 roundCorner"></div>
-                        <div class="roundCorner4 roundCorner"></div>
-                        <div class="roundCorner3 roundCorner"></div>
-                        <div class="roundCorner2 roundCorner"></div>
-                        <div class="roundCorner1 roundCorner"></div>
-                      </div>
-                    </div>
-				</div> <!-- /videoTab -->
-												<div id="deals-promos" class="tabbed-item"></div>
+				   
 			</div>
 		</div>
 		
