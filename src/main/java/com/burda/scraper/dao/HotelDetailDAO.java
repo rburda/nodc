@@ -22,7 +22,7 @@ public class HotelDetailDAO extends AbstractDynamoDBDAO<HotelDetail>
 		HotelDetail hd = getDynamoMapper().load(HotelDetail.class,  ck.getHotelName());
 		if (hd != null)
 		{
-			List<RoomTypeDetail> roomTypes = roomTypeDetailDAO.getHotelDetail(ck);
+			List<RoomTypeDetail> roomTypes = roomTypeDetailDAO.getRoomTypeDetails(ck);
 			if (roomTypes != null)
 			{
 				for (RoomTypeDetail rtd: roomTypes)

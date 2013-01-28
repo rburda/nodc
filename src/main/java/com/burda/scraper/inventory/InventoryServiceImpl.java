@@ -100,8 +100,10 @@ public class InventoryServiceImpl implements InventoryService
 		Collection<Hotel> fqgHotels = (Collection<Hotel>)getFromCache(sessionInfo.getSessionId()+InventorySource.FQG.name());
 		if (nodcHotels == null)
 			nodcHotels = Lists.newArrayList();
+		logger.debug("num nodc hotels retrieved" + nodcHotels.size());
 		if (fqgHotels == null)
 			fqgHotels = Lists.newArrayList();
+		logger.debug("num fqg hotels retrieved" + fqgHotels.size());
 		rawResults.putAll(InventorySource.NODC, nodcHotels);
 		rawResults.putAll(InventorySource.FQG, fqgHotels);
 		if (s != null)

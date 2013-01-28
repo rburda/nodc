@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.burda.scraper.model.Hotel;
 import com.burda.scraper.model.SearchParams;
@@ -20,6 +22,7 @@ import com.google.common.collect.Multimap;
 
 public class Session implements Serializable
 {
+	private static Logger logger = LoggerFactory.getLogger(Session.class);
 	private static final int NUM_RESULTS_PER_PAGE = 20;	
 	private static final long serialVersionUID = 1L;
 	
@@ -110,12 +113,16 @@ public class Session implements Serializable
 		SearchResult aggragatedResult = new SearchResult(params);
 		Collection<Hotel> fqgResult = rawResults.get(com.burda.scraper.model.persisted.InventorySource.FQG);
 		Collection<Hotel> nodcResult = rawResults.get(com.burda.scraper.model.persisted.InventorySource.NODC);
+		logger.debug("num fqg hotels before aggragation: " + (fqgResult == null ? "0" : fqgResult.size()));
+		logger.debug("num nodc hotels before aggragation: " + (nodcResult == null ? "0" : nodcResult.size()));
 		List<Hotel> aggragatedHotels = Lists.newArrayList();
 		if (fqgResult != null)
 		{
 			for (Hotel h: fqgResult)
 				if (!h.getRoomTypes().isEmpty())
 					aggragatedHotels.add(h);
+				else
+					logger.debug("removing fqg hotel: " + h.getName() + " because no room types");
 		}
 		if (nodcResult != null)
 		{
@@ -125,6 +132,7 @@ public class Session implements Serializable
 				Hotel h = nodcHotels.next();
 				if (h.getRoomTypes().isEmpty())
 				{
+					logger.debug("removing nodc hotel: " + h.getName() + " because no room types");
 					nodcHotels.remove();
 					continue;
 				}
@@ -136,12 +144,14 @@ public class Session implements Serializable
 					Hotel fqgHotel = fqgHotels.next();
 					if (fqgHotel.getName().equals(h.getName()))
 					{
+						logger.debug("removing fqg hotel: " + fqgHotel.getName() + " because match of nodc hotel");
 						fqgHotels.remove();
 						found = true;
 					}
 				}
 			}
-			aggragatedHotels.addAll(nodcResult);	
+			aggragatedHotels.addAll(nodcResult);
+			logger.debug("num hotels after aggragation: " + aggragatedHotels.size());
 		}
 		
 		aggragatedResult.currentPage = currentPage;
