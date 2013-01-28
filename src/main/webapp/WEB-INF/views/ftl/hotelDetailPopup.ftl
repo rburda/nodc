@@ -40,6 +40,7 @@
 			var empty="empty";
 			lat = ${hotelDetail.latitude!'empty'};
 			lng = ${hotelDetail.longitude!'empty'};
+			
 			var map;
 			
 			function initMaps() {
@@ -196,7 +197,7 @@ selectedHotelDetailTab = "";
 				<img src= '<#if (hotelDetail.photos?size > 0)>${hotelDetail.photos[0].url!''}</#if>' alt="${hotelDetail.name!''}" class="productThumb" />
 			</div>
 			<div class="productSummary">
-    			<h1 class="fn org hotel-title">${hotelDetail.name!''}</h1>
+    			<h1 class="fn org hotel-title">${hotelDetail.name!''}${hotelDetail.latitude!''}${hotelDetail.longitude!''}</h1>
 				<#assign rating=hotelDetail.rating>
 								<#assign ratingSrc=''>
                                     <p><#if rating == 1.0>
