@@ -32,7 +32,6 @@
     <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
-    <script src="http://maps.google.com/maps/api/js?key=AIzaSyATPZS76QxgLdfyWoC2f_v9yZYed1cTLZc&sensor=false" type="text/javascript"></script>
     <script type="text/javascript" src="http://www.neworleans.com/javascript/global.js"></script>
     <script type="text/javascript" src="http://neworleans.com/javascript/tealeaf.js"></script>
     <script type="text/javascript" src="http://www.neworleans.com/video/player-helper.js"></script>
@@ -922,9 +921,9 @@ url,
         </div>
     </div>
     <!-- / footer -->
-    <div class="tooltip" style="background: transparent url(/common/images/tooltip_left.png) no-repeat top left;
+    <div class="tooltip" style="background: transparent url(http://www.neworleans.com/common/images/tooltip_left.png) no-repeat top left;
         padding-bottom: 6px; color: #f8f8f8; display: none; position: absolute;">
-        <div style="background: transparent url(/common/images/tooltip_right.png) no-repeat top right;
+        <div style="background: transparent url(http://www.neworleans.com/common/images/tooltip_right.png) no-repeat top right;
             padding-right: 5px; padding-left: 5px;">
             <div style="font-size: 11px; font-family: Arial, Helvetica, sans-serif; letter-spacing: .05em;
                 padding: 4px 0px; background-color: #444444; zindex: 40000">
