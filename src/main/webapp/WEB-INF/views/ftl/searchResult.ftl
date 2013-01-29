@@ -531,7 +531,7 @@ url,
                             <!-- search results box header with gradient background, hotel name, price -->
                             <div class="searchResultsHead">
                                 <h2 class="averageRate">
-                                    Lowest Average Price: <span style="" class="averageRate">$${hotel.lowestAvgRate!0.00}</span>
+                                    Lowest Average Price: <span style="" class="averageRate">${hotel.lowestAvgRate?string.currency!0.00}</span>
                                 </h2>
                                 <h2 class="productTitle">
                                     <a href="#rooms" onclick="popup('rooms','${hotel.name}');"> ${hotel.name!''}</a>
@@ -631,15 +631,21 @@ url,
                                                 <span <#if roomType.isPromoRate()>class="originalRate"</#if>>$${dailyRate.originalPrice!dailyRate.price}</span>
                                                 <#if roomType.isPromoRate()>
 												<br />
-                                                <span class="promo">$${dailyRate.price!0.00}</span>
+                                                <span class="promo">${dailyRate.price!''}</span>
 												</#if>
                                             </td>
                                             </#list>
                                             <td rowspan="1" class="priceCol">
-                                                <span <#if roomType.isPromoRate()> class="originalRate" </#if>>$${roomType.avgNightlyOriginalRate!roomType.avgNightlyRate}</span>
+                                                <span <#if roomType.isPromoRate()> class="originalRate" </#if>>
+												<#if roomType.avgNightlyOriginalRate?has_content>
+													${roomType.avgNightlyOriginalRate?string.currency}
+												<#elseif roomType.avgNightlyRate?has_content>
+													${roomType.avgNightlyRate?string.currency}
+												</#if>
+												</span>
                                                 <br />
 												<#if roomType.isPromoRate()>
-                                                <span class="promo">$${roomType.avgNightlyRate!''}</span>
+                                                <span class="promo">${roomType.avgNightlyRate?string.currency!'0.0'}</span>
                                                 <br />
 												</#if>
                                                 <a href="javascript:void(0);" class="pricetrigger" id="${hotelId}${roomId1}" name="${hotelId}${roomId}" style="position:relative;" contentref="${hotelId}${roomId}">view total price
