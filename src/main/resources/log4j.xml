@@ -41,6 +41,10 @@
 		<appender-ref ref="console" />
 	</logger>
 
+	<logger name="com.google.code" additivity="false">
+		<level value="debug" />
+		<appender-ref ref="console" />
+	</logger>
 
 	<!-- Root Logger -->
 	<root>

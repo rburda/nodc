@@ -11,7 +11,7 @@ public interface InventoryService
 {
 	void search(HttpServletRequest request, SearchParams params) throws Exception;
 		
-	HotelDetail getHotelDetails(String hotelName);
+	HotelDetail getHotelDetails(SessionInfo sessionInfo, String hotelName);
 
 	SearchResult getAggragatedResults(SessionInfo sessionInfo, SortType sortBy, Integer page);
 }

@@ -17,11 +17,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import com.burda.scraper.dao.HotelDetailCacheKey;
 import com.burda.scraper.dao.HotelDetailDAO;
 import com.burda.scraper.model.Hotel;
+import com.burda.scraper.model.RoomType;
 import com.burda.scraper.model.SearchParams;
 import com.burda.scraper.model.SearchResult;
 import com.burda.scraper.model.SortType;
 import com.burda.scraper.model.persisted.HotelDetail;
 import com.burda.scraper.model.persisted.InventorySource;
+import com.burda.scraper.model.persisted.RoomTypeDetail;
 import com.google.code.ssm.api.format.SerializationType;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
@@ -127,9 +129,30 @@ public class InventoryServiceImpl implements InventoryService
 	}
 	
 	@Override
-	public HotelDetail getHotelDetails(String hotelName)
+	public HotelDetail getHotelDetails(SessionInfo sessionInfo, String hotelName)
 	{
-		return hotelDetailDAO.getHotelDetail(new HotelDetailCacheKey(hotelName));
+		SearchResult searchResult = getAggragatedResults(sessionInfo,  null,  null);
+		HotelDetail hotelDetail = null;
+		if (searchResult != null)
+		{
+			Hotel rateInfo = searchResult.getHotel(hotelName);
+			if (rateInfo != null)
+			{
+				hotelDetail = rateInfo.getHotelDetails();
+				for (RoomType rt: rateInfo.getRoomTypes())
+				{
+					for (RoomTypeDetail roomTypeContent: hotelDetail.getRoomTypeDetails())
+					{
+						if (roomTypeContent.getName().equals(rt.getName()))
+							roomTypeContent.setDailyRates(rt.dailyRates);
+					}
+				}				
+			}
+		}
+		if (hotelDetail == null)
+			hotelDetail = hotelDetailDAO.getHotelDetail(new HotelDetailCacheKey(hotelName));
+		
+		return hotelDetail;
 	}
 	
 	public void setNODCInventorySource(NODCWarehouse invSource)

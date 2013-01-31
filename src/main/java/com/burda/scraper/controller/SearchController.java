@@ -125,7 +125,10 @@ public class SearchController
 			HttpServletRequest clientRequest,
 			HttpServletResponse clientResponse) throws Exception
 	{
-		model.put("hotelDetail",  invService.getHotelDetails(hotelName));
+
+		SessionInfo sessionInfo = new SessionInfo(clientRequest);
+		
+		model.put("hotelDetail",  invService.getHotelDetails(sessionInfo, hotelName));
 		return new ModelAndView("hotelDetailPopup", model);
 	}
 	
@@ -137,7 +140,7 @@ public class SearchController
 			HttpServletRequest clientRequest,
 			HttpServletResponse clientResponse) throws Exception
 	{
-		return invService.getHotelDetails(hotelName);
+		return invService.getHotelDetails(new SessionInfo(clientRequest), hotelName);
 	}
 		
 		

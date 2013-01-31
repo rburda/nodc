@@ -69,6 +69,17 @@ public class SearchResult
 		return Lists.newArrayList(filteredHotels);
 	}
 	
+	public Hotel getHotel(String hotelName)
+	{
+		Hotel found = null;
+		for (Hotel h: getFilteredHotels())
+		{
+			if (h.getName().equals(hotelName))
+				found = h;
+		}
+		return found;
+	}
+	
 	public void setFilteredHotels(List<Hotel> hotels)
 	{
 		this.filteredHotels = Lists.newArrayList(hotels);

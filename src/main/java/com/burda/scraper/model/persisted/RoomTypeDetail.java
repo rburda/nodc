@@ -14,6 +14,7 @@ import com.amazonaws.services.dynamodb.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodb.datamodeling.DynamoDBIgnore;
 import com.amazonaws.services.dynamodb.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodb.datamodeling.DynamoDBTable;
+import com.burda.scraper.model.DailyRate;
 import com.burda.scraper.model.Photo;
 import com.google.common.collect.Lists;
 
@@ -28,6 +29,7 @@ public class RoomTypeDetail
 	private String details;
 	private String features;
 	private List<Photo> photos = Lists.newArrayList();
+	private List<DailyRate> dailyRates = Lists.newArrayList();
 	
 	@DynamoDBHashKey(attributeName = "hotel_name")
 	public String getHotelName()
@@ -78,6 +80,18 @@ public class RoomTypeDetail
 	public void setFeatures(String features)
 	{
 		this.features = features;
+	}
+	
+	@DynamoDBIgnore
+	public List<DailyRate> getDailyRates()
+	{
+		return dailyRates;
+	}
+	
+	@DynamoDBIgnore
+	public void setDailyRates(List<DailyRate> rates)
+	{
+		this.dailyRates = rates;
 	}
 	
 	@DynamoDBIgnore
