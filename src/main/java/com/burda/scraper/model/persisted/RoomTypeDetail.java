@@ -30,6 +30,7 @@ public class RoomTypeDetail
 	private String features;
 	private List<Photo> photos = Lists.newArrayList();
 	private List<DailyRate> dailyRates = Lists.newArrayList();
+	private String bookItUrl;
 	
 	@DynamoDBHashKey(attributeName = "hotel_name")
 	public String getHotelName()
@@ -158,6 +159,18 @@ public class RoomTypeDetail
 					equals = true;
 		
 		return equals;
+	}
+	
+	@DynamoDBIgnore
+	public String getBookItUrl()
+	{
+		return bookItUrl;
+	}
+	
+	@DynamoDBIgnore
+	public void setBookItUrl(String biu)
+	{
+		this.bookItUrl = biu;
 	}
 	
 	@Override

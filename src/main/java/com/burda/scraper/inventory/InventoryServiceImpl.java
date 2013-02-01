@@ -144,7 +144,10 @@ public class InventoryServiceImpl implements InventoryService
 					for (RoomTypeDetail roomTypeContent: hotelDetail.getRoomTypeDetails())
 					{
 						if (roomTypeContent.getName().equals(rt.getName()))
+						{
 							roomTypeContent.setDailyRates(rt.dailyRates);
+							roomTypeContent.setBookItUrl(rt.bookItUrl);
+						}
 					}
 				}				
 			}
