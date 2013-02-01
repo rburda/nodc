@@ -73,37 +73,37 @@ public class SearchParams implements Serializable
 		checkOutDate = defCheckOut(requestParams.get("returnDate"));
 		numRooms = defZero(requestParams.get("numRooms"));
 		numAdults1 = defZero(requestParams.get("rl:0:ro:na"));
-		numChildren1 = defZero(requestParams.get("rl:0:ro:ob:nc"));
+		numChildren1 = defZero(requestParams.get("rl:0:ro:ob:ob_body:nc"));
 		if (numRooms >= 2)
 		{
 			numAdults2 = defZero(requestParams.get("rl:1:ro:na"));
-			numChildren2 = defZero(requestParams.get("rl:1:ro:ob:nc"));
+			numChildren2 = defZero(requestParams.get("rl:1:ro:ob:ob_body:nc"));
 		}
 		
 		if (numRooms >= 3)
 		{
 			numAdults3 = defZero(requestParams.get("rl:2:ro:na"));
-			numChildren3 = defZero(requestParams.get("rl:2:ro:ob:nc"));			
+			numChildren3 = defZero(requestParams.get("rl:2:ro:ob:ob_body:nc"));			
 		}
 
 		if (numRooms >=4)
 		{
 			numAdults4 = defZero(requestParams.get("rl:3:ro:na"));
-			numChildren4 = defZero(requestParams.get("rl:3:ro:ob:nc"));			
+			numChildren4 = defZero(requestParams.get("rl:3:ro:ob:ob_body:nc"));			
 		}
 
-		room1ChildAge1 = defZero(requestParams.get("a:0:b:c:0:d:e"));
-		room1ChildAge2 = defZero(requestParams.get("a:0:b:c:1:d:e"));
-		room1ChildAge3 = defZero(requestParams.get("a:0:b:c:2:d:e"));
-		room2ChildAge1 = defZero(requestParams.get("a:1:b:c:0:d:e"));
-		room2ChildAge2 = defZero(requestParams.get("a:1:b:c:1:d:e"));
-		room2ChildAge3 = defZero(requestParams.get("a:1:b:c:2:d:e"));
-		room3ChildAge1 = defZero(requestParams.get("a:2:b:c:0:d:e"));
-		room3ChildAge2 = defZero(requestParams.get("a:2:b:c:1:d:e"));
-		room3ChildAge3 = defZero(requestParams.get("a:2:b:c:2:d:e"));
-		room4ChildAge1 = defZero(requestParams.get("a:3:b:c:0:d:e"));
-		room4ChildAge2 = defZero(requestParams.get("a:3:b:c:1:d:e"));
-		room4ChildAge3 = defZero(requestParams.get("a:3:b:c:2:d:e"));
+		room1ChildAge1 = defZero(requestParams.get("a:0:b:c:0:d:d_body:e"));
+		room1ChildAge2 = defZero(requestParams.get("a:0:b:c:1:d:d_body:e"));
+		room1ChildAge3 = defZero(requestParams.get("a:0:b:c:2:d:d_body:e"));
+		room2ChildAge1 = defZero(requestParams.get("a:1:b:c:0:d:d_body:e"));
+		room2ChildAge2 = defZero(requestParams.get("a:1:b:c:1:d:d_body:e"));
+		room2ChildAge3 = defZero(requestParams.get("a:1:b:c:2:d:d_body:e"));
+		room3ChildAge1 = defZero(requestParams.get("a:2:b:c:0:d:d_body:e"));
+		room3ChildAge2 = defZero(requestParams.get("a:2:b:c:1:d:d_body:e"));
+		room3ChildAge3 = defZero(requestParams.get("a:2:b:c:2:d:d_body:e"));
+		room4ChildAge1 = defZero(requestParams.get("a:3:b:c:0:d:d_body:e"));
+		room4ChildAge2 = defZero(requestParams.get("a:3:b:c:1:d:d_body:e"));
+		room4ChildAge3 = defZero(requestParams.get("a:3:b:c:2:d:d_body:e"));
 	}
 	
 	public int getNumRooms()

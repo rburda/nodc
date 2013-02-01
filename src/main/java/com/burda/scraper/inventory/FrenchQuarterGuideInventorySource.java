@@ -95,8 +95,10 @@ public class FrenchQuarterGuideInventorySource implements Warehouse
 				logger.error("Unable to add in results", e);
 			}
 		}
-		logger.debug("fqg num hotels: " + hotels.size());
-		cache.set(params.getSessionInfo().getSessionId()+InventorySource.FQG.name(), (60*180), hotels, SerializationType.JSON);
+		
+		String cacheKey = params.getSessionInfo().getSessionId()+InventorySource.FQG.name();
+		logger.debug(String.format("CACHE: fqg cache key (%1$s); num hotels stored: " + hotels.size(), cacheKey));
+		cache.set(cacheKey, (60*180), hotels, SerializationType.JSON);
 		logger.debug("fqg complete");
 		return hotels;
 	}

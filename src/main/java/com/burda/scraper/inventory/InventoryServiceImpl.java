@@ -89,6 +89,7 @@ public class InventoryServiceImpl implements InventoryService
 		Session session = new Session(params);
 		session.setCurrentPage(1);
 		session.setCurrentSort(SortType.DEFAULT);
+		logger.debug(String.format("CACHE: session cache key (%1$s);", params.getSessionInfo().getSessionId()));
 		cache.set(params.getSessionInfo().getSessionId(), SESSION_CACHE_TIMEOUT_IN_SECONDS, session, SerializationType.JSON );
 	}
 	
@@ -98,14 +99,16 @@ public class InventoryServiceImpl implements InventoryService
 		SearchResult sr = null;
 		Session s = getFromCache(sessionInfo.getSessionId());
 		Multimap<InventorySource, Hotel> rawResults = HashMultimap.create();
-		Collection<Hotel> nodcHotels = (Collection<Hotel>)getFromCache(sessionInfo.getSessionId()+InventorySource.NODC.name());
-		Collection<Hotel> fqgHotels = (Collection<Hotel>)getFromCache(sessionInfo.getSessionId()+InventorySource.FQG.name());
+		String nodcCacheKey = sessionInfo.getSessionId()+InventorySource.NODC.name();
+		String fqgCacheKey = sessionInfo.getSessionId()+InventorySource.FQG.name();
+		Collection<Hotel> nodcHotels = (Collection<Hotel>)getFromCache(nodcCacheKey);
+		Collection<Hotel> fqgHotels = (Collection<Hotel>)getFromCache(fqgCacheKey);
 		if (nodcHotels == null)
 			nodcHotels = Lists.newArrayList();
-		logger.debug("num nodc hotels retrieved" + nodcHotels.size());
+		logger.debug(String.format("CACHE: nodc cache key (%1$s); num hotels retrieved: " + nodcHotels.size(), nodcCacheKey));
 		if (fqgHotels == null)
 			fqgHotels = Lists.newArrayList();
-		logger.debug("num fqg hotels retrieved" + fqgHotels.size());
+		logger.debug(String.format("CACHE: fqg cache key (%1$s); num hotels retrieved: " + fqgHotels.size(), fqgCacheKey));
 		rawResults.putAll(InventorySource.NODC, nodcHotels);
 		rawResults.putAll(InventorySource.FQG, fqgHotels);
 		if (s != null)

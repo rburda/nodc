@@ -3,6 +3,8 @@ package com.burda.scraper.inventory;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URI;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -263,7 +265,9 @@ public class NODCWarehouse implements Warehouse
 			getAdditionalResultsAsync(params, document, initialResultsComplete);
 			hotels = createHotelsNODC(params, document);
 		}
-		cache.set(createCacheKey(params), (60*180), hotels, SerializationType.JSON);
+		String cacheKey = createCacheKey(params);
+		logger.debug(String.format("CACHE: nodc cache key (%1$s); num hotels stored: " + hotels.size(), cacheKey));
+		cache.set(cacheKey, (60*180), hotels, SerializationType.JSON);
 		initialResultsComplete.countDown();
 		logger.debug("nodc initial results complete (" + hotels.size() + ") hotels returned");
 		return hotels;
@@ -403,18 +407,63 @@ public class NODCWarehouse implements Warehouse
 		int beginIdx = onclick.indexOf("?");
 		int endIdx = onclick.indexOf("'; }");
 		
-		return "http://www.neworleans.com/mytrip/app?"+onclick.substring(beginIdx+1, endIdx);
+		return "http://www.neworleans.com/mytrip/app/Products/hotel?"+onclick.substring(beginIdx+1, endIdx);
 	}	
 	
 	
 	private static final String queryNODCHotelsViaHttpClient(SearchParams sp)
 	{
-		URIBuilder builder = new URIBuilder();
+				
+		//URIBuilder builder = new URIBuilder();
+		StringBuffer builder = new StringBuffer();
 		builder
+			.append("http://www.neworleans.com/mytrip/app/SearchWidget?");
+		builder.append(sp.getSessionInfo().getWicketSearchPath());
+		builder.append("&productType=HOTEL");
+		builder.append("&promoId=");
+		builder.append("&mo=");
+		builder.append("&"+URLEncoder.encode("pdp:physicalDestination")+"=982");
+		builder.append("&"+URLEncoder.encode("departureDate")+"="+URLEncoder.encode(STAY_DATE_FORMAT.format(sp.getCheckInDate().toDate())));
+		builder.append("&"+URLEncoder.encode("returnDate")+"="+URLEncoder.encode(STAY_DATE_FORMAT.format(sp.getCheckOutDate().toDate())));
+		builder.append("&"+URLEncoder.encode("numRooms")+"="+sp.getNumRooms());
+		builder.append("&"+URLEncoder.encode("rl:0:ro:na")+"="+sp.getNumAdults1());
+		builder.append("&"+URLEncoder.encode("rl:0:ro:ob:ob_body:nc")+"="+sp.getNumChildren1());
+		builder.append("&"+URLEncoder.encode("rl:1:ro:na")+"="+sp.getNumAdults2());
+		builder.append("&"+URLEncoder.encode("rl:1:ro:ob:ob_body:nc")+"="+sp.getNumChildren2());
+		builder.append("&"+URLEncoder.encode("rl:2:ro:na")+"="+sp.getNumAdults3());
+		builder.append("&"+URLEncoder.encode("rl:2:ro:ob:ob_body:nc")+"="+sp.getNumChildren3());
+		builder.append("&"+URLEncoder.encode("rl:3:ro:na")+"="+sp.getNumAdults4());
+		builder.append("&"+URLEncoder.encode("rl:3:ro:ob:ob_body:nc")+"="+sp.getNumChildren4());
+		builder.append("&"+URLEncoder.encode("a:0:b:c:0:d:d_body:e")+"="+(sp.getNumChildren1() > 0 ? toS(sp.getRoom1ChildAge1()) : ""));
+		builder.append("&"+URLEncoder.encode("a:0:b:c:1:d:d_body:e")+"="+(sp.getNumChildren1() > 1 ? toS(sp.getRoom1ChildAge2()) : ""));
+		builder.append("&"+URLEncoder.encode("a:0:b:c:2:d:d_body:e")+"="+(sp.getNumChildren1() > 2 ? toS(sp.getRoom1ChildAge3()) : ""));
+		builder.append("&"+URLEncoder.encode("a:1:b:c:0:d:d_body:e")+"="+(sp.getNumChildren2() > 0 ? toS(sp.getRoom2ChildAge1()) : ""));
+		builder.append("&"+URLEncoder.encode("a:1:b:c:1:d:d_body:e")+"="+(sp.getNumChildren2() > 1 ? toS(sp.getRoom2ChildAge2()) : ""));
+		builder.append("&"+URLEncoder.encode("a:1:b:c:2:d:d_body:e")+"="+(sp.getNumChildren2() > 2 ? toS(sp.getRoom2ChildAge3()) : ""));
+		builder.append("&"+URLEncoder.encode("a:2:b:c:0:d:d_body:e")+"="+(sp.getNumChildren3() > 0 ? toS(sp.getRoom3ChildAge1()) : ""));
+		builder.append("&"+URLEncoder.encode("a:2:b:c:1:d:d_body:e")+"="+(sp.getNumChildren3() > 1 ? toS(sp.getRoom3ChildAge2()) : ""));
+		builder.append("&"+URLEncoder.encode("a:2:b:c:2:d:d_body:e")+"="+(sp.getNumChildren3() > 2 ? toS(sp.getRoom3ChildAge3()) : ""));
+		builder.append("&"+URLEncoder.encode("a:3:b:c:0:d:d_body:e")+"="+(sp.getNumChildren4() > 0 ? toS(sp.getRoom4ChildAge1()) : ""));
+		builder.append("&"+URLEncoder.encode("a:3:b:c:1:d:d_body:e")+"="+(sp.getNumChildren4() > 1 ? toS(sp.getRoom4ChildAge2()) : ""));
+		builder.append("&"+URLEncoder.encode("a:3:b:c:2:d:d_body:e")+"="+(sp.getNumChildren4() > 2 ? toS(sp.getRoom4ChildAge3()) : ""));
+		builder.append("&preferredProductId=");
+		builder.append("&JSONFormSubmit=true");
+		builder.append("&json=true");
+		builder.append("&jsoncallback=jquery123");
+		builder.append("&"+URLEncoder.encode("componentAsWidget_searchWidgetForm_hf_0")+"=");		
+		
+		
+		
+		
+		
+		
+		
+	/*	
 				.setScheme("http")
 				.setHost("www.neworleans.com")
-				.setPath("/mytrip/app/SearchWidget/")
-				.addParameter("wicket:interface", sp.getSessionInfo().getWicketSearchPath())
+				.setPath("/mytrip/app/SearchWidget")
+				//.setFragment("?"+sp.getSessionInfo().getWicketSearchPath())
+				.addParameter("", sp.getSessionInfo().getWicketSearchPath())
 				.addParameter("productType", "HOTEL")
 				.addParameter("promoId", "")
 				.addParameter("mo", "")
@@ -423,31 +472,42 @@ public class NODCWarehouse implements Warehouse
 				.addParameter("returnDate", STAY_DATE_FORMAT.format(sp.getCheckOutDate().toDate()))
 				.addParameter("numRooms", toS(sp.getNumRooms()))
 				.addParameter("rl:0:ro:na", toS(sp.getNumAdults1()))
-				.addParameter("rl:0:ro:ob:nc", toS(sp.getNumChildren1()))
+				.addParameter("rl:0:ro:ob:ob_body:nc", toS(sp.getNumChildren1()))
 				.addParameter("rl:1:ro:na", toS(sp.getNumAdults2()))
-				.addParameter("rl:1:ro:ob:nc", toS(sp.getNumChildren2()))
+				.addParameter("rl:1:ro:ob:ob_body:nc", toS(sp.getNumChildren2()))
 				.addParameter("rl:2:ro:na", toS(sp.getNumAdults3()))
-				.addParameter("rl:2:ro:ob:nc", toS(sp.getNumChildren3()))
+				.addParameter("rl:2:ro:ob:ob_body:nc", toS(sp.getNumChildren3()))
 				.addParameter("rl:3:ro:na", toS(sp.getNumAdults4()))
-				.addParameter("rl:3:ro:ob:nc", toS(sp.getNumChildren4()))
-				.addParameter("a:0:b:c:0:d:e", sp.getNumChildren1() > 0 ? toS(sp.getRoom1ChildAge1()) : "")
-				.addParameter("a:0:b:c:1:d:e", sp.getNumChildren1() > 1 ? toS(sp.getRoom1ChildAge2()) : "")
-				.addParameter("a:0:b:c:2:d:e", sp.getNumChildren1() > 2 ? toS(sp.getRoom1ChildAge3()) : "")
-				.addParameter("a:1:b:c:0:d:e", sp.getNumChildren2() > 0 ? toS(sp.getRoom2ChildAge1()) : "")
-				.addParameter("a:1:b:c:1:d:e", sp.getNumChildren2() > 1 ? toS(sp.getRoom2ChildAge2()) : "")
-				.addParameter("a:1:b:c:2:d:e", sp.getNumChildren2() > 2 ? toS(sp.getRoom2ChildAge3()) : "")
-				.addParameter("a:2:b:c:0:d:e", sp.getNumChildren3() > 0 ? toS(sp.getRoom3ChildAge1()) : "")
-				.addParameter("a:2:b:c:1:d:e", sp.getNumChildren3() > 1 ? toS(sp.getRoom3ChildAge2()) : "")
-				.addParameter("a:2:b:c:2:d:e", sp.getNumChildren3() > 2 ? toS(sp.getRoom3ChildAge3()) : "")
-				.addParameter("a:3:b:c:0:d:e", sp.getNumChildren4() > 0 ? toS(sp.getRoom4ChildAge1()) : "")
-				.addParameter("a:3:b:c:1:d:e", sp.getNumChildren4() > 1 ? toS(sp.getRoom4ChildAge2()) : "")
-				.addParameter("a:3:b:c:2:d:e", sp.getNumChildren4() > 2 ? toS(sp.getRoom4ChildAge3()) : "")
+				.addParameter("rl:3:ro:ob:ob_body:nc", toS(sp.getNumChildren4()))
+				.addParameter("a:0:b:c:0:d:d_body:e", sp.getNumChildren1() > 0 ? toS(sp.getRoom1ChildAge1()) : "")
+				.addParameter("a:0:b:c:1:d:d_body:e", sp.getNumChildren1() > 1 ? toS(sp.getRoom1ChildAge2()) : "")
+				.addParameter("a:0:b:c:2:d:d_body:e", sp.getNumChildren1() > 2 ? toS(sp.getRoom1ChildAge3()) : "")
+				.addParameter("a:1:b:c:0:d:d_body:e", sp.getNumChildren2() > 0 ? toS(sp.getRoom2ChildAge1()) : "")
+				.addParameter("a:1:b:c:1:d:d_body:e", sp.getNumChildren2() > 1 ? toS(sp.getRoom2ChildAge2()) : "")
+				.addParameter("a:1:b:c:2:d:d_body:e", sp.getNumChildren2() > 2 ? toS(sp.getRoom2ChildAge3()) : "")
+				.addParameter("a:2:b:c:0:d:d_body:e", sp.getNumChildren3() > 0 ? toS(sp.getRoom3ChildAge1()) : "")
+				.addParameter("a:2:b:c:1:d:d_body:e", sp.getNumChildren3() > 1 ? toS(sp.getRoom3ChildAge2()) : "")
+				.addParameter("a:2:b:c:2:d:d_body:e", sp.getNumChildren3() > 2 ? toS(sp.getRoom3ChildAge3()) : "")
+				.addParameter("a:3:b:c:0:d:d_body:e", sp.getNumChildren4() > 0 ? toS(sp.getRoom4ChildAge1()) : "")
+				.addParameter("a:3:b:c:1:d:d_body:e", sp.getNumChildren4() > 1 ? toS(sp.getRoom4ChildAge2()) : "")
+				.addParameter("a:3:b:c:2:d:d_body:e", sp.getNumChildren4() > 2 ? toS(sp.getRoom4ChildAge3()) : "")
 				.addParameter("preferredProductId", "")
 				.addParameter("JSONFormSubmit", "true")
 				.addParameter("json", "true")
 				.addParameter("jsoncallback", "jquery123")
-				.addParameter("componentAsWidget_searchWidgetForm_hf_0", "");				
-		return getResults(builder, sp.getSessionInfo());
+				.addParameter("componentAsWidget_searchWidgetForm_hf_0", "");	
+				*/	
+		String results = null;
+		try
+		{
+			results = getResults(new URIBuilder(builder.toString()), sp.getSessionInfo());	
+		}
+		catch (Exception e)
+		{
+			logger.error("Unable to build url", e);			
+		}
+		return results;
+		
 	}
 	
 	private static final String getResults(URIBuilder builder, SessionInfo sessionInfo)
@@ -575,6 +635,7 @@ public class NODCWarehouse implements Warehouse
 			
 			try
 			{
+				logger.debug(String.format("CACHE: nodc cache key (%1$s); num hotels stored: " + hotels.size(), cacheKey));
 				cache.set(cacheKey, (60*180), existingHotelsInCache, SerializationType.JSON);
 			}
 			catch (Exception e)
