@@ -312,7 +312,8 @@ return false;
 <span>$112.00</span>
 </td>
 
-<td rowspan="1" class="bookItCol"><input type="button" border="0" value="" onclick="_gaq.push(['_trackPageview', &quot;/neworleans/HOTEL/BookIt/The Cotton Exchange Hotel/Double&quot;]);var wcall=wicketAjaxGet('?wicket:interface=:11:browseItems:browseableProducts:1:itemContainer:hotelDetailPopupWin:content:tabPanels:roomsTab:roomTypes:0:roomRates:hotelRatesContainer:roomRatesContainer:roomRatesRepeater:0:roomRatesBodyContent:firstWeek:bookButtonColumn:bookButton::IBehaviorListener:0:-1',function() { }.bind(this),function() { }.bind(this), function() {return Wicket.$('id8a4') != null;}.bind(this));return !wcall;" id="id8a4" class="bookIt" alt="">
+<td rowspan="1" class="bookItCol">
+<input type="button" border="0" value="" onclick="parent.location='${roomType.bookItUrl!''}'" class="bookIt" alt="" />
 </td>
 </tr>
 
