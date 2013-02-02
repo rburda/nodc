@@ -295,7 +295,7 @@ return false;
 
 
 
-<tr class="cyl-HotelRow ">
+<tr class="cyl-HotelRow <#if roomType.isPromoRate()> hasPromos  hasSale</#if>">
 
 <td rowspan="1" class="productCol">
 <span>${roomType.name}</span>
@@ -304,12 +304,25 @@ return false;
 <#list roomType.dailyRates as dailyRate>
 <td class="dayCol">
 
-<span>$${dailyRate.originalPrice!dailyRate.price}</span>
-</td>
+<span <#if roomType.isPromoRate()>class="originalRate"</#if>>$${dailyRate.originalPrice!dailyRate.price}</span>
+                                                <#if roomType.isPromoRate()>
+												<br />
+                                                <span class="promo">${dailyRate.price!''}</span>
+												</#if></td>
 </#list>
 <td rowspan="1" class="priceCol">
-
-<span>$112.00</span>
+<span <#if roomType.isPromoRate()> class="originalRate" </#if>>
+												<#if roomType.avgNightlyOriginalRate?has_content>
+													${roomType.avgNightlyOriginalRate?string.currency}
+												<#elseif roomType.avgNightlyRate?has_content>
+													${roomType.avgNightlyRate?string.currency}
+												</#if>
+												</span>
+                                                <br />
+												<#if roomType.isPromoRate()>
+                                                <span class="promo">${roomType.avgNightlyRate?string.currency!'0.0'}</span>
+                                                <br />
+												</#if>
 </td>
 
 <td rowspan="1" class="bookItCol">
