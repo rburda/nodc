@@ -284,8 +284,11 @@ return false;
 		<th class="dayCol"> ${dailyRate.date?string("EEE")}
         </th>
 		</#list>
-<th class="priceCol"><strong>Avg Nightly Rate
+<th class="priceCol">
+<#if (roomType.dailyRates?size>0)>
+<strong>Avg Nightly Rate
 </strong><br> per night, per room
+</#if>
 </th>
 <th class="bookItCol">&nbsp;</th>
 </tr>
@@ -294,6 +297,7 @@ return false;
 <tbody>
 
 
+<#if (roomType.dailyRates?size>0)>
 
 <tr class="cyl-HotelRow <#if roomType.isPromoRate()> hasPromos  hasSale</#if>">
 
@@ -329,6 +333,7 @@ return false;
 <input type="button" border="0" value="" onclick="parent.location='${roomType.bookItUrl!''}'" class="bookIt" alt="" />
 </td>
 </tr>
+</#if>
 
 <tr class="jqRoomDetails" style="display:none">
 <td class="productCol" colspan="5">
