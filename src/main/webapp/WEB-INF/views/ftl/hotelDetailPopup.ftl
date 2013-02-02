@@ -277,12 +277,13 @@ return false;
 <div id="id8a3">
 <table cellspacing="0" cellpadding="0" border="0" class="hotelResults">
 <thead>
-<tr>
-<th class="productCol"><span>${roomType.name}</span>
-</th>
-<th class="dayCol">Sat
-</th><th class="dayCol">Sun
-</th>
+		<tr>
+		<th class="productCol"><span>${roomType.name}</span>
+		</th>
+		<#list roomType.dailyRates as dailyRate>
+		<th class="dayCol"> ${dailyRate.date?string("EEE")}
+        </th>
+		</#list>
 <th class="priceCol"><strong>Avg Nightly Rate
 </strong><br> per night, per room
 </th>
@@ -300,21 +301,19 @@ return false;
 <span>${roomType.name}</span>
   </td>
 
+<#list roomType.dailyRates as dailyRate>
 <td class="dayCol">
 
-<span>$119</span>
-
-</td><td class="dayCol">
-
-<span>$105</span>
-
+<span>$${dailyRate.originalPrice!dailyRate.price}</span>
 </td>
+</#list>
 <td rowspan="1" class="priceCol">
 
 <span>$112.00</span>
 </td>
 
-<td rowspan="1" class="bookItCol"><input type="button" border="0" value="" onclick="_gaq.push(['_trackPageview', &quot;/neworleans/HOTEL/BookIt/The Cotton Exchange Hotel/Double&quot;]);var wcall=wicketAjaxGet('?wicket:interface=:11:browseItems:browseableProducts:1:itemContainer:hotelDetailPopupWin:content:tabPanels:roomsTab:roomTypes:0:roomRates:hotelRatesContainer:roomRatesContainer:roomRatesRepeater:0:roomRatesBodyContent:firstWeek:bookButtonColumn:bookButton::IBehaviorListener:0:-1',function() { }.bind(this),function() { }.bind(this), function() {return Wicket.$('id8a4') != null;}.bind(this));return !wcall;" id="id8a4" class="bookIt" alt="">
+<td rowspan="1" class="bookItCol">
+<input type="button" border="0" value="" onclick="parent.location='${roomType.bookItUrl!''}'" class="bookIt" alt="" />
 </td>
 </tr>
 
