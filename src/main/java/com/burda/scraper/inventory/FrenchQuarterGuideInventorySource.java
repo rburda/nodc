@@ -98,7 +98,8 @@ public class FrenchQuarterGuideInventorySource implements Warehouse
 		
 		String cacheKey = params.getSessionInfo().getSessionId()+InventorySource.FQG.name();
 		logger.debug(String.format("CACHE: fqg cache key (%1$s); num hotels stored: " + hotels.size(), cacheKey));
-		cache.set(cacheKey, (60*180), hotels, SerializationType.JSON);
+		request.getSession().setAttribute(InventorySource.FQG.name(), hotels);
+		
 		logger.debug("fqg complete");
 		return hotels;
 	}
@@ -175,7 +176,7 @@ public class FrenchQuarterGuideInventorySource implements Warehouse
 		url.append("&rs_city=New Orleans, LA");
 		url.append("&rs_chk_in="+STAY_DATE_FORMAT.print(sp.getCheckInDate()));
 		url.append("&rs_chk_out="+STAY_DATE_FORMAT.print(sp.getCheckOutDate()));
-		url.append("&rs_rooms=1");
+		url.append("&rs_rooms="+sp.getNumRooms());
 		url.append("&ts_testing=");
 		url.append("&_booknow=1");
 		return url.toString();

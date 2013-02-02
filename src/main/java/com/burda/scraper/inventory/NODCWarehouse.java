@@ -262,19 +262,19 @@ public class NODCWarehouse implements Warehouse
 		if (response != null)
 		{
 			Document document = Jsoup.parse(response, "http://www.neworleans.com/mytrip/app");
-			getAdditionalResultsAsync(params, document, initialResultsComplete);
+			getAdditionalResultsAsync(params, request, document, initialResultsComplete);
 			hotels = createHotelsNODC(params, document);
 		}
 		String cacheKey = createCacheKey(params);
 		logger.debug(String.format("CACHE: nodc cache key (%1$s); num hotels stored: " + hotels.size(), cacheKey));
-		cache.set(cacheKey, (60*180), hotels, SerializationType.JSON);
+		request.getSession().setAttribute(InventorySource.NODC.name(), hotels);
 		initialResultsComplete.countDown();
 		logger.debug("nodc initial results complete (" + hotels.size() + ") hotels returned");
 		return hotels;
 	}
 
 	private void getAdditionalResultsAsync(
-			final SearchParams params, 
+			final SearchParams params, final HttpServletRequest request,
 			Document initialResults, final CountDownLatch initialResultsComplete ) throws Exception
 	{
 		final List<Callable<Void>> workers = Lists.newArrayList();
@@ -286,19 +286,20 @@ public class NODCWarehouse implements Warehouse
 				@Override
 				public Void call() throws Exception
 				{
-					URIBuilder builder = new URIBuilder();
+					URIBuilder builder = new URIBuilder("http://www.neworleans.com"+link.attr("href"));
+					/*
 					builder
 							.setScheme("http")
 							.setHost("www.neworleans.com")
 							.setPath("/mytrip/app")
 							.addParameter("wicket:interface", link.attr("href").replace("?wicket:interface=", ""));
-
+					*/
 					String response = getResults(builder, params.getSessionInfo());
 					if (response != null)
 					{
 						Document document = Jsoup.parse(response, "http://www.neworleans.com/mytrip/app");
 						Collection<Hotel> asyncResult = createHotelsNODC(params, document);
-						addToResults(params, asyncResult,  initialResultsComplete);
+						addToResults(params, request, asyncResult,  initialResultsComplete);
 						logger.debug("asyncResult returned: " + (asyncResult != null ? asyncResult.size() : 0) + " addl results");
 					}
 					return null;
@@ -614,17 +615,15 @@ public class NODCWarehouse implements Warehouse
 	}
 	
 	private void addToResults(
-			SearchParams params, Collection<Hotel> hotels, CountDownLatch initialResultsComplete)
+			SearchParams params, HttpServletRequest request, Collection<Hotel> hotels, CountDownLatch initialResultsComplete)
 	{
-		String cacheKey = createCacheKey(params);
 		List<Hotel> existingHotelsInCache = Lists.newArrayList();
 		synchronized(initialResultsComplete)
 		{
 			try
 			{
-
 				initialResultsComplete.await();
-				existingHotelsInCache = cache.get(cacheKey, SerializationType.JSON);	
+				existingHotelsInCache = (List<Hotel>)request.getSession().getAttribute(InventorySource.NODC.name());	
 			}
 			catch (Exception e)
 			{
@@ -635,8 +634,9 @@ public class NODCWarehouse implements Warehouse
 			
 			try
 			{
-				logger.debug(String.format("CACHE: nodc cache key (%1$s); num hotels stored: " + hotels.size(), cacheKey));
-				cache.set(cacheKey, (60*180), existingHotelsInCache, SerializationType.JSON);
+				logger.debug(String.format(
+						"CACHE: nodc cache key (%1$s); num hotels stored: " + hotels.size(), createCacheKey(params)));
+				request.getSession().setAttribute(InventorySource.NODC.name(), existingHotelsInCache);
 			}
 			catch (Exception e)
 			{

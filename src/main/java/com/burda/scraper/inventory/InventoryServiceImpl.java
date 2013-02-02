@@ -90,19 +90,19 @@ public class InventoryServiceImpl implements InventoryService
 		session.setCurrentPage(1);
 		session.setCurrentSort(SortType.DEFAULT);
 		logger.debug(String.format("CACHE: session cache key (%1$s);", params.getSessionInfo().getSessionId()));
-		cache.set(params.getSessionInfo().getSessionId(), SESSION_CACHE_TIMEOUT_IN_SECONDS, session, SerializationType.JSON );
+		request.getSession().setAttribute(params.getSessionInfo().getSessionId(), session);
 	}
 	
 	@Override
 	public SearchResult getAggragatedResults(SessionInfo sessionInfo, SortType sortBy, Integer page) 
 	{
 		SearchResult sr = null;
-		Session s = getFromCache(sessionInfo.getSessionId());
+		Session s = getFromCache(sessionInfo.getRequest(), sessionInfo.getSessionId());
 		Multimap<InventorySource, Hotel> rawResults = HashMultimap.create();
-		String nodcCacheKey = sessionInfo.getSessionId()+InventorySource.NODC.name();
-		String fqgCacheKey = sessionInfo.getSessionId()+InventorySource.FQG.name();
-		Collection<Hotel> nodcHotels = (Collection<Hotel>)getFromCache(nodcCacheKey);
-		Collection<Hotel> fqgHotels = (Collection<Hotel>)getFromCache(fqgCacheKey);
+		String nodcCacheKey = InventorySource.NODC.name();
+		String fqgCacheKey = InventorySource.FQG.name();
+		Collection<Hotel> nodcHotels = (Collection<Hotel>)getFromCache(sessionInfo.getRequest(), nodcCacheKey);
+		Collection<Hotel> fqgHotels = (Collection<Hotel>)getFromCache(sessionInfo.getRequest(), fqgCacheKey);
 		if (nodcHotels == null)
 			nodcHotels = Lists.newArrayList();
 		logger.debug(String.format("CACHE: nodc cache key (%1$s); num hotels retrieved: " + nodcHotels.size(), nodcCacheKey));
@@ -119,7 +119,7 @@ public class InventoryServiceImpl implements InventoryService
 				s.setCurrentSort(sortBy);
 			try
 			{
-				cache.set(sessionInfo.getSessionId(), SESSION_CACHE_TIMEOUT_IN_SECONDS, s, SerializationType.JSON );
+				sessionInfo.getRequest().getSession().setAttribute(sessionInfo.getSessionId(), s);
 			}
 			catch (Exception e)
 			{
@@ -150,6 +150,9 @@ public class InventoryServiceImpl implements InventoryService
 						{
 							roomTypeContent.setDailyRates(rt.dailyRates);
 							roomTypeContent.setBookItUrl(rt.bookItUrl);
+							roomTypeContent.setAvgNightlyRate(rt.avgNightlyRate);
+							roomTypeContent.setAvgNightlyOriginalRate(rt.avgNightlyOriginalRate);
+							roomTypeContent.setPromoRate(rt.isPromoRate());
 						}
 					}
 				}				
@@ -171,12 +174,12 @@ public class InventoryServiceImpl implements InventoryService
 		this.fqgInventorySource = invSource;
 	}	
 	
-	private final <T> T getFromCache(String key)
+	private final <T> T getFromCache(HttpServletRequest request, String key)
 	{
 		T result = null;
 		try
 		{
-			result = (T)cache.get(key,  SerializationType.JSON);
+			result = (T)request.getSession().getAttribute(key);
 		}
 		catch (Exception e)
 		{

@@ -26,18 +26,11 @@ public final class SessionInfo
 	private String jsessionId;
 	private String wwwsid;
 	private String wicketSessionPathForSearch;
-	
-	public SessionInfo()
-	{
-		//TODO: create a session
-		this.jsessionId = "";
-		this.wwwsid = "";
-		this.wicketSessionPathForSearch = "";
-		createNewSession();
-	}
+	private HttpServletRequest request;
 	
 	public SessionInfo(HttpServletRequest servletRequest)
 	{
+		this.request = servletRequest;
 		initSessionVars(servletRequest);
 		if (StringUtils.isEmpty(jsessionId) || StringUtils.isEmpty(wwwsid) || StringUtils.isEmpty(wicketSessionPathForSearch))
 		{
@@ -50,6 +43,11 @@ public final class SessionInfo
 		logger.error("final jsessionid == " + jsessionId);
 		logger.error("final wwwsid == " + wwwsid);
 		logger.error("final wicketpath == " + wicketSessionPathForSearch);
+	}
+	
+	public HttpServletRequest getRequest()
+	{
+		return request;
 	}
 
 	public final String getSessionId()

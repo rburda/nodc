@@ -1,6 +1,7 @@
 package com.burda.scraper.model.persisted;
 
 import java.io.StringWriter;
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -31,6 +32,9 @@ public class RoomTypeDetail
 	private List<Photo> photos = Lists.newArrayList();
 	private List<DailyRate> dailyRates = Lists.newArrayList();
 	private String bookItUrl;
+	private BigDecimal avgNightlyRate;
+	private BigDecimal avgNightlyOriginalRate;
+	private boolean isPromoRate;
 	
 	@DynamoDBHashKey(attributeName = "hotel_name")
 	public String getHotelName()
@@ -172,7 +176,43 @@ public class RoomTypeDetail
 	{
 		this.bookItUrl = biu;
 	}
+
+	@DynamoDBIgnore
+	public BigDecimal getAvgNightlyRate()
+	{
+		return avgNightlyRate;
+	}
+
+	@DynamoDBIgnore
+	public void setAvgNightlyRate(BigDecimal avgNightlyRate)
+	{
+		this.avgNightlyRate = avgNightlyRate;
+	}
 	
+	@DynamoDBIgnore
+	public BigDecimal getAvgNightlyOriginalRate()
+	{
+		return avgNightlyOriginalRate;
+	}
+	
+	@DynamoDBIgnore
+	public void setAvgNightlyOriginalRate(BigDecimal avgNightlyOriginalRate)
+	{
+		this.avgNightlyOriginalRate = avgNightlyOriginalRate;
+	}
+	
+	@DynamoDBIgnore
+	public boolean isPromoRate()
+	{
+		return isPromoRate;
+	}
+	
+	@DynamoDBIgnore
+	public void setPromoRate(boolean isPromoRate)
+	{
+		this.isPromoRate = isPromoRate;
+	}
+
 	@Override
 	public int hashCode()
 	{
