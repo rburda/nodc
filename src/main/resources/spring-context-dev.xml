@@ -9,6 +9,8 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd"
 	xmlns:aop="http://www.springframework.org/schema/aop" profile="dev">
 
+<!--  
   <bean class="com.burda.scraper.cache.EmbeddedMemcacheServer" />
+-->
 
 </beans>

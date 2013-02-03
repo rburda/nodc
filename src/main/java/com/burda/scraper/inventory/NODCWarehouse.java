@@ -131,8 +131,8 @@ public class NODCWarehouse implements Warehouse
 	@Qualifier("hotelDetailDAO")
 	private HotelDetailDAO hotelDetailDAO;
 	
-  @Autowired
-  @Qualifier("defaultMemcachedClient") 
+  //@Autowired
+  //@Qualifier("defaultMemcachedClient") 
   private com.google.code.ssm.Cache cache;
 	
 	/**

@@ -28,4 +28,21 @@ public class HotelDetailCacheKey implements Serializable
 	{
 		return hotelName.replace(' ', '_');
 	}
+	
+	public boolean equals(Object o)
+	{
+		if (o == null)
+			return false;
+		
+		if (!(o instanceof HotelDetailCacheKey))
+			return false;
+		
+		HotelDetailCacheKey other = (HotelDetailCacheKey)o;
+		return hotelName.equals(other.hotelName);
+	}
+	
+	public int hashCode()
+	{
+		return hotelName.hashCode();
+	}
 }

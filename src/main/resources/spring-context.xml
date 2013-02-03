@@ -8,11 +8,11 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/beans/spring-util-3.1.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd"
 	xmlns:aop="http://www.springframework.org/schema/aop">
-
+<!-- 
 	<import resource="simplesm-context.xml" />
-	
+ -->	
 	<aop:aspectj-autoproxy />
-
+<!-- 
   <bean name="defaultMemcachedClient" class="com.google.code.ssm.CacheFactory">
 		<property name="defaultSerializationType"
 			value="#{T(com.google.code.ssm.api.format.SerializationType).valueOf('JSON')}" />
@@ -30,7 +30,8 @@
       </bean>
     </property>
   </bean>
-
+ -->
+ 
 	<bean name="awsS3Client" class="com.amazonaws.services.s3.AmazonS3Client">
 		<constructor-arg index="0">
 			<bean class="com.amazonaws.auth.BasicAWSCredentials">

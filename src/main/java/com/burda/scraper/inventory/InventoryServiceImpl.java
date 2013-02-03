@@ -33,8 +33,8 @@ public class InventoryServiceImpl implements InventoryService
 {	
 	private static int SESSION_CACHE_TIMEOUT_IN_SECONDS = (60* 180); /* three hours */
 	
-  @Autowired
-  @Qualifier("defaultMemcachedClient") 
+ // @Autowired
+ // @Qualifier("defaultMemcachedClient") 
   private com.google.code.ssm.Cache cache;
   
   @Autowired
@@ -161,7 +161,7 @@ public class InventoryServiceImpl implements InventoryService
 		if (hotelDetail == null)
 			hotelDetail = hotelDetailDAO.getHotelDetail(new HotelDetailCacheKey(hotelName));
 		
-		return hotelDetail;
+		return hotelDetail;	
 	}
 	
 	public void setNODCInventorySource(NODCWarehouse invSource)

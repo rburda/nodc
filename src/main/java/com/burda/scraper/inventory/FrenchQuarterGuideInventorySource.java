@@ -52,8 +52,8 @@ public class FrenchQuarterGuideInventorySource implements Warehouse
 	private HotelDetailDAO hotelDetailDAO;
 	private SourceHotelDAO sourceHotelDAO;
 	
-  @Autowired
-  @Qualifier("defaultMemcachedClient") 
+ // @Autowired
+ // @Qualifier("defaultMemcachedClient") 
   private com.google.code.ssm.Cache cache;
 	
 	@Override
