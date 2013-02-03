@@ -1,5 +1,6 @@
 package com.burda.scraper.inventory;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
@@ -20,11 +21,13 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
+import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +36,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import com.burda.scraper.dao.HotelDetailCacheKey;
 import com.burda.scraper.dao.HotelDetailDAO;
 import com.burda.scraper.dao.SourceHotelDAO;
+import com.burda.scraper.model.DailyRate;
 import com.burda.scraper.model.Hotel;
 import com.burda.scraper.model.RoomType;
 import com.burda.scraper.model.SearchParams;
@@ -154,6 +158,20 @@ public class FrenchQuarterGuideInventorySource implements Warehouse
 				rt.name = rtElement.select(".roomlink .room_type a").first().ownText();
 				rt.avgNightlyRate = InventoryUtils.createMoney(
 						hotelElement.select("#rateDetails_"+roomTypeId + " .price").first().ownText());
+				
+				LocalDate currentDate = params.getCheckInDate();
+				for (Element dailyRateEl: hotelElement.select("#rateDetails_"+roomTypeId + " .rateDetails tbody td"))
+				{
+					if (dailyRateEl.ownText().startsWith("$"))
+					{
+						DailyRate dRate = new DailyRate();
+						dRate.date = currentDate.toDate();
+						dRate.originalPrice = InventoryUtils.createMoney(dailyRateEl.ownText());
+						dRate.price = InventoryUtils.createMoney(dailyRateEl.ownText());
+						currentDate = currentDate.plusDays(1);
+						rt.getDailyRates().add(dRate);
+					}
+				}
 				rt.totalPrice = InventoryUtils.createMoney(rtElement.select(".room_price .price").first().ownText());
 				
 				rt.bookItUrl=createBookUrl(params, idParts);

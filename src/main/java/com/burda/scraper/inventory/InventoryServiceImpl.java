@@ -144,9 +144,10 @@ public class InventoryServiceImpl implements InventoryService
 				hotelDetail = rateInfo.getHotelDetails();
 				for (RoomType rt: rateInfo.getRoomTypes())
 				{
+					String nameWithoutDots = rt.getName().replace("...",  "");
 					for (RoomTypeDetail roomTypeContent: hotelDetail.getRoomTypeDetails())
 					{
-						if (roomTypeContent.getName().equals(rt.getName()))
+						if (roomTypeContent.getName().contains(nameWithoutDots))
 						{
 							roomTypeContent.setDailyRates(rt.dailyRates);
 							roomTypeContent.setBookItUrl(rt.bookItUrl);
