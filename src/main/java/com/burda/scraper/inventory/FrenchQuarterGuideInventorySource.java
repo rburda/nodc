@@ -136,8 +136,11 @@ public class FrenchQuarterGuideInventorySource implements Warehouse
 			Hotel hotel = new Hotel();
 			hotel.setName(sourceHotel.getHotelName());
 			hotel.setSource(sourceHotel);
-			hotel.setHotelDetails( hotelDetailDAO.getHotelDetail(new HotelDetailCacheKey(sourceHotel.getHotelName())));		
-			for (Element rtElement: hotelElement.select(".room"))
+			hotel.setHotelDetails( hotelDetailDAO.getHotelDetail(new HotelDetailCacheKey(sourceHotel.getHotelName())));	
+			Elements els = hotelElement.select(".room");
+			els.addAll(hotelElement.select(".more_rooms1 .room"));
+			//for (Element rtElement: hotelElement.select(".room"))
+			for (Element rtElement: els)
 			{
 				RoomType rt = new RoomType();
 				String onclick = rtElement.select(".room_price").first().attr("onclick");

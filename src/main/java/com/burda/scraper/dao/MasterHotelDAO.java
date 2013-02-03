@@ -31,7 +31,7 @@ public class MasterHotelDAO extends AbstractDynamoDBDAO<MasterHotel>
 		{
 			mh = masterCache.get(name);
 		}
-		catch (ExecutionException ee)
+		catch (Exception ee)
 		{
 			logger.error("Unable to load master hotel", ee);
 		}

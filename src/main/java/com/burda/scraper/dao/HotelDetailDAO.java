@@ -44,7 +44,7 @@ public class HotelDetailDAO extends AbstractDynamoDBDAO<HotelDetail>
 		{
 			hd = hotelDetailCache.get(ck);
 		}
-		catch (ExecutionException ee)
+		catch (Exception ee)
 		{
 			logger.error("Unable to load hotelDetail", ee);
 		}

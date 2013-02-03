@@ -38,7 +38,7 @@ public class RoomTypeDetailDAO extends AbstractDynamoDBDAO<RoomTypeDetail>
 		{
 			details = roomTypeDetailCache.get(ck);	
 		}
-		catch (ExecutionException ee)
+		catch (Exception ee)
 		{
 			logger.error("error loading rtds", ee);
 		}

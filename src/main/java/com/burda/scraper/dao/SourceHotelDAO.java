@@ -63,7 +63,7 @@ public class SourceHotelDAO extends AbstractDynamoDBDAO<SourceHotel>
 		{
 			s = sourceCache.get(new CacheKey(hotelId, is));
 		}
-		catch (ExecutionException ee)
+		catch (Exception ee)
 		{
 			logger.error("unable to load source hotel", ee);
 		}
