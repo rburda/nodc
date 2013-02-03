@@ -17,6 +17,7 @@ import java.util.concurrent.Executors;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpRequest;
@@ -262,7 +263,7 @@ public class NODCWarehouse implements Warehouse
 		if (response != null)
 		{
 			Document document = Jsoup.parse(response, "http://www.neworleans.com/mytrip/app");
-			getAdditionalResultsAsync(params, request, document, initialResultsComplete);
+			getAdditionalResultsAsync(params, request.getSession(), document, initialResultsComplete);
 			hotels = createHotelsNODC(params, document);
 		}
 		String cacheKey = createCacheKey(params);
@@ -274,7 +275,7 @@ public class NODCWarehouse implements Warehouse
 	}
 
 	private void getAdditionalResultsAsync(
-			final SearchParams params, final HttpServletRequest request,
+			final SearchParams params, final HttpSession session,
 			Document initialResults, final CountDownLatch initialResultsComplete ) throws Exception
 	{
 		final List<Callable<Void>> workers = Lists.newArrayList();
@@ -299,7 +300,7 @@ public class NODCWarehouse implements Warehouse
 					{
 						Document document = Jsoup.parse(response, "http://www.neworleans.com/mytrip/app");
 						Collection<Hotel> asyncResult = createHotelsNODC(params, document);
-						addToResults(params, request, asyncResult,  initialResultsComplete);
+						addToResults(params, session, asyncResult,  initialResultsComplete);
 						logger.debug("asyncResult returned: " + (asyncResult != null ? asyncResult.size() : 0) + " addl results");
 					}
 					return null;
@@ -615,7 +616,7 @@ public class NODCWarehouse implements Warehouse
 	}
 	
 	private void addToResults(
-			SearchParams params, HttpServletRequest request, Collection<Hotel> hotels, CountDownLatch initialResultsComplete)
+			SearchParams params, HttpSession session, Collection<Hotel> hotels, CountDownLatch initialResultsComplete)
 	{
 		List<Hotel> existingHotelsInCache = Lists.newArrayList();
 		synchronized(initialResultsComplete)
@@ -623,7 +624,7 @@ public class NODCWarehouse implements Warehouse
 			try
 			{
 				initialResultsComplete.await();
-				existingHotelsInCache = (List<Hotel>)request.getSession().getAttribute(InventorySource.NODC.name());	
+				existingHotelsInCache = (List<Hotel>)session.getAttribute(InventorySource.NODC.name());	
 			}
 			catch (Exception e)
 			{
@@ -636,7 +637,7 @@ public class NODCWarehouse implements Warehouse
 			{
 				logger.debug(String.format(
 						"CACHE: nodc cache key (%1$s); num hotels stored: " + hotels.size(), createCacheKey(params)));
-				request.getSession().setAttribute(InventorySource.NODC.name(), existingHotelsInCache);
+				session.setAttribute(InventorySource.NODC.name(), existingHotelsInCache);
 			}
 			catch (Exception e)
 			{
