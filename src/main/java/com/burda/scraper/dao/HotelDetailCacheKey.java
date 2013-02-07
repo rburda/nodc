@@ -2,6 +2,7 @@ package com.burda.scraper.dao;
 
 import java.io.Serializable;
 
+import com.burda.scraper.model.persisted.InventorySource;
 import com.google.code.ssm.api.CacheKeyMethod;
 
 /*
@@ -12,15 +13,22 @@ public class HotelDetailCacheKey implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 	private String hotelName;
+	private InventorySource is;
 	
-	public HotelDetailCacheKey(String n)
+	public HotelDetailCacheKey(String n, InventorySource is)
 	{
 		this.hotelName = n;
+		this.is = is;
 	}
 	
 	String getHotelName()
 	{
 		return hotelName;
+	}
+	
+	InventorySource getInventorySource()
+	{
+		return is;
 	}
 	
 	@CacheKeyMethod
@@ -38,7 +46,10 @@ public class HotelDetailCacheKey implements Serializable
 			return false;
 		
 		HotelDetailCacheKey other = (HotelDetailCacheKey)o;
-		return hotelName.equals(other.hotelName);
+		if (hotelName.equals(other.hotelName))
+			if (is.equals(other.is))
+				return true;
+		return false;
 	}
 	
 	public int hashCode()

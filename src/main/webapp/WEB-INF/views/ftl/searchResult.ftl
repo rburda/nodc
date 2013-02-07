@@ -8,6 +8,15 @@
 	</#if>
 </#macro>
 
+<#macro limitDesc val>
+	<#assign x = val?index_of("</p>")>
+	<#if (x >= 0) >
+		${val?substring(0, x+4)}
+	  <#else>
+	  	${val}	
+	</#if>
+</#macro>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -573,7 +582,7 @@ url,
                                         (<a onclick="popup('map', '${hotel.name}');" href="#map">Map</a>)&nbsp;<a onclick="popup('photos', '${hotel.name}');" href="#photos">Photos</a>&nbsp;
                                     </p>
                                     <p>
-                                        ${hotel.hotelDetails.description!''}
+                                       <@limitDesc val=hotel.hotelDetails.description!'' /> 
                                     </p>
                                     <p>
                                         <a onclick="popup('rooms', '${hotel.name}');" href="#rooms">more hotel info</a>
@@ -953,7 +962,7 @@ hotelName = hotelName.replace(/\s/g,"%20");
 var url="/details"+"?hotelName="+hotelName+"#"+link;
 //alert(url);
 
-$('#Details').jqm({ ajax: url,overlay:1, onShow:varHeight });
+$('#Details').jqm({ ajax: url, overlay:1, onShow:varHeight });
 $('#Details').jqmShow();
 }
 

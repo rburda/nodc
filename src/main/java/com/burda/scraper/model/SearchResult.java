@@ -72,7 +72,7 @@ public class SearchResult
 	public Hotel getHotel(String hotelName)
 	{
 		Hotel found = null;
-		for (Hotel h: getFilteredHotels())
+		for (Hotel h: getAllHotels())
 		{
 			if (h.getName().equals(hotelName))
 				found = h;

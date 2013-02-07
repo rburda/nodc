@@ -35,6 +35,7 @@ public class HotelDetail implements Serializable
 	private String latitude;
 	private String longitude;
 	private float rating;
+	private int weight;
 	private String mapUrl;
 	private List<RoomTypeDetail> roomTypeDetails = Lists.newArrayList();
 	private List<Photo> photos = Lists.newArrayList();
@@ -155,6 +156,18 @@ public class HotelDetail implements Serializable
 	public void setRating(float rating)
 	{
 		this.rating = rating;
+	}
+	
+	@DynamoDBIgnore
+	public int getWeight()
+	{
+		return weight;
+	}
+	
+	@DynamoDBIgnore
+	public void setWeight(int weight)
+	{
+		this.weight = weight;
 	}
 	
 	@JsonIgnore

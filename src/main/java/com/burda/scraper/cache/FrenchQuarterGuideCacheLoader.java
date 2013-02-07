@@ -69,11 +69,23 @@ public class FrenchQuarterGuideCacheLoader
 					continue;
 				}
 				
-				HttpResponse hotelDetailResponse = queryGetHotelData(extHotelId);
-				byte[] xmlAsBytes = EntityUtils.toByteArray(hotelDetailResponse.getEntity());
-				Element detailsEl = Jsoup.parse(new String(xmlAsBytes), "", Parser.xmlParser()).select("result").first();
-				
-				HotelDetailCacheKey cacheKey = new HotelDetailCacheKey(sourceHotel.getHotelName());
+				Element detailsEl = null;
+				int tries = 0;
+				boolean hasRoomTypes = false;
+				while (!hasRoomTypes && tries < 10)
+				{
+					HttpResponse hotelDetailResponse = queryGetHotelData(extHotelId, tries);
+					byte[] xmlAsBytes = EntityUtils.toByteArray(hotelDetailResponse.getEntity());
+					detailsEl = Jsoup.parse(new String(xmlAsBytes), "", Parser.xmlParser()).select("result").first();
+					
+					if (!detailsEl.select("rate").isEmpty())
+						hasRoomTypes = true;
+					else
+					{
+						tries++;
+					}						
+				}
+				HotelDetailCacheKey cacheKey = new HotelDetailCacheKey(sourceHotel.getHotelName(), InventorySource.FQG);
 				HotelDetail details = hotelDetailDAO.getHotelDetail(cacheKey);
 				if (details == null)
 				{
@@ -110,18 +122,26 @@ public class FrenchQuarterGuideCacheLoader
 					details.addAmenity(amenity);
 				}					
 				
-				if (details.getRoomTypeDetails() != null && !details.getRoomTypeDetails().isEmpty())
-					roomTypeDetailDAO.delete(details.getRoomTypeDetails());
+			//	if (details.getRoomTypeDetails() != null && !details.getRoomTypeDetails().isEmpty())
+			//		roomTypeDetailDAO.delete(details.getRoomTypeDetails());
 				
 
 				for (Element roomTypeEl: detailsEl.select("rate"))
 				{
-					RoomTypeDetail rtd = new RoomTypeDetail();
-					rtd.setHotelName(sourceHotel.getHotelName());
-					rtd.setDescription(roomTypeEl.select("room_description").first().ownText());
+					String roomTypeName = URLDecoder.decode(roomTypeEl.select("room_title").first().ownText(), "UTF-8");
+					RoomTypeDetail rtd = null;
+					for (RoomTypeDetail existingDetail: details.getRoomTypeDetails())
+					{
+						if (existingDetail.getName().equals(roomTypeName))
+							rtd = existingDetail;
+					}
+					if (rtd == null)
+						rtd = new RoomTypeDetail();
+					rtd.setHotelName(sourceHotel.getHotelName()+"_"+InventorySource.FQG.name());
+					rtd.setDescription(URLDecoder.decode(roomTypeEl.select("room_description").first().ownText(), "UTF-8"));
 					rtd.setDetails(roomTypeEl.select("room_details").first().ownText());
 					rtd.setFeatures(roomTypeEl.select("room_facilities").first().ownText());
-					rtd.setName(URLDecoder.decode(roomTypeEl.select("room_title").first().ownText(), "UTF-8"));
+					rtd.setName(roomTypeName);
 					for (Element photoEl: roomTypeEl.select("room_photo_data").first().select("photo"))
 					{
 						Photo p = new Photo();
@@ -140,7 +160,7 @@ public class FrenchQuarterGuideCacheLoader
 	 * gets detail data on a specific hotel
 	 * @return
 	 */
-	private HttpResponse queryGetHotelData(String hotelId)
+	private HttpResponse queryGetHotelData(String hotelId, int offset)
 	{
 		URIBuilder builder = new URIBuilder();
 		builder
@@ -150,8 +170,8 @@ public class FrenchQuarterGuideCacheLoader
 				.addParameter("api_key", "5f871629935ff113b876b4bcb1ca70e4")
 				.addParameter("refid", "5057")
 				.addParameter("hotel_id", hotelId)
-				.addParameter("check_in", new DateTime().plusDays(60).toString(DateTimeFormat.forPattern("MM/dd/yyyy")))
-				.addParameter("check_out", new DateTime().plusDays(61).toString(DateTimeFormat.forPattern("MM/dd/yyyy")))
+				.addParameter("check_in", new DateTime().plusDays(60+offset).toString(DateTimeFormat.forPattern("MM/dd/yyyy")))
+				.addParameter("check_out", new DateTime().plusDays(61+offset).toString(DateTimeFormat.forPattern("MM/dd/yyyy")))
 				.addParameter("rooms", "1");
 		HttpResponse response = null;
 		try

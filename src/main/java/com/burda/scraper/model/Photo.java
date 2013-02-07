@@ -11,4 +11,21 @@ public class Photo implements Serializable
 	{
 		return url;
 	}
+	
+	public boolean equals(Object o)
+	{
+		if (o == null)
+			return false;
+		
+		if (!(o instanceof Photo))
+			return false;
+		
+		Photo other = (Photo)o;
+		return other.url.equals(url);
+	}
+	
+	public int hashCode()
+	{
+		return url.hashCode();
+	}
 }

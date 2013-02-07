@@ -35,6 +35,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.burda.scraper.dao.HotelDetailCacheKey;
 import com.burda.scraper.dao.HotelDetailDAO;
+import com.burda.scraper.dao.MasterHotelDAO;
 import com.burda.scraper.dao.SourceHotelDAO;
 import com.burda.scraper.model.DailyRate;
 import com.burda.scraper.model.Hotel;
@@ -55,6 +56,7 @@ public class FrenchQuarterGuideInventorySource implements Warehouse
 	
 	private HotelDetailDAO hotelDetailDAO;
 	private SourceHotelDAO sourceHotelDAO;
+	private MasterHotelDAO masterHotelDAO;
 	
  // @Autowired
  // @Qualifier("defaultMemcachedClient") 
@@ -136,7 +138,9 @@ public class FrenchQuarterGuideInventorySource implements Warehouse
 			Hotel hotel = new Hotel();
 			hotel.setName(sourceHotel.getHotelName());
 			hotel.setSource(sourceHotel);
-			hotel.setHotelDetails( hotelDetailDAO.getHotelDetail(new HotelDetailCacheKey(sourceHotel.getHotelName())));	
+			hotel.setHotelDetails( hotelDetailDAO.getHotelDetail(new HotelDetailCacheKey(sourceHotel.getHotelName(), InventorySource.FQG)));	
+			if (hotel.getHotelDetails() != null)
+				hotel.getHotelDetails().setWeight(masterHotelDAO.getByHotelName(sourceHotel.getHotelName()).getWeight());
 			Elements els = hotelElement.select(".room");
 			els.addAll(hotelElement.select(".more_rooms1 .room"));
 			//for (Element rtElement: hotelElement.select(".room"))
@@ -251,6 +255,11 @@ public class FrenchQuarterGuideInventorySource implements Warehouse
 	public void setSourceHotelDAO(SourceHotelDAO dao)
 	{
 		this.sourceHotelDAO = dao;
+	}
+	
+	public void setMasterHotelDAO(MasterHotelDAO dao)
+	{
+		this.masterHotelDAO = dao;
 	}
 	
 }

@@ -9,6 +9,7 @@ import java.util.concurrent.Future;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.burda.scraper.dao.HotelDetailCacheKey;
 import com.burda.scraper.dao.HotelDetailDAO;
+import com.burda.scraper.dao.SourceHotelDAO;
 import com.burda.scraper.model.Hotel;
 import com.burda.scraper.model.RoomType;
 import com.burda.scraper.model.SearchParams;
@@ -24,6 +26,7 @@ import com.burda.scraper.model.SortType;
 import com.burda.scraper.model.persisted.HotelDetail;
 import com.burda.scraper.model.persisted.InventorySource;
 import com.burda.scraper.model.persisted.RoomTypeDetail;
+import com.burda.scraper.model.persisted.SourceHotel;
 import com.google.code.ssm.api.format.SerializationType;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
@@ -39,6 +42,9 @@ public class InventoryServiceImpl implements InventoryService
   
   @Autowired
   private HotelDetailDAO hotelDetailDAO;
+  
+  @Autowired
+  private SourceHotelDAO sourceHotelDAO;
   
   private static final Logger logger = LoggerFactory.getLogger(InventoryServiceImpl.class);  
   private static final ExecutorService executor = Executors.newCachedThreadPool();
@@ -86,6 +92,12 @@ public class InventoryServiceImpl implements InventoryService
 		//List<Future<SearchResult>> workerResults = executor.invokeAll(workers, 15, TimeUnit.SECONDS);
 		executor.invokeAll(workers);
 		
+		if (!StringUtils.isEmpty(params.getPreferredProductId()))
+		{
+			SourceHotel preferredHotel = sourceHotelDAO.getByHotelId(params.getPreferredProductId(),  InventorySource.NODC);
+			if (preferredHotel != null)
+				params.setPreferredProductName(preferredHotel.getHotelName());
+		}
 		Session session = new Session(params);
 		session.setCurrentPage(1);
 		session.setCurrentSort(SortType.DEFAULT);
@@ -160,7 +172,7 @@ public class InventoryServiceImpl implements InventoryService
 			}
 		}
 		if (hotelDetail == null)
-			hotelDetail = hotelDetailDAO.getHotelDetail(new HotelDetailCacheKey(hotelName));
+			hotelDetail = hotelDetailDAO.getHotelDetail(new HotelDetailCacheKey(hotelName, InventorySource.NODC));
 		
 		return hotelDetail;	
 	}
@@ -168,6 +180,11 @@ public class InventoryServiceImpl implements InventoryService
 	public void setNODCInventorySource(NODCWarehouse invSource)
 	{
 		this.nodcInventorySource = invSource;
+	}
+	
+	public void setSourceHotelDAO(SourceHotelDAO dao)
+	{
+		this.sourceHotelDAO = dao;
 	}
 	
 	public void setFQGInventorySource(FrenchQuarterGuideInventorySource invSource)

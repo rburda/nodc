@@ -42,6 +42,8 @@ public class SearchParams implements Serializable
 	
 	private LocalDate checkInDate;	
 	private LocalDate checkOutDate;
+	private String preferredProductId;  //is NODC externalId
+	private String preferredProductName; //set by InventoryServiceImpl
 	private int numRooms = 0;
 	private int numAdults1 = 0;
 	private int numChildren1 = 0;
@@ -69,6 +71,7 @@ public class SearchParams implements Serializable
 	
 	public SearchParams(Map<String, String> requestParams)
 	{	
+		preferredProductId = requestParams.get("preferredProductId");
 		checkInDate = defCheckIn(requestParams.get("departureDate"));
 		checkOutDate = defCheckOut(requestParams.get("returnDate"));
 		numRooms = defZero(requestParams.get("numRooms"));
@@ -322,6 +325,26 @@ public class SearchParams implements Serializable
 		this.room4ChildAge3 = room4ChildAge3;
 	}
 
+	public String getPreferredProductId()
+	{
+		return preferredProductId;
+	}
+	
+	public void setPreferredProductId(String pProductId)
+	{
+		this.preferredProductId = pProductId;
+	}
+	
+	public String getPreferredProductName()
+	{
+		return preferredProductName;
+	}
+	
+	public void setPreferredProductName(String ppn)
+	{
+		this.preferredProductName = ppn;
+	}
+	
 	private LocalDate defCheckIn(String date)
 	{
 		LocalDate cIn = defDate(date, new LocalDate());

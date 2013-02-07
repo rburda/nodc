@@ -77,13 +77,15 @@ public class NODCHotelLoader
 			else
 				logger.error("hotel previously found");
 			
-			HotelDetail hd = hotelDetailDAO.getHotelDetail(new HotelDetailCacheKey(h.getSource().getHotelName()));
+			HotelDetail hd = hotelDetailDAO.getHotelDetail(new HotelDetailCacheKey(h.getSource().getHotelName(), InventorySource.NODC));
 			if (hd != null)
 			{
 				logger.error("hotel details previously stored");
 				if (hd.getRoomTypeDetails().size() > 0)
+				{
 					logger.error("hotel room type details present.... deleting");
-				roomTypeDetailDAO.delete(hd.getRoomTypeDetails());
+					roomTypeDetailDAO.delete(hd.getRoomTypeDetails());
+				}
 			}
 			hotelDetailDAO.save(h.getHotelDetails());
 		}

@@ -74,7 +74,7 @@ public class OneTimeHotelLoader
 			//lastly, check to see if we already have a content detail record.
 			//If not, create one; if we do, then still set the address info as that
 			//doesn't come in during the normal cache load
-			HotelDetail hd = hotelDetailDAO.getHotelDetail(new HotelDetailCacheKey(hotel.getHotelName()));
+			HotelDetail hd = hotelDetailDAO.getHotelDetail(new HotelDetailCacheKey(hotel.getHotelName(), InventorySource.FQG));
 			if (hd == null)
 			{
 				hd = new HotelDetail();

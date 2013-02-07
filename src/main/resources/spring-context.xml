@@ -92,11 +92,13 @@
 	<bean id="frenchQtrGuideInvSource" class="com.burda.scraper.inventory.FrenchQuarterGuideInventorySource">
 		<property name="hotelDetailDAO" ref="hotelDetailDAO" />
 		<property name="sourceHotelDAO" ref="sourceHotelDAO" />		
+		<property name="masterHotelDAO" ref="masterHotelDAO" />
 	</bean>	
 		
 	<bean id="nodcInvSource" class="com.burda.scraper.inventory.NODCWarehouse">
 		<property name="sourceHotelDAO" ref="sourceHotelDAO" />
 		<property name="hotelDetailDAO" ref="hotelDetailDAO" />
+		<property name="masterHotelDAO" ref="masterHotelDAO" />
 	</bean>	
 	
 	<bean id="nodchotelLoader" class="com.burda.scraper.cache.NODCHotelLoader" />
@@ -104,5 +106,6 @@
 	<bean id="inventoryService" class="com.burda.scraper.inventory.InventoryServiceImpl">
 		<property name="NODCInventorySource" ref="nodcInvSource" />
 		<property name="FQGInventorySource" ref="frenchQtrGuideInvSource" />
+		<property name="sourceHotelDAO" ref="sourceHotelDAO" />
 	</bean>
 </beans>

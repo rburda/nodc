@@ -46,6 +46,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.burda.scraper.dao.HotelDetailCacheKey;
 import com.burda.scraper.dao.HotelDetailDAO;
+import com.burda.scraper.dao.MasterHotelDAO;
 import com.burda.scraper.dao.SourceHotelDAO;
 import com.burda.scraper.model.Amenity;
 import com.burda.scraper.model.DailyRate;
@@ -55,6 +56,7 @@ import com.burda.scraper.model.RoomType;
 import com.burda.scraper.model.SearchParams;
 import com.burda.scraper.model.persisted.HotelDetail;
 import com.burda.scraper.model.persisted.InventorySource;
+import com.burda.scraper.model.persisted.MasterHotel;
 import com.burda.scraper.model.persisted.RoomTypeDetail;
 import com.burda.scraper.model.persisted.SourceHotel;
 import com.google.code.ssm.api.format.SerializationType;
@@ -132,6 +134,10 @@ public class NODCWarehouse implements Warehouse
 	@Qualifier("hotelDetailDAO")
 	private HotelDetailDAO hotelDetailDAO;
 	
+	@Autowired
+	@Qualifier("masterHotelDAO")
+	private MasterHotelDAO masterHotelDAO;
+	
   //@Autowired
   //@Qualifier("defaultMemcachedClient") 
   private com.google.code.ssm.Cache cache;
@@ -187,7 +193,12 @@ public class NODCWarehouse implements Warehouse
 				HotelDetail detail = new HotelDetail();
 				h.setHotelDetails(detail);
 				detail.setName(h.getName());
-				detail.setDescription(indHotelDoc.select("#tabs #description").first().ownText());
+				
+				String description = indHotelDoc.select("#tabs #description").first().html();
+				int h2EIdx = description.indexOf("</h2>");
+				if (h2EIdx >= 0)
+					description = description.substring(h2EIdx+5, description.length());
+				detail.setDescription(description);
 				detail.setAreaDescription(hotelLink.select(".product-area").first().ownText());
 				detail.setAddress1(indHotelDoc.select(".adr .address1").first().ownText());
 				detail.setCity(indHotelDoc.select(".adr .cityStatePC .locality").first().ownText());
@@ -222,7 +233,7 @@ public class NODCWarehouse implements Warehouse
 				{
 					RoomTypeDetail rtd = new RoomTypeDetail();
 					rtd.setName(roomEl.select(".tabText h4").first().ownText());
-					rtd.setHotelName(h.getName());
+					rtd.setHotelName(h.getName()+"_"+InventorySource.NODC);
 					StringBuffer desc = new StringBuffer();
 					for (Element descEl: roomEl.select(".tabText p"))
 					{
@@ -237,9 +248,7 @@ public class NODCWarehouse implements Warehouse
 					p.url = "http://www.neworleans.com"+roomEl.select(".tabText img").first().attr("src");
 					rtd.addPhoto(p);
 					detail.addRoomTypeDetail(rtd);
-				}
-				
-				
+				}				
 				hotels.add(h);	    	
 	    }
 	    
@@ -350,7 +359,11 @@ public class NODCWarehouse implements Warehouse
 			}
 			
 			hotel.setName(sourceHotel.getHotelName());
-			hotel.setHotelDetails(hotelDetailDAO.getHotelDetail(new HotelDetailCacheKey(sourceHotel.getHotelName())));
+			hotel.setHotelDetails(hotelDetailDAO.getHotelDetail(new HotelDetailCacheKey(sourceHotel.getHotelName(), InventorySource.NODC)));
+			MasterHotel mh = masterHotelDAO.getByHotelName(sourceHotel.getHotelName());
+			if (mh != null)
+				hotel.getHotelDetails().setWeight(mh.getWeight());
+			
 			hotel.setSource(sourceHotel);
 						
 			Elements roomTypeElements = searchResult.select("table.hotelResults");
@@ -613,6 +626,11 @@ public class NODCWarehouse implements Warehouse
 	public void setHotelDetailDAO(HotelDetailDAO hotelDetailDAO)
 	{
 		this.hotelDetailDAO = hotelDetailDAO;
+	}
+	
+	public void setMasterHotelDAO(MasterHotelDAO masterHotelDAO)
+	{
+		this.masterHotelDAO = masterHotelDAO;
 	}
 	
 	private void addToResults(

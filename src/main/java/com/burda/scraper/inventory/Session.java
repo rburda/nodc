@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -179,6 +180,23 @@ public class Session implements Serializable
 		if (!sortAsc)
 			Collections.reverse(sortedHotels);
 		
+		if (currentSort.equals(SortType.DEFAULT) && sortAsc)
+		{
+			if (!StringUtils.isEmpty(params.getPreferredProductId()))
+			{
+				Iterator<Hotel> hotelItor = sortedHotels.iterator();
+				while (hotelItor.hasNext())
+				{
+					Hotel h = hotelItor.next();
+					if (h.getName().equals(params.getPreferredProductName()))
+					{
+						hotelItor.remove();
+						sortedHotels.add(0, h);
+						break;
+					}
+				}
+			}
+		}
 		List<Hotel> pagedHotels = Collections.EMPTY_LIST;
 		if (startResult >=0)
 			pagedHotels = Lists.newArrayList(sortedHotels.subList(startResult, endResult));

@@ -144,7 +144,8 @@ public class RoomTypeDetail
 	@DynamoDBIgnore
 	public void addPhoto(Photo p)
 	{
-		this.photos.add(p);
+		if (!this.photos.contains(p))
+			this.photos.add(p);
 	}
 
 	@Override

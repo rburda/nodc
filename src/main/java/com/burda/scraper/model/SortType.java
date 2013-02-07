@@ -14,7 +14,7 @@ public enum SortType implements Comparator<Hotel>, Serializable
 		@Override
 		public int compare(Hotel h1, Hotel h2)
 		{
-			return 0;
+			return  (h1.getHotelDetails().getWeight() - h2.getHotelDetails().getWeight());
 		}
 	},
 	PRICE 
