@@ -17,6 +17,11 @@
 	</#if>
 </#macro>
 
+<#macro isPriceline source>
+	<#assign x = source.invSource>
+	<#if ( x?matches("FQG") ) >none<#else>block</#if>
+</#macro>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -587,7 +592,7 @@ url,
                                     <p>
                                         <a onclick="popup('rooms', '${hotel.name}');" href="#rooms">more hotel info</a>
                                     </p>
-                                    <div>
+                                    <div style="display:<@isPriceline source=hotel.source/>">
                                         <img width="82" height="17" border="0" alt="" src="http://www.neworleans.com/images/BEU-ticket-2.png"
                                             style="vertical-align: middle;" />&nbsp; <strong>Food, Drinks and more with the <a
                                                 onclick="window.open(this.href, 'promos', 'width=760,height=620,scrollbars=yes,resizable=yes'); return false;"
