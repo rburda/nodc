@@ -1,13 +1,16 @@
 package com.burda.scraper.dao;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.amazonaws.services.dynamodb.datamodeling.DynamoDBScanExpression;
 import com.burda.scraper.model.persisted.HotelDetail;
 import com.burda.scraper.model.persisted.InventorySource;
+import com.burda.scraper.model.persisted.MasterHotel;
 import com.burda.scraper.model.persisted.SourceHotel;
 import com.google.code.ssm.api.ParameterValueKeyProvider;
 import com.google.code.ssm.api.ReadThroughSingleCache;
@@ -68,6 +71,11 @@ public class SourceHotelDAO extends AbstractDynamoDBDAO<SourceHotel>
 			logger.error("unable to load source hotel", ee);
 		}
 		return s;
+	}
+	
+	public List<SourceHotel> getAll()
+	{
+		return getDynamoMapper().scan(SourceHotel.class,  new DynamoDBScanExpression());
 	}
 	
 	private SourceHotel loadSourceHotel(CacheKey key)

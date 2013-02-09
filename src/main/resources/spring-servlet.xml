@@ -10,8 +10,14 @@
     <!-- freemarker config -->
     <bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
       <property name="templateLoaderPath" value="/WEB-INF/views/ftl/"/>
-    </bean>
-    
+
+		  <property name="freemarkerSettings">
+		    <props>
+		      <prop key="number_format">0.######</prop>
+		    </props>
+		  </property>
+  	</bean>
+
     <bean id="viewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
       <property name="cache" value="false"/>
       <property name="prefix" value=""/>

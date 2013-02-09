@@ -1,6 +1,7 @@
 package com.burda.scraper.cache;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +45,19 @@ public class NODCHotelLoader
 	@Qualifier("roomTypeDetailDAO")
 	RoomTypeDetailDAO roomTypeDetailDAO;
 	
+	public void updateWeights(Map<String, Integer> weights)
+	{
+		for (String hotelName: weights.keySet())
+		{
+			MasterHotel h = masterHotelDAO.getByHotelName(hotelName);
+			if (h != null)
+			{
+				h.setWeight(weights.get(hotelName));
+				masterHotelDAO.save(h);
+			}
+		}
+	}
+	
 	public void loadCache() throws Exception
 	{
 		List<Hotel> shellHotels = invSource.getAllShellHotels();
@@ -75,8 +89,10 @@ public class NODCHotelLoader
 				masterHotelDAO.save(masterHotel);
 			}
 			else
+			{
 				logger.error("hotel previously found");
-			
+				h.setSource(previouslyFound);
+			}
 			HotelDetail hd = hotelDetailDAO.getHotelDetail(new HotelDetailCacheKey(h.getSource().getHotelName(), InventorySource.NODC));
 			if (hd != null)
 			{

@@ -120,11 +120,7 @@ public class FrenchQuarterGuideCacheLoader
 					Amenity amenity = new Amenity();
 					amenity.name = topAmenityEl.select("amenity_name").first().ownText();
 					details.addAmenity(amenity);
-				}					
-				
-			//	if (details.getRoomTypeDetails() != null && !details.getRoomTypeDetails().isEmpty())
-			//		roomTypeDetailDAO.delete(details.getRoomTypeDetails());
-				
+				}									
 
 				for (Element roomTypeEl: detailsEl.select("rate"))
 				{

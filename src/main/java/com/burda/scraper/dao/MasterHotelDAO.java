@@ -1,11 +1,13 @@
 package com.burda.scraper.dao;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.amazonaws.services.dynamodb.datamodeling.DynamoDBScanExpression;
 import com.burda.scraper.model.persisted.MasterHotel;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -38,7 +40,12 @@ public class MasterHotelDAO extends AbstractDynamoDBDAO<MasterHotel>
 		return mh;
 	}
 	
-	private MasterHotel loadMasterHotel(String name)
+	public List<MasterHotel> getAll()
+	{
+		return getDynamoMapper().scan(MasterHotel.class,  new DynamoDBScanExpression());
+	}
+	
+	public MasterHotel loadMasterHotel(String name)
 	{
 		return getDynamoMapper().load(MasterHotel.class,  name);
 	}

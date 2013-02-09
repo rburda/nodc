@@ -1,9 +1,11 @@
 package com.burda.scraper.inventory;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.CookieStore;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -67,17 +69,17 @@ public final class SessionInfo
 	
 	private void initSessionVars(Object cookieStore)
 	{
-		String cValue = NODCWarehouse.findCookieValue(cookieStore, SESSION_ID_COOKIE_NAME);
+		String cValue = findCookieValue(cookieStore, SESSION_ID_COOKIE_NAME);
 		if (cValue.indexOf("=") >= 0)
 			cValue = cValue.substring(cValue.indexOf("=")+1, cValue.length());
 		jsessionId = cValue;
 		
-		cValue = NODCWarehouse.findCookieValue(cookieStore, WWW_SID_COOKIE_NAME);
+		cValue = findCookieValue(cookieStore, WWW_SID_COOKIE_NAME);
 		if (cValue.indexOf("=") >= 0)
 			cValue = cValue.substring(cValue.indexOf("=")+1, cValue.length());
 		wwwsid = cValue;
 		
-		cValue = NODCWarehouse.findCookieValue(cookieStore, WICKET_SEARCH_COOKIE_NAME);
+		cValue = findCookieValue(cookieStore, WICKET_SEARCH_COOKIE_NAME);
 		if (cValue.indexOf("=") >= 0)
 			cValue = cValue.substring(cValue.indexOf("=")+1, cValue.length());
 		wicketSessionPathForSearch = cValue;	
@@ -120,4 +122,43 @@ public final class SessionInfo
 			NODCWarehouse.logger.error("Unable to create new session", e);
 		}
 	}	
+	
+	private static final String findCookieValue(Object cookieStore, String cookieName)
+	{
+		String value = "";
+		if (cookieStore != null)
+		{
+			if (cookieStore instanceof HttpServletRequest)
+			{
+				HttpServletRequest request = (HttpServletRequest)cookieStore;
+				if (request.getCookies() != null)
+				{
+					for (Cookie c: request.getCookies())
+					{
+						logger.error("cookie submitted: " + c.getName() + ": " + c.getValue());
+						if (c.getName().equals(cookieName))
+						{
+							value = c.getValue();
+						}
+					}			
+				}				
+			}
+			else 
+			{
+				CookieStore httpClientCookieStore = (CookieStore)cookieStore;
+				if (httpClientCookieStore.getCookies() != null)
+				{
+					for (org.apache.http.cookie.Cookie c: httpClientCookieStore.getCookies())
+					{
+						logger.error("cookie submitted: " + c.getName() + ": " + c.getValue());
+						if (c.getName().equals(cookieName))
+						{
+							value = c.getValue();
+						}
+					}			
+				}					
+			}
+		}
+		return value;		
+	}
 }

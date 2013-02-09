@@ -1,6 +1,7 @@
 package com.burda.scraper.inventory;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -17,6 +18,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.burda.scraper.dao.HotelDetailCacheKey;
 import com.burda.scraper.dao.HotelDetailDAO;
+import com.burda.scraper.dao.MasterHotelDAO;
+import com.burda.scraper.dao.RoomTypeDetailDAO;
 import com.burda.scraper.dao.SourceHotelDAO;
 import com.burda.scraper.model.Hotel;
 import com.burda.scraper.model.RoomType;
@@ -25,6 +28,7 @@ import com.burda.scraper.model.SearchResult;
 import com.burda.scraper.model.SortType;
 import com.burda.scraper.model.persisted.HotelDetail;
 import com.burda.scraper.model.persisted.InventorySource;
+import com.burda.scraper.model.persisted.MasterHotel;
 import com.burda.scraper.model.persisted.RoomTypeDetail;
 import com.burda.scraper.model.persisted.SourceHotel;
 import com.google.code.ssm.api.format.SerializationType;
@@ -45,6 +49,12 @@ public class InventoryServiceImpl implements InventoryService
   
   @Autowired
   private SourceHotelDAO sourceHotelDAO;
+  
+  @Autowired
+  private MasterHotelDAO masterHotelDAO;
+  
+  @Autowired
+  private RoomTypeDetailDAO roomTypeDetailDAO;
   
   private static final Logger logger = LoggerFactory.getLogger(InventoryServiceImpl.class);  
   private static final ExecutorService executor = Executors.newCachedThreadPool();
@@ -177,6 +187,65 @@ public class InventoryServiceImpl implements InventoryService
 		return hotelDetail;	
 	}
 	
+	@Override
+	public List<MasterHotel> getMasterRecords()
+	{
+		List<MasterHotel> hotels = Lists.newArrayList(masterHotelDAO.getAll());
+		Collections.sort(hotels, MasterHotel.BY_NAME);
+		return hotels;
+	}
+	
+	@Override 
+	public SourceHotel getSourceHotel(String sourceHotelId, InventorySource is)
+	{
+		return sourceHotelDAO.getByHotelId(sourceHotelId, is);
+	}
+	
+	@Override
+	public List<SourceHotel> getSourceHotels()
+	{
+		List<SourceHotel> sourceHotels = Lists.newArrayList(sourceHotelDAO.getAll());
+		Collections.sort(sourceHotels, SourceHotel.BY_NAME);
+		
+		return sourceHotels;
+	}
+	
+	@Override 
+	public void updateSourceHotelName(String sourceHotelId, InventorySource is, String masterHotelName)
+	{
+		MasterHotel mh = masterHotelDAO.loadMasterHotel(masterHotelName);
+		SourceHotel sh = sourceHotelDAO.getByHotelId(sourceHotelId,  is);
+		if (mh != null && sh != null)
+		{
+			HotelDetail oldHotelDetail = hotelDetailDAO
+					.loadHotelDetailFromDB(new HotelDetailCacheKey(sh.getHotelName(), sh.getInvSource()));
+			for (RoomTypeDetail rtd: oldHotelDetail.getRoomTypeDetails())
+			{
+				roomTypeDetailDAO.delete(rtd);
+				rtd.setHotelName(masterHotelName+"_"+sh.getInvSource().name());
+				roomTypeDetailDAO.save(rtd);
+			}
+			
+			sourceHotelDAO.delete(sh);
+			sh.setHotelName(masterHotelName);
+			sourceHotelDAO.save(sh);			
+		}
+	}
+	
+	@Override 
+	public void deleteMasterRecord(String masterHotelName)
+	{
+		MasterHotel mh = masterHotelDAO.loadMasterHotel(masterHotelName);
+		if (mh != null)
+			masterHotelDAO.delete(mh);
+	}
+	
+	@Override
+	public void saveMasterRecords(List<MasterHotel> hotels)
+	{
+		masterHotelDAO.save(hotels);
+	}
+	
 	public void setNODCInventorySource(NODCWarehouse invSource)
 	{
 		this.nodcInventorySource = invSource;
@@ -185,6 +254,21 @@ public class InventoryServiceImpl implements InventoryService
 	public void setSourceHotelDAO(SourceHotelDAO dao)
 	{
 		this.sourceHotelDAO = dao;
+	}
+	
+	public void setMasterHotelDAO(MasterHotelDAO dao)
+	{
+		this.masterHotelDAO = dao;
+	}
+	
+	public void setRoomTypeDetailDAO(RoomTypeDetailDAO dao)
+	{
+		this.roomTypeDetailDAO = dao;
+	}
+	
+	public void setHotelDetailDAO(HotelDetailDAO dao)
+	{
+		this.hotelDetailDAO = dao;
 	}
 	
 	public void setFQGInventorySource(FrenchQuarterGuideInventorySource invSource)

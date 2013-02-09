@@ -1,5 +1,7 @@
 package com.burda.scraper.model.persisted;
 
+import java.util.Comparator;
+
 import com.amazonaws.services.dynamodb.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodb.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodb.datamodeling.DynamoDBIgnore;
@@ -8,6 +10,14 @@ import com.amazonaws.services.dynamodb.datamodeling.DynamoDBTable;
 @DynamoDBTable(tableName = "nodc_hotel")
 public class MasterHotel
 {
+	public static final Comparator<MasterHotel> BY_NAME = new Comparator<MasterHotel>(){
+
+		@Override
+		public int compare(MasterHotel m1, MasterHotel m2)
+		{
+			return m1.getHotelName().compareTo(m2.getHotelName());
+		}}; 
+	
 	private String hotelName;
 	private int weight;
 	private InventorySource favoredInvSource;

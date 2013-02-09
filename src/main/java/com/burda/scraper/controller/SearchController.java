@@ -1,5 +1,7 @@
 package com.burda.scraper.controller;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
@@ -18,6 +20,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,6 +34,9 @@ import com.burda.scraper.model.SearchParams;
 import com.burda.scraper.model.SearchResult;
 import com.burda.scraper.model.SortType;
 import com.burda.scraper.model.persisted.HotelDetail;
+import com.burda.scraper.model.persisted.InventorySource;
+import com.burda.scraper.model.persisted.MasterHotel;
+import com.burda.scraper.model.persisted.SourceHotel;
 import com.google.common.base.Joiner;
 
 /**
@@ -143,7 +149,66 @@ public class SearchController
 		return invService.getHotelDetails(new SessionInfo(clientRequest), hotelName);
 	}
 		
+	@RequestMapping(value="/admin/editMaster", method=RequestMethod.GET)
+	@ResponseBody
+	public ModelAndView getMasterHotels(@ModelAttribute("model") ModelMap model)
+	{
+		model.put("hotelList",  invService.getMasterRecords());
+		return new ModelAndView("/admin/masterHotelEdit");
+	}
+	
+	@RequestMapping(value="/admin/saveMasterHotel", method=RequestMethod.POST)
+	@ResponseBody
+	public ModelAndView saveMasterHotels(@ModelAttribute("wrapper") SaveMasterHotelWrapper wrapper)
+	{
+		invService.saveMasterRecords(wrapper.getMasterHotels());
+		return new ModelAndView(new RedirectView("/admin/editMaster"));
+	}
+	
+	@RequestMapping(value="/admin/deleteMasterHotel", method=RequestMethod.GET)
+	@ResponseBody
+	public ModelAndView deleteMasterHotel(@RequestParam("name") String masterHotelName)
+	{
+		invService.deleteMasterRecord(masterHotelName);
+		return new ModelAndView(new RedirectView("/admin/editMaster"));
+	}
+
+	@RequestMapping(value="/admin/viewSourceHotels", method=RequestMethod.GET)
+	@ResponseBody
+	public ModelAndView viewSourceHotels(@ModelAttribute("model") ModelMap map)
+	{
+		List<SourceHotel> sourceHotels = invService.getSourceHotels();
+		map.put("sourceHotelList",  sourceHotels);
+		map.put("masterHotelList", invService.getMasterRecords());
+		return new ModelAndView("/admin/viewSourceHotels", map);
+	}
+	
+	@RequestMapping(value="/admin/editSourceHotel", method=RequestMethod.GET)
+	@ResponseBody
+	public ModelAndView editSourceHotel(
+			@RequestParam("sourceHotelId") String sourceHotelId, 
+			@RequestParam("inventorySource") InventorySource is,
+			@ModelAttribute("model") ModelMap model)
+	{
+		SourceHotel sh = invService.getSourceHotel(sourceHotelId, is);
+		model.put("sourceHotel",  sh);
+		model.put("masterHotelList", invService.getMasterRecords());
 		
+		return new ModelAndView("/admin/editSourceHotel", model);
+	}
+	
+	@RequestMapping(value="/admin/updateSourceHotel", method=RequestMethod.POST)
+	@ResponseBody
+	public ModelAndView updateSourceHotel(HttpServletRequest req, 
+			@RequestParam("sourceHotelId")String externalHotelId, 
+			@RequestParam("invSource")InventorySource is, 
+			@RequestParam("masterHotelName")String masterHotelName)
+	{
+		invService.updateSourceHotelName(externalHotelId, is, masterHotelName);
+		return new ModelAndView(new RedirectView("/admin/viewSourceHotels"));
+	}
+	
+	
 	@RequestMapping(value="/health", method=RequestMethod.GET)
 	public @ResponseBody String healthCheck()
 	{

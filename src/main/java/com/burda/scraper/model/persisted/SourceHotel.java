@@ -1,6 +1,7 @@
 package com.burda.scraper.model.persisted;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
@@ -14,6 +15,19 @@ import com.amazonaws.services.dynamodb.datamodeling.DynamoDBTable;
 public class SourceHotel implements Serializable
 {
 	private static final long serialVersionUID = 1L;
+	
+	public static final Comparator<SourceHotel> BY_NAME = new Comparator<SourceHotel>()
+	{
+		@Override
+		public int compare(SourceHotel s1, SourceHotel s2)
+		{
+			if (s1.hotelName.equals(s2.hotelName))
+				return s1.invSource.compareTo(s2.invSource);
+			else
+				return s1.hotelName.compareTo(s2.hotelName);
+		}
+	};
+	
 	private String hotelName;
 	private InventorySource invSource;
 	private String externalHotelId;

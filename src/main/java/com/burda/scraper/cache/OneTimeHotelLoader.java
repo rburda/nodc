@@ -41,7 +41,6 @@ public class OneTimeHotelLoader
 			MasterHotel hotel = null;
 			
 			String hotelId = hotelEl.select("hotel_id").first().ownText();
-			String extHotelName = hotelEl.select("hotel_name").first().ownText();
 			
 			//check to see if we've seen this hotel before
 			SourceHotel sourceHotel = 
@@ -51,7 +50,7 @@ public class OneTimeHotelLoader
 			if (sourceHotel == null)
 			{
 				sourceHotel = new SourceHotel();
-				sourceHotel.setHotelName(extHotelName);
+				sourceHotel.setHotelName(hotelEl.select("hotel_name").first().ownText());
 				sourceHotel.setExternalHotelId(hotelId);
 				sourceHotel.setInvSource(InventorySource.FQG);
 				sourceHotelDAO.save(sourceHotel);
@@ -67,7 +66,7 @@ public class OneTimeHotelLoader
 				hotel = new MasterHotel();
 				hotel.setFavoredInventorySource(InventorySource.FQG);
 				hotel.setWeight(1000);
-				hotel.setHotelName(extHotelName);
+				hotel.setHotelName(sourceHotel.getHotelName());
 				masterHotelDAO.save(hotel);
 			}
 		

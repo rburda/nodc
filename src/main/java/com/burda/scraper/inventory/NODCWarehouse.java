@@ -325,8 +325,7 @@ public class NODCWarehouse implements Warehouse
 					asyncResultsThreadPool.invokeAll(workers);
 				} catch (InterruptedException e)
 				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error("unable to complete async results", e);
 				}				
 			}}).start();
 	}
@@ -416,7 +415,7 @@ public class NODCWarehouse implements Warehouse
 		return hotels;
 	}
 	
-	private String calculateBookItUrl(Element bookIt)
+	private static String calculateBookItUrl(Element bookIt)
 	{
 		String onclick = bookIt.attr("onclick");
 		int beginIdx = onclick.indexOf("?");
@@ -573,50 +572,6 @@ public class NODCWarehouse implements Warehouse
 		}
 		return response;		
 	}
-	
-	static final String findCookieValue(Object cookieStore, String cookieName)
-	{
-		String value = "";
-		if (cookieStore != null)
-		{
-			if (cookieStore instanceof HttpServletRequest)
-			{
-				HttpServletRequest request = (HttpServletRequest)cookieStore;
-				if (request.getCookies() != null)
-				{
-					for (Cookie c: request.getCookies())
-					{
-						logger.error("cookie submitted: " + c.getName() + ": " + c.getValue());
-						if (c.getName().equals(cookieName))
-						{
-							value = c.getValue();
-						}
-					}			
-				}				
-			}
-			else 
-			{
-				CookieStore httpClientCookieStore = (CookieStore)cookieStore;
-				if (httpClientCookieStore.getCookies() != null)
-				{
-					for (org.apache.http.cookie.Cookie c: httpClientCookieStore.getCookies())
-					{
-						logger.error("cookie submitted: " + c.getName() + ": " + c.getValue());
-						if (c.getName().equals(cookieName))
-						{
-							value = c.getValue();
-						}
-					}			
-				}					
-			}
-		}
-		return value;		
-	}
-	
-	private static final String toS(int x)
-	{
-		return String.valueOf(x);
-	}
 
 	public void setSourceHotelDAO(SourceHotelDAO sourceHotelDAO)
 	{
@@ -633,7 +588,7 @@ public class NODCWarehouse implements Warehouse
 		this.masterHotelDAO = masterHotelDAO;
 	}
 	
-	private void addToResults(
+	private static void addToResults(
 			SearchParams params, HttpSession session, Collection<Hotel> hotels, CountDownLatch initialResultsComplete)
 	{
 		List<Hotel> existingHotelsInCache = Lists.newArrayList();
@@ -665,8 +620,13 @@ public class NODCWarehouse implements Warehouse
 
 	}
 	
-	private String createCacheKey(SearchParams params)
+	private static String createCacheKey(SearchParams params)
 	{
 		return params.getSessionInfo().getSessionId()+InventorySource.NODC.name();
+	}
+	
+	private static final String toS(int x)
+	{
+		return String.valueOf(x);
 	}
 }

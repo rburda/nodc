@@ -51,7 +51,7 @@ public class HotelDetailDAO extends AbstractDynamoDBDAO<HotelDetail>
 		return hd;
 	}
 	
-	private HotelDetail loadHotelDetailFromDB(HotelDetailCacheKey ck)
+	public HotelDetail loadHotelDetailFromDB(HotelDetailCacheKey ck)
 	{
 		HotelDetail hd = getDynamoMapper().load(HotelDetail.class,  ck.getHotelName());
 		if (hd != null)
