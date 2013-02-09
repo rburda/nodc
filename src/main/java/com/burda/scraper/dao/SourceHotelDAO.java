@@ -1,6 +1,7 @@
 package com.burda.scraper.dao;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -17,6 +18,7 @@ import com.google.code.ssm.api.ReadThroughSingleCache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.collect.Maps;
 
 public class SourceHotelDAO extends AbstractDynamoDBDAO<SourceHotel>
 {	
@@ -55,6 +57,18 @@ public class SourceHotelDAO extends AbstractDynamoDBDAO<SourceHotel>
             public SourceHotel load(CacheKey key) {
               return loadSourceHotel(key);
             }
+            
+            @Override
+            public Map<CacheKey, SourceHotel> loadAll(Iterable<? extends CacheKey> keys)
+            {
+            	Map<CacheKey, SourceHotel> resultsMap = Maps.newHashMap();
+            	for (SourceHotel sh: getAll())
+            	{
+            		resultsMap.put(new CacheKey(sh.getExternalHotelId(), sh.getInvSource()), sh);
+            	}
+            	
+            	return resultsMap;
+            }
           });
 	
 	//@ReadThroughSingleCache(namespace = "SourceHotel", expiration = 3600)
@@ -76,6 +90,14 @@ public class SourceHotelDAO extends AbstractDynamoDBDAO<SourceHotel>
 	public List<SourceHotel> getAll()
 	{
 		return getDynamoMapper().scan(SourceHotel.class,  new DynamoDBScanExpression());
+	}
+	
+	@Override
+	public void save(List<SourceHotel> tList)
+	{
+		super.save(tList);
+		for (SourceHotel sh: tList)
+			sourceCache.put(new CacheKey(sh.getExternalHotelId(), sh.getInvSource()), sh);
 	}
 	
 	private SourceHotel loadSourceHotel(CacheKey key)

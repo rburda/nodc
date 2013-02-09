@@ -40,6 +40,8 @@ public class MasterHotelDAO extends AbstractDynamoDBDAO<MasterHotel>
 		return mh;
 	}
 	
+	
+	
 	public List<MasterHotel> getAll()
 	{
 		return getDynamoMapper().scan(MasterHotel.class,  new DynamoDBScanExpression());
@@ -49,4 +51,13 @@ public class MasterHotelDAO extends AbstractDynamoDBDAO<MasterHotel>
 	{
 		return getDynamoMapper().load(MasterHotel.class,  name);
 	}
+	
+	@Override
+	public void save(List<MasterHotel> tList)
+	{
+		super.save(tList);
+		for (MasterHotel mh: tList)
+			masterCache.put(mh.getHotelName(), mh);
+	}
 }
+
