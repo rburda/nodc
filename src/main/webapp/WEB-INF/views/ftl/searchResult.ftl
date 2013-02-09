@@ -963,7 +963,8 @@ url,
 }
 
 function popup(link,hotelName){
-hotelName = hotelName.replace(/\s/g,"%20");
+//hotelName = hotelName.replace(/\s/g,"%20");
+hotelName = encodeURIComponent(hotelName); 
 var url="/details"+"?hotelName="+hotelName+"#"+link;
 //alert(url);
 
