@@ -18,19 +18,24 @@
 	        if (typeof window.nodcActionUpdated === 'undefined')
 	        {
 		        origAction = cyljq('.hotelSearchForm').attr("action");
-		        //quote this cookie becuase it contains ':'
-		        document.cookie = 
-		        	'parent_url="'+origAction.substring(origAction.indexOf("?")+1, origAction.length)+'";domain=.www.neworleans.com';
-	            if (typeof jsession !== 'undefined')
-	            {
-	            	document.cookie = 'parent_jsession_id='+jsession+";domain=.www.neworleans.com";
-	            }
-	            if (typeof wwwsid !== 'undefined')
-	            {
-	            	document.cookie = 'parent_sid='+wwwsid+";domain=.www.neworleans.com";
-	            }
-	            cyljq('.hotelSearchForm').attr("action", "http://book.www.neworleans.com/startSearch");        	
+		        if (origAction !== 'undefined' && origAction && origAction !== '')
+		        {
+			        //quote this cookie becuase it contains ':'
+			        document.cookie = 
+			        	'parent_url="'+origAction.substring(origAction.indexOf("?")+1, origAction.length)+'";domain=.www.neworleans.com';
+		            if (typeof jsession !== 'undefined')
+		            {
+		            	document.cookie = 'parent_jsession_id='+jsession+";domain=.www.neworleans.com";
+		            }
+		            if (typeof wwwsid !== 'undefined')
+		            {
+		            	document.cookie = 'parent_sid='+wwwsid+";domain=.www.neworleans.com";
+		            }
+		            cyljq('.hotelSearchForm').attr("action", "http://book.www.neworleans.com/startSearch");        	
+		        }
 	        }
             window.nodcActionUpdated=true;
+            
+            cyljq('.magLink').attr('href', 'http://book.www.neworleans.com/results');
 		});
 })();
