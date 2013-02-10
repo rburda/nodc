@@ -389,11 +389,6 @@ url,
 					<div class="searchSummary">
 						<h3>Search Summary</h3>
 						<p>
-							${searchResults["result"].preferredHotel}<br/>
-							${searchResults["result"].preferredHotelAvailable?string("yes", "no")}<br/>
-							${searchResults["result"].preferredHotelRequested?string("yes", "no")}<br/>
-						</p>
-						<p>
 							<strong>Check-In:</strong>
 							${searchResults["result"].startDate?string("MM/dd/yy")}
 							
