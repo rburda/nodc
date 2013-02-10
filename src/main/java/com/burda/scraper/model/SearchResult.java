@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
@@ -128,6 +129,28 @@ public class SearchResult
 	public int getEndHotel()
 	{
 		return getStartHotel()+filteredHotels.size()-1;
+	}
+	
+	public boolean isPreferredHotelRequested()
+	{
+		return !StringUtils.isEmpty(getSearchParams().getPreferredProductName());
+	}
+	
+	public boolean isPreferredHotelAvailable()
+	{
+		boolean avail = false;
+		if (isPreferredHotelRequested())
+		{
+			for (Hotel h: getAllHotels())
+				if (h.getName().equals(getSearchParams().getPreferredProductName()))
+					avail = true;
+		}
+		return avail;
+	}
+	
+	public String getPreferredHotel()
+	{
+		return getSearchParams().getPreferredProductName();
 	}
 	
 	public String toString()

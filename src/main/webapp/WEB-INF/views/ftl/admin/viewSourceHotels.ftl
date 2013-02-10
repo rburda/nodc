@@ -77,7 +77,7 @@
 	           				<select style="width:500px" name="masterHotelName" value="${hotel.hotelName}">
 	           					<#list model["masterHotelList"] as masterHotel>
 	           						<option <@isSelected current=hotel.hotelName value=masterHotel.hotelName/> 
-	           						 value="${masterHotel.hotelName}">${masterHotel.hotelName} (${masterHotel.favoredInventorySource})</option>
+	           						 value="${masterHotel.hotelName}">${masterHotel.hotelName}</option>
 	           					</#list>
 	           				</select>
 	           			</td>

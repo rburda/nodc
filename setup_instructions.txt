@@ -28,9 +28,11 @@ Setup NODC Scraper
            Container Type: 64bit Amazon Linux running Tomcat 7
            Upload source: <war file>
      --- Launch New Environment
-            Name: staging-nodcsearch.elasticbeanstalk.com
-            Instance Type: t1.micro (550m min, 550m max, 64m)
+            Name: scraper-prod.elasticbeanstalk.com
+            Instance Type: t1.small (1500m min, 1500m max, 64m)
             Existing Key pair: <TBD>
+            Minimum 2 instances (2 different avail zones)
+            PARAM1: dev (spring.profile.active -- see ContextInitializer)
             Email Address: reubeninvegas@gmail.com
             Application Health URL: /health
 
@@ -50,3 +52,20 @@ Setup NODC Scraper
                sudo su
                cd /var/log/tomcat7
                tail -f catalina.log
+               
+7. Create Elastic Beanstalk (backend for scheduled tasks)
+     --- Elastic Beanstalk
+     --- Server Type: Tomcat 7
+     --- Create New Application (button upper right)
+           Application Name: scraper
+           Description: Search Results for NewOrleans.com
+           Container Type: 64bit Amazon Linux running Tomcat 7
+           Upload source: <war file>
+     --- Launch New Environment
+            Name: scraper-prod.elasticbeanstalk.com
+            Instance Type: t1.micro (550m min, 550m max, 64m)
+            Existing Key pair: <TBD>
+            Minimum 1 instances (1 different avail zones)
+            PARAM1: dev,scheduleTasks (spring.profile.active -- see ContextInitializer)
+            Email Address: reubeninvegas@gmail.com
+            Application Health URL: /health

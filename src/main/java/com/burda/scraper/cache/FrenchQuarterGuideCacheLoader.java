@@ -17,6 +17,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import com.burda.scraper.dao.HotelDetailCacheKey;
 import com.burda.scraper.dao.HotelDetailDAO;
@@ -52,6 +53,10 @@ public class FrenchQuarterGuideCacheLoader
 		this.roomTypeDetailDAO = dao;
 	}
 	
+	//1:01am every day; '1' to ensure ordering with other tasks; tasks are 
+	//single threaded so if tasks overlap, they will wait for an executing one to
+	//finish before starting the next one.
+	@Scheduled(cron = "0 1 1 * * ?")
 	public void loadCache() throws Exception
 	{
 

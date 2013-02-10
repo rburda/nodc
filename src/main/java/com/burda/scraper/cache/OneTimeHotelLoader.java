@@ -13,6 +13,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import com.burda.scraper.dao.HotelDetailCacheKey;
 import com.burda.scraper.dao.HotelDetailDAO;
@@ -31,6 +32,10 @@ public class OneTimeHotelLoader
 	private SourceHotelDAO sourceHotelDAO;
 	private HotelDetailDAO hotelDetailDAO;
 	
+	//1:02am every day; '0' to ensure ordering with other tasks; tasks are 
+	//single threaded so if tasks overlap, they will wait for an executing one to
+	//finish before starting the next one. This will be the first one to execute
+	@Scheduled(cron = "0 0 1 * * ?")
 	public void initializeHotelData() throws Exception
 	{
 		HttpResponse hotelSummaryResponse = queryHotelsViaHttpClient();

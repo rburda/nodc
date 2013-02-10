@@ -3,10 +3,12 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:util="http://www.springframework.org/schema/util"	
+	xmlns:task="http://www.springframework.org/schema/task"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/beans/spring-context-3.1.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/beans/spring-util-3.1.xsd
-		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd"
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd"
 	xmlns:aop="http://www.springframework.org/schema/aop">
 <!-- 
 	<import resource="simplesm-context.xml" />
@@ -94,15 +96,21 @@
 		<property name="sourceHotelDAO" ref="sourceHotelDAO" />		
 		<property name="masterHotelDAO" ref="masterHotelDAO" />
 	</bean>	
-		
+	
+	<bean id="nodchotelLoader" class="com.burda.scraper.cache.NODCHotelLoader" >
+		<property name="hotelDetailDAO" ref="hotelDetailDAO" />
+		<property name="sourceHotelDAO" ref="sourceHotelDAO" />		
+		<property name="masterHotelDAO" ref="masterHotelDAO" />
+		<property name="roomTypeDetailDAO" ref="roomTypeDetailDAO" />	
+		<property name="NODCWarehouse" ref="nodcInvSource" />
+	</bean>
+				
 	<bean id="nodcInvSource" class="com.burda.scraper.inventory.NODCWarehouse">
 		<property name="sourceHotelDAO" ref="sourceHotelDAO" />
 		<property name="hotelDetailDAO" ref="hotelDetailDAO" />
 		<property name="masterHotelDAO" ref="masterHotelDAO" />
 	</bean>	
-	
-	<bean id="nodchotelLoader" class="com.burda.scraper.cache.NODCHotelLoader" />
-		
+
 	<bean id="inventoryService" class="com.burda.scraper.inventory.InventoryServiceImpl">
 		<property name="NODCInventorySource" ref="nodcInvSource" />
 		<property name="FQGInventorySource" ref="frenchQtrGuideInvSource" />
@@ -111,4 +119,11 @@
 		<property name="roomTypeDetailDAO" ref="roomTypeDetailDAO"/>
 		<property name="hotelDetailDAO" ref="hotelDetailDAO"/>
 	</bean>
+	
+	<beans profile="scheduleTasks">
+ 		<task:scheduler id="taskScheduler"/>
+		<task:executor id="taskExecutor" pool-size="1"/> <!-- pool-size=1 ensures overlapping tasks run serially -->
+		<task:annotation-driven executor="taskExecutor" scheduler="taskScheduler"/>
+  </beans>
+ 	
 </beans>

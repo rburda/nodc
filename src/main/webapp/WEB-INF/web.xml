@@ -3,6 +3,8 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_5.xsd"
 	version="2.5">
 
+	<!-- This class is here to specify how to load the spring.active.profile -->
+	<!-- Please see the class for more details -->
 	<context-param>
 		<param-name>contextInitializerClasses</param-name>
 		<param-value>com.burda.scraper.ContextInitializer</param-value>

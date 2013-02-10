@@ -61,7 +61,7 @@
         <table class="table table-bordered table-striped">
            <thead>
 	            <tr>
-	            	<th width="10%">Source</th>
+	            	<th width="10%">Provider</th>
                 <th width="70%">Name</th>
                 <th width="10%">Weight</th>
                 <th width="10%">Actions</th>
