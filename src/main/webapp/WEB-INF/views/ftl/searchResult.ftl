@@ -240,7 +240,22 @@ url,
 });
 /* */
 </script>
-	
+	<script src="http://www.neworleans.com/common/js/jquery/jquery-scrollTo.js" language="javascript" type="text/javascript"></script>
+<script id="com-vegas-athena-components-browse-hotel-HotelNoAvailabilityAlternateResultsPanel-0" language="javascript" type="text/javascript">
+
+cyljq(window).load(function(e)
+{
+cyljq('.calendarView a#showSearchWidgetLink').click(function(e)
+{
+cyljq.scrollTo(cyljq('.changeSearch'));
+});
+cyljq('.calendarView a#showOtherHotelsLink').click(function(e)
+{
+cyljq.scrollTo(cyljq('.searchResult'));
+});
+});
+
+</script>
     <script type="text/javascript" src="http://neworleans.com/javascript/tealeaf.js"></script>       
     <!--<link type="text/css" rel="stylesheet" href="http://neworleans.com/common/css/jquery/jqModal.css" />-->
     <script src="http://neworleans.com/mytrip/common/js/adtag_docwrite_util.js" type="text/javascript"></script>
@@ -487,6 +502,61 @@ url,
                         </script>
                         
                     </div>
+					
+					<#if searchResults["result"].preferredHotelRequested>
+						<#if !(searchResults["result"].preferredHotelAvailable)>
+					
+					<div class="calendarView hotel-no-availiability">
+						<div class="singleColumn">
+							<h3>${searchResults["result"].preferredHotel}</h3>
+								<p class="red">*No Vacancy on your selected dates</p>
+								<p>
+								<strong>Check-In:</strong>
+								${searchResults["result"].startDate?string("MM/dd/yy")}
+								</p>
+								<p>
+								<strong>Check-Out:</strong>
+								${searchResults["result"].endDate?string("MM/dd/yy")}
+								</p>
+								<p>
+								<strong>Guests: </strong>
+								${searchResults["result"].numAdults}
+								Adults,
+								${searchResults["result"].numChildren}
+								Children
+								</p>
+								<h3>What would you like to do?</h3>
+								<ul>
+
+								<li>
+								<a id="showOtherHotelsLink" href="javascript:void(0);">See other hotels with available rooms on the dates you selected below
+								</a>
+								</li>
+								<li>
+								<a id="showSearchWidgetLink" href="javascript:void(0);">
+								Search on a different date for all hotels
+								</a>
+								</li>
+								</ul>
+								<p>
+								Or call
+								1-855-639-6756
+								for further assistance.
+								</p>
+						</div>
+
+
+					</div>
+					
+					<div id="moreHotelsTarget" class="moreHotels"> Hotels with vacancy on your selected dates </div>
+					
+					<div class="moreHotelsArrow"></div>
+						
+						</#if>
+					</#if>
+					
+					
+					
                     <!-- sort bar -->
                     <div class="sortBar">
 	                    <ul>
