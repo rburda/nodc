@@ -739,14 +739,18 @@ cyljq.scrollTo(cyljq('.searchResult'));
 												<div class="child hotelDetailsPop">
 												<p>
 												Room Charges:
-												<span>$95.20</span><br />
-												Taxes &amp; Fees:
-												<span>$16.23</span><br />
+												<span>${roomType.totalPrice?string.currency!'-'}</span><br />
+												<#if roomType.totalTaxesAndFees?has_content>
+													Taxes &amp; Fees:
+													<span>${roomType.totalTaxesAndFees?string.currency}</span><br />
+												</#if>
 												</p>
 												(<a href="javascript:void(0);" class="moreInfoLink">more info</a>)
 												<p class="totalLine">
-												Total Price:
-												<span>${roomType.totalPrice!''}</span>
+													<#if roomType.total?has_content>
+														Total Price:
+														<span>${roomType.total?string.currency}</span>
+													</#if>
 												</p>
 												<a href="javascript:void(0);" class="pricejqmClose">Close Window
 												</a><br />

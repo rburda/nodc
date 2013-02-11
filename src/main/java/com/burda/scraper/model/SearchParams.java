@@ -45,13 +45,13 @@ public class SearchParams implements Serializable
 	private String preferredProductId;  //is NODC externalId
 	private String preferredProductName; //set by InventoryServiceImpl
 	private int numRooms = 0;
-	private int numAdults1 = 0;
+	private int numAdults1 = 1;
 	private int numChildren1 = 0;
-	private int numAdults2 = 0;
+	private int numAdults2 = 1;
 	private int numChildren2 = 0;
-	private int numAdults3 = 0;
+	private int numAdults3 = 1;
 	private int numChildren3 = 0;
-	private int numAdults4 = 0;
+	private int numAdults4 = 1;
 	private int numChildren4 = 0;
 	private int room1ChildAge1 = 0;
 	private int room1ChildAge2 = 0;

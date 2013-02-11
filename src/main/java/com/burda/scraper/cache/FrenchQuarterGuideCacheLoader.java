@@ -15,6 +15,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -120,15 +121,28 @@ public class FrenchQuarterGuideCacheLoader
 				}					
 				
 				details.clearAmenities();
-				for (Element topAmenityEl: detailsEl.select("top_amenities").first().select("amenity"))
+				Elements policies = detailsEl.select("policy_data");
+				if (policies != null && policies.size() > 0)
 				{
-					Amenity amenity = new Amenity();
-					amenity.name = topAmenityEl.select("amenity_name").first().ownText();
-					
-					boolean avail = (topAmenityEl.select("allowed").first() != null);
-					amenity.description = (avail ? "Yes" : "No");
-					details.addAmenity(amenity);
-				}									
+					for (Element topAmenityEl: policies.first().select("policy"))
+					{
+						Amenity amenity = new Amenity();
+						amenity.name = topAmenityEl.select("policy_name").first().ownText();
+						try
+						{
+							amenity.description = URLDecoder.decode(topAmenityEl.select("description").first().ownText(), "UTF-8");
+						}
+						catch (Exception e)
+						{
+							amenity.description = topAmenityEl.select("description").first().ownText();
+							logger.error("unabled to decode", e);
+						}
+						//boolean avail = (topAmenityEl.select("allowed").first() != null);
+						//amenity.description = (avail ? "Yes" : "No");
+						details.addAmenity(amenity);
+					}						
+				}
+								
 
 				for (Element roomTypeEl: detailsEl.select("rate"))
 				{

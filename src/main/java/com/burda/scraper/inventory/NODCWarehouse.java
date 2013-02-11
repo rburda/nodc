@@ -373,7 +373,11 @@ public class NODCWarehouse implements Warehouse
 				Element avgNightlyRate = roomTypeEl.select("td.priceCol span:not(.originalRate)").first();
 				Element roomTypeName = roomTypeEl.select("td.productCol a:eq(0)").first();
 				Element promoDesc = roomTypeEl.select("td.productCol span.promo").first();
-				Element totalPrice = roomTypeEl.select("td.priceCol p.totalLine span").first();
+				
+				Element priceEl = roomTypeEl.select("td.priceCol p:contains(Room Charges) span:eq(0)").first();
+				Element taxesAndFeesEl = roomTypeEl.select("td.priceCol p:contains(Room Charges) span:eq(2)").first();
+				Element totalPriceEl = roomTypeEl.select("td.priceCol p.totalLine span").first();
+				
 				
 				RoomType roomType = new RoomType();
 				roomType.bookItUrl = calculateBookItUrl(bookIt);
@@ -387,7 +391,9 @@ public class NODCWarehouse implements Warehouse
 				roomType.name = roomTypeName.ownText();
 				if (promoDesc != null)
 					roomType.promoDesc = promoDesc.ownText();
-				roomType.totalPrice = InventoryUtils.createMoney(totalPrice.ownText());
+				roomType.total = InventoryUtils.createMoney(totalPriceEl.ownText());
+				roomType.totalPrice = InventoryUtils.createMoney(priceEl.ownText());
+				roomType.totalTaxesAndFees = InventoryUtils.createMoney(taxesAndFeesEl.ownText());
 				
 				LocalDate currentDate = new LocalDate(
 						STAY_DATE_FORMAT.parse(document.select("[name=departureDate]").first().val()));

@@ -395,31 +395,31 @@ ${roomType.features!''}
 				
 				<#if (hotelDetail.amenities?size > 0)>
 				
-				<#assign size=(hotelDetail.amenities?size)>
-				<#assign rem=size%2>
-				<#assign col1=0>
-				<#if rem==1>
-				<#assign col1=(size+1)/2>
-				<#else>
-				<#assign col1=size/2>
-				</#if>	
+					<#assign size=(hotelDetail.amenities?size)>
+					<#assign rem=size%2>
+					<#assign col1=0>
+					<#if rem==1>
+						<#assign col1=(size+1)/2>
+						<#else>
+							<#assign col1=size/2>
+					</#if>	
 				</#if>
 				<div style="width: 293px; float: left;">
-				<#if (hotelDetail.amenities?size > 0)>
-				<#list 0..(col1-1) as i>
-				<div class="feature-container"><strong class="feature-name">${hotelDetail.amenities[i].name!''}</strong> <p>${hotelDetail.amenities[i].description!''}</p></div>
-				</#list>
-				</#if>
+					<#if (hotelDetail.amenities?size > 0)>
+						<#list 0..(col1-1) as i>
+						<div class="feature-container"><strong class="feature-name">${hotelDetail.amenities[i].name!''}</strong> <p>${hotelDetail.amenities[i].description!''}</p></div>
+						</#list>
+					</#if>
 				</div>
-				
+					
 				<div style="width: 293px; float: right;">
-								<#if (hotelDetail.amenities?size > 0)>
-				<#list col1..(size-1) as i>
-				<div class="feature-container"><strong class="feature-name">${hotelDetail.amenities[i].name!''}</strong> <p>${hotelDetail.amenities[i].description!''}</p></div>
-				</#list>
-				</#if>
+					<#if (hotelDetail.amenities?size > 1)>
+						<#list col1..(size-1) as i>
+							<div class="feature-container"><strong class="feature-name">${hotelDetail.amenities[i].name!''}</strong> <p>${hotelDetail.amenities[i].description!''}</p></div>
+						</#list>
+					</#if>
 				</div>	
-					<div class="clear"></div>
+				<div class="clear"></div>
 				</div> <!-- /hotelDetails -->
     			
     			

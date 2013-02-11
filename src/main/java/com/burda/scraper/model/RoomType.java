@@ -14,7 +14,9 @@ public class RoomType
 	public String bookItUrl;
 	public BigDecimal avgNightlyRate;
 	public BigDecimal avgNightlyOriginalRate;
+	public BigDecimal totalTaxesAndFees;
 	public BigDecimal totalPrice;
+	public BigDecimal total;
 	public List<DailyRate> dailyRates = new ArrayList<DailyRate>();
 	
 	public String getName()
@@ -47,6 +49,16 @@ public class RoomType
 		return totalPrice;
 	}
 
+	public BigDecimal getTotalTaxesAndFees()
+	{
+		return totalTaxesAndFees;
+	}
+	
+	public BigDecimal getTotal()
+	{
+		return total;
+	}
+	
 	public List<DailyRate> getDailyRates()
 	{
 		return dailyRates;

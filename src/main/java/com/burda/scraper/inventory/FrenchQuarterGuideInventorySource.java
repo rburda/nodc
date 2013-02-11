@@ -167,6 +167,7 @@ public class FrenchQuarterGuideInventorySource implements Warehouse
 						hotelElement.select("#rateDetails_"+roomTypeId + " .price").first().ownText());
 				
 				LocalDate currentDate = params.getCheckInDate();
+				BigDecimal totalPrice = BigDecimal.ZERO;
 				for (Element dailyRateEl: hotelElement.select("#rateDetails_"+roomTypeId + " .rateDetails tbody td"))
 				{
 					if (dailyRateEl.ownText().startsWith("$"))
@@ -176,10 +177,11 @@ public class FrenchQuarterGuideInventorySource implements Warehouse
 						dRate.originalPrice = InventoryUtils.createMoney(dailyRateEl.ownText());
 						dRate.price = InventoryUtils.createMoney(dailyRateEl.ownText());
 						currentDate = currentDate.plusDays(1);
+						totalPrice = totalPrice.add(dRate.price);
 						rt.getDailyRates().add(dRate);
 					}
 				}
-				rt.totalPrice = InventoryUtils.createMoney(rtElement.select(".room_price .price").first().ownText());
+				rt.totalPrice = totalPrice; //InventoryUtils.createMoney(rtElement.select(".room_price .price").first().ownText());
 				
 				rt.bookItUrl=createBookUrl(params, idParts);
 				hotel.addRoomType(rt);
