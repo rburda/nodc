@@ -529,11 +529,12 @@ cyljq.scrollTo(cyljq('.searchResult'));
 								<ul>
 
 								<li>
-								<a id="showOtherHotelsLink" href="javascript:void(0);">See other hotels with available rooms on the dates you selected below
+								<a id="showOtherHotelsLink" href="#moreHotelsTarget">
+									See other hotels with available rooms on the dates you selected below
 								</a>
 								</li>
 								<li>
-								<a id="showSearchWidgetLink" href="javascript:void(0);">
+								<a id="showSearchWidgetLink" href="#sidebarWidget">
 								Search on a different date for all hotels
 								</a>
 								</li>

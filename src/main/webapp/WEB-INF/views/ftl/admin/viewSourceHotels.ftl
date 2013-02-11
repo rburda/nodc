@@ -48,6 +48,7 @@
             <ul class="nav">
               <li class="active"><a href="/admin/editMaster">Weights</a></li>
               <li class="active"><a href="/admin/viewSourceHotels">Provider Mapping</a></li>
+              <li class="active"><a href="/j_spring_security_logout">Logout</a></li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>
