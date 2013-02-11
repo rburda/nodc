@@ -124,6 +124,9 @@ public class FrenchQuarterGuideCacheLoader
 				{
 					Amenity amenity = new Amenity();
 					amenity.name = topAmenityEl.select("amenity_name").first().ownText();
+					
+					boolean avail = (topAmenityEl.select("allowed").first() != null);
+					amenity.description = (avail ? "Yes" : "No");
 					details.addAmenity(amenity);
 				}									
 
