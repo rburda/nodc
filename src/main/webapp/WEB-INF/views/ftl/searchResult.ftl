@@ -440,7 +440,8 @@ cyljq.scrollTo(cyljq('.searchResult'));
 									<li class="rightTitle">Avg</li>
 									<#list searchResults["result"].allHotels as hotel>
 										<li class="productName" style="position: static !important;">
-											<a href="#rooms" class="tooltip-hover" title="${hotel.name}" onclick="popup('rooms', '${hotel.name}');" id="id6c0"><@chopstring val=hotel.name /></a>
+										
+											<a href="#rooms" class="tooltip-hover" title="${hotel.name}" onclick="popup('rooms', '${hotel.name?replace("\'", "%27")}');" id="id6c0"><@chopstring val=hotel.name /></a>
 										
 										</li>
 										<li class="productPrice">$${hotel.lowestAvgRate?round!0.00}</li>									
@@ -619,7 +620,7 @@ cyljq.scrollTo(cyljq('.searchResult'));
                                     Lowest Average Price: <span style="" class="averageRate">${hotel.lowestAvgRate?string.currency!0.00}</span>
                                 </h2>
                                 <h2 class="productTitle">
-                                    <a href="#rooms" onclick="popup('rooms','${hotel.name}');"> ${hotel.name!''}</a>
+                                    <a href="#rooms" onclick="popup('rooms','${hotel.name?replace("\'", "%27")}');"> ${hotel.name!''}</a>
                                 </h2>
                                 <div class="clear">
                                 </div>
@@ -627,7 +628,7 @@ cyljq.scrollTo(cyljq('.searchResult'));
                             <!-- / search results box header with gradient background, hotel name, price -->
                             <!-- the product information summary section, including the thumbnail, star rating, and text. -->
                             <div class="resultsDescription">
-                                <#if (hotel.hotelDetails.photos?size > 0)> <a onclick="popup('rooms','${hotel.name}');" href="#rooms">
+                                <#if (hotel.hotelDetails.photos?size > 0)> <a onclick="popup('rooms','${hotel.name?replace("\'", "%27")}');" href="#rooms">
                                     <img src="${hotel.hotelDetails.photos[0].url!''}" width="100" height="74" alt=""
                                         class="productThumb" />
                                 </a></#if>
@@ -661,7 +662,7 @@ cyljq.scrollTo(cyljq('.searchResult'));
                                        <@limitDesc val=hotel.hotelDetails.description!'' /> 
                                     </p>
                                     <p>
-                                        <a onclick="popup('rooms', '${hotel.name}');" href="#rooms">more hotel info</a>
+                                        <a onclick="popup('rooms', '${hotel.name?replace("\'", "%27")}');" href="#rooms">more hotel info</a>
                                     </p>
                                     <div style="display:<@isPriceline source=hotel.source/>">
                                         <img width="82" height="17" border="0" alt="" src="http://www.neworleans.com/images/BEU-ticket-2.png"
@@ -707,7 +708,7 @@ cyljq.scrollTo(cyljq('.searchResult'));
 										<tr class="cyl-HotelRow <#if roomType.isPromoRate()> hasPromos  hasSale</#if>">
 																		
                                             <td rowspan="1" class="productCol">
-                                                <a class="showRoomDetail" onclick="popup('rooms', '${hotel.name}');" href="#rooms">${roomType.name!''}</a>
+                                                <a class="showRoomDetail" onclick="popup('rooms', '${hotel.name?replace("\'", "%27")}');" href="#rooms">${roomType.name!''}</a>
                                                 <br />
                                                 <span class="promo">${roomType.promoDesc!''}</span> 
                                             </td>
@@ -1038,8 +1039,9 @@ cyljq.scrollTo(cyljq('.searchResult'));
 }
 
 function popup(link,hotelName){
-//hotelName = hotelName.replace(/\s/g,"%20");
+hotelName = decodeURI(hotelName);
 hotelName = encodeURIComponent(hotelName); 
+hotelName = hotelName.replace(/'/g, "%27");
 var url="/details"+"?hotelName="+hotelName+"#"+link;
 //alert(url);
 
