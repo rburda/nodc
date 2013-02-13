@@ -46,7 +46,7 @@ public class OneTimeHotelLoader
 			MasterHotel hotel = null;
 			
 			String hotelId = hotelEl.select("hotel_id").first().ownText();
-			
+			logger.error("init hotel id: " + hotelId);
 			//check to see if we've seen this hotel before
 			SourceHotel sourceHotel = 
 					sourceHotelDAO.getByHotelId(hotelId, InventorySource.FQG);
@@ -59,6 +59,7 @@ public class OneTimeHotelLoader
 				sourceHotel.setExternalHotelId(hotelId);
 				sourceHotel.setInvSource(InventorySource.FQG);
 				sourceHotelDAO.save(sourceHotel);
+				logger.error("hotel id: " + hotelId + " not found; creating sourceHotel with name of: " + sourceHotel.getHotelName());
 			}
 	
 			//now see if we've created a master record before. This can only have
@@ -68,12 +69,15 @@ public class OneTimeHotelLoader
 			//if not go ahead and create one.
 			if (hotel == null)
 			{
+				logger.error("master hotel not found for id: " + hotelId + "; creating master with name of: " + sourceHotel.getHotelName());
 				hotel = new MasterHotel();
 				hotel.setFavoredInventorySource(InventorySource.FQG);
 				hotel.setWeight(1000);
 				hotel.setHotelName(sourceHotel.getHotelName());
 				masterHotelDAO.save(hotel);
 			}
+			else
+				logger.error("master hotel found for id: " + hotelId + " with name of: " + sourceHotel.getHotelName());
 		
 			//lastly, check to see if we already have a content detail record.
 			//If not, create one; if we do, then still set the address info as that
@@ -81,9 +85,12 @@ public class OneTimeHotelLoader
 			HotelDetail hd = hotelDetailDAO.getHotelDetail(new HotelDetailCacheKey(hotel.getHotelName(), InventorySource.FQG));
 			if (hd == null)
 			{
+				logger.error("hotel detail not found for id: " + hotelId + "; creating detail with name of: " + hotel.getHotelName());
 				hd = new HotelDetail();
 				hd.setName(hotel.getHotelName());
 			}
+			else
+				logger.error("hotel detail found for id: " + hotelId + " with name of: " + hotel.getHotelName());
 			hd.setAddress1(hotelEl.select("hotel_address").first().ownText());
 			hd.setCity(hotelEl.select("city_name").first().ownText());
 			hd.setState(hotelEl.select("state_code").first().ownText());

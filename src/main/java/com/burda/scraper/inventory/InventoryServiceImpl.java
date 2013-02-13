@@ -219,13 +219,16 @@ public class InventoryServiceImpl implements InventoryService
 		{
 			HotelDetail oldHotelDetail = hotelDetailDAO
 					.loadHotelDetailFromDB(new HotelDetailCacheKey(sh.getHotelName(), sh.getInvSource()));
-			for (RoomTypeDetail rtd: oldHotelDetail.getRoomTypeDetails())
-			{
-				roomTypeDetailDAO.delete(rtd);
-				rtd.setHotelName(masterHotelName+"_"+sh.getInvSource().name());
-				roomTypeDetailDAO.save(rtd);
-			}
 			
+			if (oldHotelDetail != null && oldHotelDetail.getRoomTypeDetails() != null)
+			{
+				for (RoomTypeDetail rtd: oldHotelDetail.getRoomTypeDetails())
+				{
+					roomTypeDetailDAO.delete(rtd);
+					rtd.setHotelName(masterHotelName+"_"+sh.getInvSource().name());
+					roomTypeDetailDAO.save(rtd);
+				}				
+			}			
 			sourceHotelDAO.delete(sh);
 			sh.setHotelName(masterHotelName);
 			sourceHotelDAO.save(sh);			
@@ -241,9 +244,11 @@ public class InventoryServiceImpl implements InventoryService
 	}
 	
 	@Override
-	public void saveMasterRecords(List<MasterHotel> hotels)
+	public void saveMasterRecord(MasterHotel hotel, String newHotelName)
 	{
-		masterHotelDAO.save(hotels);
+		masterHotelDAO.delete(hotel);
+		hotel.setHotelName(newHotelName);
+		masterHotelDAO.save(hotel);
 	}
 	
 	public void setNODCInventorySource(NODCWarehouse invSource)

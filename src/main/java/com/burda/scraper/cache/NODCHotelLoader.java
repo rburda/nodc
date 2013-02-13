@@ -75,6 +75,10 @@ public class NODCHotelLoader
 			if (previouslyFound == null)
 			{
 				logger.error("hotel not previously found");
+				if (h.getSource().getHotelName().contains("Harrah"))
+				{
+					h.getSource().setHotelName(h.getSource().getHotelName().replace("'",""));
+				}
 				sourceHotelDAO.save(h.getSource());				
 				
 				//now check to see if a masterHotel has been created with this name
@@ -94,6 +98,14 @@ public class NODCHotelLoader
 				logger.error("hotel previously found");
 				h.setSource(previouslyFound);
 			}
+			h.setName(h.getSource().getHotelName());
+			h.getHotelDetails().setName(h.getSource().getHotelName());
+			if (h.getHotelDetails().getRoomTypeDetails() != null)
+			{
+				for (RoomTypeDetail rtd: h.getHotelDetails().getRoomTypeDetails())
+					rtd.setHotelName(h.getSource().getHotelName()+"_"+InventorySource.NODC);
+			}
+			
 			HotelDetail hd = hotelDetailDAO.getHotelDetail(new HotelDetailCacheKey(h.getSource().getHotelName(), InventorySource.NODC));
 			if (hd != null)
 			{

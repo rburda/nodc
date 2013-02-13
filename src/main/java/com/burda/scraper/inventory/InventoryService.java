@@ -22,7 +22,7 @@ public interface InventoryService
 	
 	List<MasterHotel> getMasterRecords();
 	
-	void saveMasterRecords(List<MasterHotel> hotels);
+	void saveMasterRecord(MasterHotel hotel, String newHotelName);
 	
 	void deleteMasterRecord(String masterHotelName);
 	

@@ -159,13 +159,14 @@ public class SearchController
 	
 	@RequestMapping(value="/admin/saveMasterHotel", method=RequestMethod.POST)
 	@ResponseBody
-	public ModelAndView saveMasterHotels(@ModelAttribute("wrapper") SaveMasterHotelWrapper wrapper)
+	//public ModelAndView saveMasterHotels(@ModelAttribute("wrapper") SaveMasterHotelWrapper wrapper)
+	public ModelAndView saveMasterHotel(@ModelAttribute("hotel") MasterHotel mh, @RequestParam("newHotelName") String newHotelName)
 	{
-		invService.saveMasterRecords(wrapper.getMasterHotels());
+		invService.saveMasterRecord(mh, newHotelName);
 		return new ModelAndView(new RedirectView("/admin/editMaster"));
 	}
 	
-	@RequestMapping(value="/admin/deleteMasterHotel", method=RequestMethod.GET)
+	@RequestMapping(value="/admin/deleteMasterHotel", method=RequestMethod.POST)
 	@ResponseBody
 	public ModelAndView deleteMasterHotel(@RequestParam("name") String masterHotelName)
 	{

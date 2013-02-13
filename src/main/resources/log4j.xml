@@ -45,6 +45,11 @@
 		<level value="debug" />
 		<appender-ref ref="console" />
 	</logger>
+	
+	<logger name="com.amazonaws" additivity="false">
+		<level value="debug" />
+		<appender-ref ref="console" />
+	</logger>
 
 	<!-- Root Logger -->
 	<root>

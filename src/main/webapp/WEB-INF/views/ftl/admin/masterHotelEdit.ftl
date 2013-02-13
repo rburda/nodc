@@ -3,7 +3,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Bootstrap, from Twitter</title>
+    <title>NewOrleans.com Admin</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -54,7 +54,6 @@
 
 
     <div class="container">
-      <form action="/admin/saveMasterHotel" method="post" commandName="wrapper">			
     	<h2 style="color: blue; text-align: center">Hotel Weights</h2>
 			<input type="submit" value="Save"/>
     	<div>
@@ -65,22 +64,29 @@
 	            	<th width="10%">Provider</th>
                 <th width="70%">Name</th>
                 <th width="10%">Weight</th>
-                <th width="10%">Actions</th>
+                <th colspan="2" width="10%">Actions</th>
               </tr>
            </thead>
            <tbody id="mappingTable">
            	<#list model["hotelList"] as hotel>
            		<tr>
-	           			<td><input style="width:50px" type="text" name="masterHotels[${hotel_index}].favoredInventorySource" disabled="disabled" value="${hotel.favoredInventorySource}" /></td>
-	           			<td><input style="width:500px" name="masterHotels[${hotel_index}].hotelName"  type="text" value="${hotel.hotelName}"/></td>
-	           			<td><input style="width:50px"  name="masterHotels[${hotel_index}].weight" type="text" value="${hotel.weight}"/></td>
-          				<td><a href="/admin/deleteMasterHotel?name=${hotel.hotelName}">delete</a></td>
+      					<form action="/admin/saveMasterHotel" method="post" commandName="hotel">
+      						<input type="hidden" name="hotelName" value="${hotel.hotelName}" />			
+	           			<td><input style="width:50px" type="text" name="favoredInventorySource" readonly="readonly" value="${hotel.favoredInventorySource}" /></td>
+	           			<td><input style="width:500px" name="newHotelName"  type="text" value="${hotel.hotelName}"/></td>
+	           			<td><input style="width:50px"  name="weight" type="text" value="${hotel.weight}"/></td>
+          				<td><input type="submit" style="background-color: green" value="Save"/></td>
+          			</form>
+          			<form action="/admin/deleteMasterHotel" method="post">
+          				<input type="hidden" name="name" value="${hotel.hotelName}" />
+          				<td><input type="submit" style="background-color:red;font-size:small" value="Delete"/></td>
+          			</form>
+
           		</tr>
            	</#list>
           </tbody>
    			</table>
     	</div>
-			</form>
     </div> <!-- /container -->
 
     <!-- Le javascript

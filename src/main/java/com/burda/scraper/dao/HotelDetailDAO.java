@@ -29,11 +29,6 @@ public class HotelDetailDAO extends AbstractDynamoDBDAO<HotelDetail>
             public HotelDetail load(HotelDetailCacheKey key) {
               return loadHotelDetailFromDB(key);
             }
-            @Override
-            public Map<HotelDetailCacheKey, HotelDetail> loadAll(Iterable<? extends HotelDetailCacheKey> keys)
-            {
-            	return null;
-            }
           });
 	
 	//@ReadThroughSingleCache(namespace = "HotelDetail", expiration = 3600)
