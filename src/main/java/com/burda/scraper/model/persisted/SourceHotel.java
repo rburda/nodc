@@ -71,5 +71,4 @@ public class SourceHotel implements Serializable
 	{
 		this.externalHotelId = externalHotelId;
 	}
-	
 }

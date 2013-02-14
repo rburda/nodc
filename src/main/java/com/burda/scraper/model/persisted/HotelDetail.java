@@ -40,6 +40,7 @@ public class HotelDetail implements Serializable
 	private List<RoomTypeDetail> roomTypeDetails = Lists.newArrayList();
 	private List<Photo> photos = Lists.newArrayList();
 	private List<Amenity> amenities = Lists.newArrayList();
+	private InventorySource invSource;
 	
 	@DynamoDBHashKey(attributeName = "hotel_name")
 	public String getName()
@@ -282,10 +283,22 @@ public class HotelDetail implements Serializable
 	{
 		this.amenities.add(a);
 	}
-	
+
 	@DynamoDBIgnore
 	public void clearAmenities()
 	{
 		this.amenities.clear();
+	}
+	
+	@DynamoDBIgnore
+	public void setInventorySource(InventorySource is)
+	{
+		this.invSource = is;
+	}
+	
+	@DynamoDBIgnore
+	public boolean isHotelAmenitiesSupported()
+	{
+		return !InventorySource.FQG.equals(invSource);
 	}
 }

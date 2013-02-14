@@ -242,7 +242,9 @@ selectedHotelDetailTab = "";
     			<ul class="tabList">
                 	<li><a href="#rooms"><span>Rooms</span></a></li>
 					<li><a href="#description"><span>Description</span></a></li>
+					<#if (hotelDetail.hotelAmenitiesSupported) >
     				<li><a href="#hotelDetails"><span>Hotel Details</span></a></li>
+    			</#if>
 					<li><a href="#map"><span>Map</span></a></li>
    					<li><a href="#photos"><span>Photos</span></a></li>
 					  				
@@ -390,37 +392,41 @@ ${roomType.features!''}
     				<p>
 					${hotelDetail.description!''}
 					</p>    			</div> <!-- /description -->
-    			<div id="hotelDetails" class="hotelDetailsTab tabbed-item">
-					<h2>Hotel Details</h2>
-				
-				<#if (hotelDetail.amenities?size > 0)>
-				
-					<#assign size=(hotelDetail.amenities?size)>
-					<#assign rem=size%2>
-					<#assign col1=0>
-					<#if rem==1>
-						<#assign col1=(size+1)/2>
-						<#else>
-							<#assign col1=size/2>
-					</#if>	
-				</#if>
-				<div style="width: 293px; float: left;">
-					<#if (hotelDetail.amenities?size > 0)>
-						<#list 0..(col1-1) as i>
-						<div class="feature-container"><strong class="feature-name">${hotelDetail.amenities[i].name!''}</strong> <p>${hotelDetail.amenities[i].description!''}</p></div>
-						</#list>
-					</#if>
-				</div>
 					
-				<div style="width: 293px; float: right;">
-					<#if (hotelDetail.amenities?size > 1)>
-						<#list col1..(size-1) as i>
-							<div class="feature-container"><strong class="feature-name">${hotelDetail.amenities[i].name!''}</strong> <p>${hotelDetail.amenities[i].description!''}</p></div>
-						</#list>
+				<#if (hotelDetail.hotelAmenitiesSupported) >
+					
+	    			<div id="hotelDetails" class="hotelDetailsTab tabbed-item">
+						<h2>Hotel Details</h2>
+					
+					<#if (hotelDetail.amenities?size > 0)>
+					
+						<#assign size=(hotelDetail.amenities?size)>
+						<#assign rem=size%2>
+						<#assign col1=0>
+						<#if rem==1>
+							<#assign col1=(size+1)/2>
+							<#else>
+								<#assign col1=size/2>
+						</#if>	
 					</#if>
-				</div>	
-				<div class="clear"></div>
-				</div> <!-- /hotelDetails -->
+					<div style="width: 293px; float: left;">
+						<#if (hotelDetail.amenities?size > 0)>
+							<#list 0..(col1-1) as i>
+							<div class="feature-container"><strong class="feature-name">${hotelDetail.amenities[i].name!''}</strong> <p>${hotelDetail.amenities[i].description!''}</p></div>
+							</#list>
+						</#if>
+					</div>
+						
+					<div style="width: 293px; float: right;">
+						<#if (hotelDetail.amenities?size > 1)>
+							<#list col1..(size-1) as i>
+								<div class="feature-container"><strong class="feature-name">${hotelDetail.amenities[i].name!''}</strong> <p>${hotelDetail.amenities[i].description!''}</p></div>
+							</#list>
+						</#if>
+					</div>	
+					<div class="clear"></div>
+					</div> <!-- /hotelDetails -->
+				</#if>
     			
     			
 				<div id="map" class="mapTab tabbed-item">

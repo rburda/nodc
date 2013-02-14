@@ -164,6 +164,7 @@ public class InventoryServiceImpl implements InventoryService
 			if (rateInfo != null)
 			{
 				hotelDetail = rateInfo.getHotelDetails();
+				hotelDetail.setInventorySource(rateInfo.getSource().getInvSource());
 				for (RoomType rt: rateInfo.getRoomTypes())
 				{
 					String nameWithoutDots = rt.getName().replace("...",  "");
@@ -182,7 +183,10 @@ public class InventoryServiceImpl implements InventoryService
 			}
 		}
 		if (hotelDetail == null)
+		{
 			hotelDetail = hotelDetailDAO.getHotelDetail(new HotelDetailCacheKey(hotelName, InventorySource.NODC));
+			hotelDetail.setInventorySource(InventorySource.NODC);
+		}
 		
 		return hotelDetail;	
 	}
