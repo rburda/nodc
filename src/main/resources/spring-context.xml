@@ -62,42 +62,42 @@
 		</constructor-arg>
 	</bean>
 
-	<bean id="hotelDetailDAO" class="com.burda.scraper.dao.HotelDetailDAO">
+	<bean id="hotelDetailDAO" class="com.nodc.scraper.dao.HotelDetailDAO">
 		<property name="dynamoDBClient" ref="awsDynamoDbClient" />
 		<property name="roomTypeDetailDAO" ref="roomTypeDetailDAO" />
 	</bean>
 	
-	<bean id="masterHotelDAO" class="com.burda.scraper.dao.MasterHotelDAO">
+	<bean id="masterHotelDAO" class="com.nodc.scraper.dao.MasterHotelDAO">
 		<property name="dynamoDBClient" ref="awsDynamoDbClient" />
 	</bean>
 
-	<bean id="sourceHotelDAO" class="com.burda.scraper.dao.SourceHotelDAO">
+	<bean id="sourceHotelDAO" class="com.nodc.scraper.dao.SourceHotelDAO">
 			<property name="dynamoDBClient" ref="awsDynamoDbClient" />	
 	</bean>
 
-	<bean id="roomTypeDetailDAO" class="com.burda.scraper.dao.RoomTypeDetailDAO">
+	<bean id="roomTypeDetailDAO" class="com.nodc.scraper.dao.RoomTypeDetailDAO">
 			<property name="dynamoDBClient" ref="awsDynamoDbClient" />	
 	</bean>
 	
-	<bean id="frenchQtrGuideCacheLoader" class="com.burda.scraper.cache.FrenchQuarterGuideCacheLoader" >
+	<bean id="frenchQtrGuideCacheLoader" class="com.nodc.scraper.cache.FrenchQuarterGuideCacheLoader" >
 		<property name="hotelDetailDAO" ref="hotelDetailDAO" />
 		<property name="sourceHotelDAO" ref="sourceHotelDAO" />
 		<property name="roomTypeDetailDAO" ref="roomTypeDetailDAO" />
 	</bean>
 	
-	<bean id="frenchQtrGuideOneTimeLoader" class="com.burda.scraper.cache.OneTimeHotelLoader">
+	<bean id="frenchQtrGuideOneTimeLoader" class="com.nodc.scraper.cache.OneTimeHotelLoader">
 		<property name="masterHotelDAO" ref="masterHotelDAO" />
 		<property name="hotelDetailDAO" ref="hotelDetailDAO" />
 		<property name="sourceHotelDAO" ref="sourceHotelDAO" />	
 	</bean>
 		
-	<bean id="frenchQtrGuideInvSource" class="com.burda.scraper.inventory.FrenchQuarterGuideInventorySource">
+	<bean id="frenchQtrGuideInvSource" class="com.nodc.scraper.inventory.FrenchQuarterGuideInventorySource">
 		<property name="hotelDetailDAO" ref="hotelDetailDAO" />
 		<property name="sourceHotelDAO" ref="sourceHotelDAO" />		
 		<property name="masterHotelDAO" ref="masterHotelDAO" />
 	</bean>	
 	
-	<bean id="nodchotelLoader" class="com.burda.scraper.cache.NODCHotelLoader" >
+	<bean id="nodchotelLoader" class="com.nodc.scraper.cache.NODCHotelLoader" >
 		<property name="hotelDetailDAO" ref="hotelDetailDAO" />
 		<property name="sourceHotelDAO" ref="sourceHotelDAO" />		
 		<property name="masterHotelDAO" ref="masterHotelDAO" />
@@ -105,13 +105,13 @@
 		<property name="NODCWarehouse" ref="nodcInvSource" />
 	</bean>
 				
-	<bean id="nodcInvSource" class="com.burda.scraper.inventory.NODCWarehouse">
+	<bean id="nodcInvSource" class="com.nodc.scraper.inventory.NODCWarehouse">
 		<property name="sourceHotelDAO" ref="sourceHotelDAO" />
 		<property name="hotelDetailDAO" ref="hotelDetailDAO" />
 		<property name="masterHotelDAO" ref="masterHotelDAO" />
 	</bean>	
 
-	<bean id="inventoryService" class="com.burda.scraper.inventory.InventoryServiceImpl">
+	<bean id="inventoryService" class="com.nodc.scraper.inventory.InventoryServiceImpl">
 		<property name="NODCInventorySource" ref="nodcInvSource" />
 		<property name="FQGInventorySource" ref="frenchQtrGuideInvSource" />
 		<property name="sourceHotelDAO" ref="sourceHotelDAO" />

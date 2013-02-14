@@ -10,7 +10,7 @@
 	xmlns:aop="http://www.springframework.org/schema/aop" profile="dev">
 
 <!--  
-  <bean class="com.burda.scraper.cache.EmbeddedMemcacheServer" />
+  <bean class="com.nodc.scraper.cache.EmbeddedMemcacheServer" />
 -->
 
 </beans>

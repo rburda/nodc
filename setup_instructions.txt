@@ -33,7 +33,7 @@ Setup NODC Scraper
             Existing Key pair: <TBD>
             Minimum 2 instances (2 different avail zones)
             PARAM1: dev (spring.profile.active -- see ContextInitializer)
-            Email Address: reubeninvegas@gmail.com
+            Email Address: <email_addr>
             Application Health URL: /health
 
 6. Setup Key Pair (for logging into ec2 instance)
@@ -67,5 +67,5 @@ Setup NODC Scraper
             Existing Key pair: <TBD>
             Minimum 1 instances (1 different avail zones)
             PARAM1: dev,scheduleTasks (spring.profile.active -- see ContextInitializer)
-            Email Address: reubeninvegas@gmail.com
+            Email Address: <email_addr>
             Application Health URL: /health
