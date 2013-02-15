@@ -36,8 +36,25 @@ public class SearchResult
 		this.startDate = sp.getCheckInDate().toDate();
 		this.endDate = sp.getCheckOutDate().toDate();
 		this.numRooms = sp.getNumRooms();
-		this.numAdults = sp.getNumAdults1() + sp.getNumAdults2() + sp.getNumAdults3() + sp.getNumAdults4();
-		this.numChildren = sp.getNumChildren1() + sp.getNumChildren2() + sp.getNumChildren3() + sp.getNumChildren4();
+		int nA = sp.getNumAdults1();
+		int nC = sp.getNumChildren1();
+		if (numRooms > 1)
+		{
+			nA += sp.getNumAdults2();
+			nC += sp.getNumChildren2();
+		}
+		if (numRooms > 2)
+		{
+			nA += sp.getNumAdults3();
+			nC += sp.getNumChildren3();
+		}
+		if (numRooms > 3)
+		{
+			nA += sp.getNumAdults4();
+			nC += sp.getNumChildren4();
+		}
+		this.numAdults = nA;
+		this.numChildren = nC;
 		this.currentPage = 1;
 	}
 	
@@ -158,3 +175,5 @@ public class SearchResult
 		return ToStringBuilder.reflectionToString(this);
 	}
 }
+
+	

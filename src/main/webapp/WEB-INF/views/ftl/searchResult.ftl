@@ -56,8 +56,13 @@
     <script type="text/javascript" src="http://www.neworleans.com/javascript/coremetrics/cmcustom.js"></script>
     <script type="text/javascript" src="http://www.neworleans.com/javascript/coremetrics/cmxCustomGlobal.js"></script>
     <script type="text/javascript" src="js/search.js"></script>    
-	<script type="text/javascript" src="http://www.neworleans.com/common/js/jquery/cyl-tooltip.js"></script>
-	
+		<script type="text/javascript" src="http://www.neworleans.com/common/js/jquery/cyl-tooltip.js"></script>
+		<script language="javascript" src="/js/analytics1.js" type="text/javascript"></script>
+		<script language="javascript" src="http://www.neworleans.com/javascript/coremetrics/v40/eluminate.js" type="text/javascript"></script>
+		<script language="javascript" src="http://www.neworleans.com/javascript/coremetrics/cmcustom.js" type="text/javascript"></script>
+		<script language="javascript" src="http://www.neworleans.com/javascript/coremetrics/cmxCustomGlobal.js" type="text/javascript"></script>
+		<script language="javascript" src="/js/analytics2.js" type="text/javascript"></script>
+		
 	
 <script type="text/javascript" id="tooltip">
 cyljq(document).ready(function()
