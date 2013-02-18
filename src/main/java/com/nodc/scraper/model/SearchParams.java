@@ -348,7 +348,7 @@ public class SearchParams implements Serializable
 	private LocalDate defCheckIn(String date)
 	{
 		LocalDate cIn = defDate(date, new LocalDate());
-		LocalDate minDate = new LocalDate().plusDays(1);
+		LocalDate minDate = new LocalDate();
 		if (cIn.isBefore(minDate))
 			cIn = minDate;
 		
