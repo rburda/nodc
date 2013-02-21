@@ -55,9 +55,9 @@
 
     <div class="container">
     	<h2 style="color: blue; text-align: center">Hotel Weights</h2>
-			<input type="submit" value="Save"/>
-    	<div>
-    	
+			<form action="/admin/saveMasterHotel" method="post" commandName="hotel">
+			<input type="submit" style="background-color: green" value="Save"/>
+    	<div>    	
         <table class="table table-bordered table-striped">
            <thead>
 	            <tr>
@@ -70,23 +70,22 @@
            <tbody id="mappingTable">
            	<#list model["hotelList"] as hotel>
            		<tr>
-      					<form action="/admin/saveMasterHotel" method="post" commandName="hotel">
-      						<input type="hidden" name="hotelName" value="${hotel.hotelName}" />			
-	           			<td><input style="width:50px" type="text" name="favoredInventorySource" readonly="readonly" value="${hotel.favoredInventorySource}" /></td>
-	           			<td><input style="width:500px" name="newHotelName"  type="text" value="${hotel.hotelName}"/></td>
-	           			<td><input style="width:50px"  name="weight" type="text" value="${hotel.weight}"/></td>
-          				<td><input type="submit" style="background-color: green" value="Save"/></td>
-          			</form>
-          			<form action="/admin/deleteMasterHotel" method="post">
-          				<input type="hidden" name="name" value="${hotel.hotelName}" />
-          				<td><input type="submit" style="background-color:red;font-size:small" value="Delete"/></td>
-          			</form>
-
+      						<input type="hidden" name="masterHotels[${hotel_index}].hotelName" value="${hotel.hotelName}" />	
+      						<input type="hidden" name="masterHotels[${hotel_index}].weight" value="${hotel.weight}" />			
+	           			<td><input style="width:50px" type="text" name="masterHotels[${hotel_index}].favoredInventorySource" readonly="readonly" value="${hotel.favoredInventorySource}" /></td>
+	           			<td><input style="width:500px" name="masterHotels[${hotel_index}].newHotelName"  type="text" value="${hotel.hotelName}"/></td>
+	           			<td><input style="width:50px"  name="masterHotels[${hotel_index}].newWeight" type="text" value="${hotel.weight}"/></td>
+	           			
+	          			<form action="/admin/deleteMasterHotel" method="post">
+	          				<input type="hidden" name="name" value="${hotel.hotelName}" />
+	          				<td><input type="submit" style="background-color:red;font-size:small" value="Delete"/></td>
+	          			</form>
           		</tr>
            	</#list>
           </tbody>
    			</table>
     	</div>
+			</form>
     </div> <!-- /container -->
 
     <!-- Le javascript

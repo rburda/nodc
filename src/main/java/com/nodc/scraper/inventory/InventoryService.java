@@ -10,6 +10,7 @@ import com.nodc.scraper.model.SortType;
 import com.nodc.scraper.model.persisted.HotelDetail;
 import com.nodc.scraper.model.persisted.InventorySource;
 import com.nodc.scraper.model.persisted.MasterHotel;
+import com.nodc.scraper.model.persisted.MasterHotel.EditableMasterHotel;
 import com.nodc.scraper.model.persisted.SourceHotel;
 
 public interface InventoryService
@@ -22,7 +23,9 @@ public interface InventoryService
 	
 	List<MasterHotel> getMasterRecords();
 	
-	void saveMasterRecord(MasterHotel hotel, String newHotelName);
+	void saveMasterRecord(MasterHotel hotel, String newHotelName, int newWeight);
+	
+	void saveMasterRecords(List<EditableMasterHotel> masterHotels);
 	
 	void deleteMasterRecord(String masterHotelName);
 	

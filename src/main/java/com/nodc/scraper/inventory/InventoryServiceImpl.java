@@ -29,6 +29,7 @@ import com.nodc.scraper.model.SortType;
 import com.nodc.scraper.model.persisted.HotelDetail;
 import com.nodc.scraper.model.persisted.InventorySource;
 import com.nodc.scraper.model.persisted.MasterHotel;
+import com.nodc.scraper.model.persisted.MasterHotel.EditableMasterHotel;
 import com.nodc.scraper.model.persisted.RoomTypeDetail;
 import com.nodc.scraper.model.persisted.SourceHotel;
 import com.google.code.ssm.api.format.SerializationType;
@@ -195,8 +196,42 @@ public class InventoryServiceImpl implements InventoryService
 	public List<MasterHotel> getMasterRecords()
 	{
 		List<MasterHotel> hotels = Lists.newArrayList(masterHotelDAO.getAll());
-		Collections.sort(hotels, MasterHotel.BY_NAME);
+		Collections.sort(hotels, MasterHotel.BY_WEIGHT);
 		return hotels;
+	}
+	
+	@Override 
+	public void deleteMasterRecord(String masterHotelName)
+	{
+		MasterHotel mh = masterHotelDAO.loadMasterHotel(masterHotelName);
+		if (mh != null)
+			masterHotelDAO.delete(mh);
+	}
+	
+	@Override
+	public void saveMasterRecord(MasterHotel hotel, String newHotelName, int newWeight)
+	{
+		if (!hotel.getHotelName().equals(newHotelName))
+		{
+			masterHotelDAO.delete(hotel);
+			hotel.setHotelName(newHotelName);
+			masterHotelDAO.save(hotel);
+			logger.debug("updating hotel name from: " + hotel.getHotelName() + " to: " + newHotelName); 	
+		}
+		if (!(hotel.getWeight() == newWeight))
+		{
+			logger.debug("updating weight of hotel: " + hotel.getHotelName() + " from: " + hotel.getWeight() + " to: " + newWeight);
+			hotel.setWeight(newWeight);
+			masterHotelDAO.save(hotel);
+		}
+
+	}
+	
+	@Override
+	public void saveMasterRecords(List<EditableMasterHotel> masterHotels)
+	{
+		for (EditableMasterHotel emh: masterHotels)
+			saveMasterRecord(emh, emh.getNewHotelName(), emh.getNewWeight());
 	}
 	
 	@Override 
@@ -237,22 +272,6 @@ public class InventoryServiceImpl implements InventoryService
 			sh.setHotelName(masterHotelName);
 			sourceHotelDAO.save(sh);			
 		}
-	}
-	
-	@Override 
-	public void deleteMasterRecord(String masterHotelName)
-	{
-		MasterHotel mh = masterHotelDAO.loadMasterHotel(masterHotelName);
-		if (mh != null)
-			masterHotelDAO.delete(mh);
-	}
-	
-	@Override
-	public void saveMasterRecord(MasterHotel hotel, String newHotelName)
-	{
-		masterHotelDAO.delete(hotel);
-		hotel.setHotelName(newHotelName);
-		masterHotelDAO.save(hotel);
 	}
 	
 	public void setNODCInventorySource(NODCWarehouse invSource)

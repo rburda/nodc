@@ -10,13 +10,52 @@ import com.amazonaws.services.dynamodb.datamodeling.DynamoDBTable;
 @DynamoDBTable(tableName = "nodc_hotel")
 public class MasterHotel
 {
+	public static final class EditableMasterHotel extends MasterHotel
+	{
+		private String newHotelName;
+		private int newWeight;
+		
+		public EditableMasterHotel()
+		{
+			
+		}
+		
+		public int getNewWeight()
+		{
+			return newWeight;
+		}
+		
+		public void setNewWeight(int w)
+		{
+			this.newWeight = w;
+		}
+		
+		public String getNewHotelName()
+		{
+			return newHotelName;
+		}
+		
+		public void setNewHotelName(String nhn)
+		{
+			this.newHotelName = nhn;
+		}
+	}
+	
 	public static final Comparator<MasterHotel> BY_NAME = new Comparator<MasterHotel>(){
 
 		@Override
 		public int compare(MasterHotel m1, MasterHotel m2)
 		{
 			return m1.getHotelName().compareTo(m2.getHotelName());
-		}}; 
+		}};
+		
+	public static final Comparator<MasterHotel> BY_WEIGHT = new Comparator<MasterHotel>() {
+		@Override
+		public int compare(MasterHotel m1, MasterHotel m2)
+		{
+			return m1.getWeight() - m2.getWeight();
+		}
+	};
 	
 	private String hotelName;
 	private int weight;

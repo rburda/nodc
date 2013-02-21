@@ -69,3 +69,30 @@ Setup NODC Scraper
             PARAM1: dev,scheduleTasks (spring.profile.active -- see ContextInitializer)
             Email Address: <email_addr>
             Application Health URL: /health
+            
+8. Setup s3 bucket for static content
+     --- Create new s3 bucket (nodc-prod)
+     --- Add permissions for everyone to view files
+           Custom policy generator
+           {
+						"Version": "2008-10-17",
+						"Statement": [
+							{
+								"Sid": "AddPerm",
+								"Effect": "Allow",
+								"Principal": {
+									"AWS": "*"
+								},
+								"Action": "s3:GetObject",
+								"Resource": "arn:aws:s3:::nodc-prod/*"
+							}
+						]
+					}
+		--- Enable logging to separate bucket (nodc-prod-logs)
+		
+9. Setup Cloudfront distribution to point to s3 bucket
+    --- Follow steps outlined here: http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/GettingStarted.html
+    --- Jist
+       Create distribution and point to s3 bucket
+       Accept defaults
+       Add CNAME (content.neworleans.com)

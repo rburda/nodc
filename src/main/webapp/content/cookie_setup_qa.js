@@ -1,8 +1,7 @@
-(function(){
-	cyljq(document).ready(
-		function() 
-		{
-	        c = document.cookie.split('; ');
+(function (){
+	$(document).ready(function(){
+		$("body").on("click", "#hotelSearchWidgetSearchButton", function(){
+			c = document.cookie.split('; ');
 	        for(i=c.length-1; i>=0; i--)
 	        {
 	           C = c[i].split('=');
@@ -31,11 +30,12 @@
 		            {
 		            	document.cookie = 'parent_sid='+wwwsid+";domain=.www.neworleans.com";
 		            }
-		            cyljq('.hotelSearchForm').attr("action", "http://test.www.neworleans.com/startSearch");        	
+		            cyljq('.hotelSearchForm').attr("action", "http://test.www.neworleans.com:8080/startSearch");        	
 		        }
 	        }
             window.nodcActionUpdated=true;
             
-            cyljq('.magLink').attr('href', 'http://test.www.neworleans.com/results');
+            cyljq('.magLink').attr('href', 'http://book.www.neworleans.com/results');
 		});
+	});
 })();

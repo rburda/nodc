@@ -55,7 +55,7 @@
     <script type="text/javascript" src="http://www.neworleans.com/javascript/coremetrics/v40/eluminate.js"></script>
     <script type="text/javascript" src="http://www.neworleans.com/javascript/coremetrics/cmcustom.js"></script>
     <script type="text/javascript" src="http://www.neworleans.com/javascript/coremetrics/cmxCustomGlobal.js"></script>
-    <script type="text/javascript" src="js/search.js"></script>    
+    <script type="text/javascript" src="/cookie_setup.js"></script>    
 		<script type="text/javascript" src="http://www.neworleans.com/common/js/jquery/cyl-tooltip.js"></script>
 		<script language="javascript" src="/js/analytics1.js" type="text/javascript"></script>
 		<script language="javascript" src="http://www.neworleans.com/javascript/coremetrics/v40/eluminate.js" type="text/javascript"></script>
@@ -64,12 +64,12 @@
 		<script language="javascript" src="/js/analytics2.js" type="text/javascript"></script>
 		
 	
-<script type="text/javascript" id="tooltip">
-cyljq(document).ready(function()
-{
-cyljq("a.tooltip-hover").simpleToolTip();
-});
-</script>
+		<script type="text/javascript" id="tooltip">
+			cyljq(document).ready(function()
+			{
+				cyljq("a.tooltip-hover").simpleToolTip();
+			});
+		</script>
 
 		<script type="text/javascript">
 	 		cyljq(document).ready(function() 
@@ -109,168 +109,118 @@ cyljq("a.tooltip-hover").simpleToolTip();
 								}
 							}, insertTo);
 				}).fail(function(XHR, textStatus, errorThrown){alert(textStatus);alert(errorThrown);});
-				setTimeout("modifyUrl();", 1000);
 	 		});
 	 		
 	</script>
 	
-	<script type="text/javascript" id="com-vegas-athena-components-browse-hotel-HotelBrowseRoomRatePanel-0">
-/* */
-$(window).load(
-function(event)
-{
-if (!$.jqm)
-return;
-if (!window.RoomRatePanel)
-{
-// initialize
-window.mwCSS =
-{
-position : 'absolute',
-offsetTop : 130,
-offsetLeft : 111
-};
-var scope = $('#devSearchContent');
-var totalPriceLinks = $("a.pricetrigger",$("#devSearchContent"));
-totalPriceLinks.live("click",function(e){
-try
-{
-VDCtoTL.tlAddEvent(e);
-}
-catch (err)
-{
-}
-var lx = e.clientX, ly = this.offsetTop;
-if (mwCSS)
-{
-var cssObj =
-{
-position : mwCSS.position,
-top : ly
-- mwCSS.offsetTop,
-left : lx
-- mwCSS.offsetLeft
-};
-$(
-'div.CSScontainer',
-$('#mwplaceholder'))
-.css(cssObj);
-}
-window.RoomRatePanel =
-{
-onShow : function(
-callback)
-{
-var placeholder = $('#mwplaceholder');
-var contentid = e.target.name;
-//alert(contentid);
-if (contentid)
-{
-var newEl = $(
-'#'
-+ contentid
-+ ' .child')
-.clone(
-true);
-$(
-'.CSScontainer div.content',
-placeholder[0])
-.empty()
-.html(
-newEl);
-}
-$('.CSScontainer',
-placeholder)
-.css(mwCSS)
-.show();
-// for IE, modify the overlay such that it will be a white background. This will remove the flash effect.
-if ($.browser.msie)
-{
-$(
-'div.jqmOverlay')
-.css(
-{
-'background-color' : '#FFF'
-});
-}
-},
-onClose : function(e)
-{
-try
-{
-VDCtoTL
-.tlAddEvent(e);
-}
-catch (e)
-{
-}
-$target = $(e.target);
-if ($target
-.hasClass('pricejqmClose'))
-$(
-'div.CSScontainer',
-$('#mwplaceholder')[0])
-.jqmHide();
-}
-};
-$(
-'div.CSScontainer',
-$('#mwplaceholder')[0])
-.jqm(
-{
-overlay : 1,
-modal : false,
-onShow : window.RoomRatePanel.onShow
-})
-.jqmShow();
-$("#devSearchContent")
-.click(
-RoomRatePanel.onClose);
-$('a.moreInfoLink',
-scope[0])
-.click(
-function(e)
-{
-var url = (window.location.href
-.indexOf("vegas.com") == -1 ? 'http://www.neworleans.com/includes/pop_servicefees_popup.html'
-: 'http://www.neworleans.com/incl/q12003/pop_servicefees_popup.html');
-window
-.open(
-url,
-'termsandconditions',
-'width=630,height=270,scrollbars=yes');
-});
-});
-}
-});
-/* */
-</script>
+	<script type="text/javascript">
+		/* */
+		$(window).load(
+			function(event)
+			{
+				if (!$.jqm)
+					return;
+				if (!window.RoomRatePanel)
+				{
+					// initialize
+					window.mwCSS =
+					{
+						position : 'absolute',
+						offsetTop : 130,
+						offsetLeft : 111
+					};
+					var scope = $('#devSearchContent');
+					var totalPriceLinks = $("a.pricetrigger",$("#devSearchContent"));
+					totalPriceLinks.live("click",function(e){
+					try
+					{
+						VDCtoTL.tlAddEvent(e);
+					}
+					catch (err){}
+					var lx = e.clientX, ly = this.offsetTop;
+					if (mwCSS)
+					{
+						var cssObj =
+						{
+							position : mwCSS.position,
+							top : ly - mwCSS.offsetTop,
+							left : lx - mwCSS.offsetLeft
+						};
+						$('div.CSScontainer', $('#mwplaceholder')).css(cssObj);
+					}
+					window.RoomRatePanel = {
+						onShow : function(callback)
+						{
+							var placeholder = $('#mwplaceholder');
+							var contentid = e.target.name;
+							//alert(contentid);
+							if (contentid)
+							{
+								var newEl = $('#' + contentid + ' .child').clone(true);
+								$('.CSScontainer div.content', placeholder[0]).empty().html(newEl);
+							}
+							$('.CSScontainer', placeholder).css(mwCSS).show();
+							// for IE, modify the overlay such that it will be a white background. This will remove the flash effect.
+							if ($.browser.msie)
+							{
+								$('div.jqmOverlay').css({'background-color' : '#FFF'});
+							}
+						},
+						onClose : function(e)
+						{
+							try
+							{
+								VDCtoTL.tlAddEvent(e);
+							}
+							catch (e) {}
+							$target = $(e.target);
+							if ($target.hasClass('pricejqmClose'))
+							$('div.CSScontainer', $('#mwplaceholder')[0]).jqmHide();
+						}
+					};
+					$('div.CSScontainer', $('#mwplaceholder')[0]).jqm(
+					{
+						overlay : 1,
+						modal : false,
+						onShow : window.RoomRatePanel.onShow
+					}).jqmShow();
+					$("#devSearchContent").click(RoomRatePanel.onClose);
+					$('a.moreInfoLink', scope[0]).click(
+						function(e)
+						{
+							var url = (window.location.href.indexOf("vegas.com") == -1 ? 
+									'http://www.neworleans.com/includes/pop_servicefees_popup.html' : 
+									'http://www.neworleans.com/incl/q12003/pop_servicefees_popup.html');
+							window.open(url,'termsandconditions', 'width=630,height=270,scrollbars=yes');
+						});
+					});
+				} //if
+			});
+			/* */
+	</script>
 	<script src="http://www.neworleans.com/common/js/jquery/jquery-scrollTo.js" language="javascript" type="text/javascript"></script>
-<script id="com-vegas-athena-components-browse-hotel-HotelNoAvailabilityAlternateResultsPanel-0" language="javascript" type="text/javascript">
-
-cyljq(window).load(function(e)
-{
-cyljq('.calendarView a#showSearchWidgetLink').click(function(e)
-{
-cyljq.scrollTo(cyljq('.changeSearch'));
-});
-cyljq('.calendarView a#showOtherHotelsLink').click(function(e)
-{
-cyljq.scrollTo(cyljq('.searchResult'));
-});
-});
-
-</script>
-    <script type="text/javascript" src="http://neworleans.com/javascript/tealeaf.js"></script>       
-    <!--<link type="text/css" rel="stylesheet" href="http://neworleans.com/common/css/jquery/jqModal.css" />-->
-    <script src="http://neworleans.com/mytrip/common/js/adtag_docwrite_util.js" type="text/javascript"></script>
-    <script type="text/javascript" charset="UTF-8" src="http://maps.gstatic.com/cat_js/intl/en_us/mapfiles/api-3/8/12/%7Bcommon,util%7D.js"></script>
-    <script type="text/javascript" charset="UTF-8" src="http://maps.gstatic.com/cat_js/intl/en_us/mapfiles/api-3/8/12/%7Bstats%7D.js"></script>
-    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+	<script id="com-vegas-athena-components-browse-hotel-HotelNoAvailabilityAlternateResultsPanel-0" language="javascript" type="text/javascript">
+		cyljq(window).load(function(e)
+		{
+			cyljq('.calendarView a#showSearchWidgetLink').click(function(e)
+			{
+				cyljq.scrollTo(cyljq('.changeSearch'));
+			});
+			cyljq('.calendarView a#showOtherHotelsLink').click(function(e)
+			{
+				cyljq.scrollTo(cyljq('.searchResult'));
+			});
+		});
+	</script>
+  <script type="text/javascript" src="http://neworleans.com/javascript/tealeaf.js"></script>
+  <script src="http://neworleans.com/mytrip/common/js/adtag_docwrite_util.js" type="text/javascript"></script>
+  <script type="text/javascript" charset="UTF-8" src="http://maps.gstatic.com/cat_js/intl/en_us/mapfiles/api-3/8/12/%7Bcommon,util%7D.js"></script>
+  <script type="text/javascript" charset="UTF-8" src="http://maps.gstatic.com/cat_js/intl/en_us/mapfiles/api-3/8/12/%7Bstats%7D.js"></script>
+  <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
-      <script src="jqModal.js" type="text/javascript"></script>
-    <link type="text/css" rel="stylesheet" href="jqModal.css" />	
+  <script src="jqModal.js" type="text/javascript"></script>
+  <link type="text/css" rel="stylesheet" href="jqModal.css" />	
 </head>
 <body class="globaless" id="transaction">
     <div class="header-wrapper">
@@ -1034,26 +984,25 @@ cyljq.scrollTo(cyljq('.searchResult'));
     <div class="ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all"
         id="ui-datepicker-div">
     </div>
-<div id="Details" class="jqmWindow"></div>
-</body>
+		<div id="Details" class="jqmWindow"></div>
+	</body>
 
- <script>
- var varHeight = function(hash){
-        windowHeight   = $(window).height();
-		hash.w.css('height', windowHeight-35).show();
-}
-
-function popup(link,hotelName){
-hotelName = decodeURI(hotelName);
-hotelName = encodeURIComponent(hotelName); 
-hotelName = hotelName.replace(/'/g, "%27");
-var url="/details"+"?hotelName="+hotelName+"#"+link;
-//alert(url);
-
-$('#Details').jqm({ ajax: url, overlay:1, onShow:varHeight });
-$('#Details').jqmShow();
-}
-
-    
-  </script>
+	<script>
+	 	var varHeight = function(hash)
+	 	{
+			windowHeight = $(window).height();
+			hash.w.css('height', windowHeight-35).show();
+		}
+	
+		function popup(link,hotelName)
+		{
+			hotelName = decodeURI(hotelName);
+			hotelName = encodeURIComponent(hotelName); 
+			hotelName = hotelName.replace(/'/g, "%27");
+			var url="/details"+"?hotelName="+hotelName+"#"+link;
+		
+			$('#Details').jqm({ ajax: url, overlay:1, onShow:varHeight });
+			$('#Details').jqmShow();
+		}
+	</script>
 </html>

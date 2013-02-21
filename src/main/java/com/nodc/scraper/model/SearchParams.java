@@ -348,7 +348,7 @@ public class SearchParams implements Serializable
 	private LocalDate defCheckIn(String date)
 	{
 		LocalDate cIn = defDate(date, new LocalDate());
-		LocalDate minDate = new LocalDate();
+		LocalDate minDate = cIn; //new LocalDate();
 		if (cIn.isBefore(minDate))
 			cIn = minDate;
 		
@@ -358,7 +358,7 @@ public class SearchParams implements Serializable
 	private LocalDate defCheckOut(String date)
 	{
 		LocalDate cOut = defDate(date, new LocalDate().plusDays(2));
-		LocalDate minDate = (getCheckInDate() != null ? getCheckInDate().plusDays(1) : new LocalDate().plusDays(2));
+		LocalDate minDate = (getCheckInDate() != null ? getCheckInDate() : new LocalDate().plusDays(1));
 		if (!cOut.isAfter(minDate))
 			cOut = minDate;
 		return cOut;
