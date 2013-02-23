@@ -29,7 +29,7 @@
 		<script src="http://www.neworleans.com/common/js/jquery/jquery-tabs.js" type="text/javascript"></script>
 		<script src="http://www.neworleans.com/common/js/jquery/jquery.galleriffic.js" type="text/javascript"></script>
 		<script src="http://www.neworleans.com/common/js/jquery/jquery.opacityrollover.js" type="text/javascript"></script>
-		<script src="jquery/jqModal.js" type="text/javascript"></script>
+		<script src="http://content.neworleans.com/jquery/jqModal.js" type="text/javascript"></script>
 		<script type="text/javascript" src="http://www.neworleans.com/video/player-helper.js"></script>
 		<script type="text/javascript" src="http://www.neworleans.com/video/swfobject.js"></script>
 				<script type="text/javascript">
@@ -477,78 +477,7 @@ ${roomType.features!''}
 <a onclick="var wcall=wicketAjaxGet('?wicket:interface=:18:browseItems:browseableProducts:1:itemContainer:hotelDetailPopupWin:content:closeWindow::IBehaviorListener:0:-1',function() { }.bind(this),function() { }.bind(this), function() {return Wicket.$('id592') != null;}.bind(this));return !wcall;" href="#" id="id592">Close Window
 </a>
 </p>
-		    	<script language="javascript" src="/javascript/coremetrics/v40/eluminate.js" type="text/javascript"></script>
-    	<script language="javascript" src="/javascript/coremetrics/cmcustom.js" type="text/javascript"></script>
-    	<script language="javascript" src="/javascript/coremetrics/cmxCustomGlobal.js" type="text/javascript"></script>
-		<!--<script type="text/javascript">
-        	var cmJv="1.5";
-        
-        	//setup variables for cmx calls
-        	var cmxCatID = "Royal Sonesta";
-        	
-			cmxCreateCookie("cmxcategory",'"' + cmxCatID + '"');
-        	if (CMONOFF == "ON") {
-        		//if category cookie is set, over-ride this page ID
-        		if(cmxReadCookie("USECATEGORYID") == "FALSE") { cmxCatID = cmxReadCookie("CATEGORYID") };
-        
-        		var  cmxPropertyCode = "2802",
-        			 cmxPropertyName = "Royal Sonesta Hotel",
-        			 cmxHotelBrand = "Royal Sonesta",
-        			 cmxPageType = "Hotel View",
-        			 cmxHotelZip = "70130",
-					 cmxHotelCity = "New Orleans",
-        			 cmxHotelCityLocation = "New Orleans | French Quarter",
-					 cmxHotelState = "LA",
-					 cmxHotelCountry = "US",
-        			 cmxProductType = "Hotel",
-        			 cmxHotelRating = "4.50",
-					 cmxSiteCountry = "en-us",
-					 cmxLanguage = "en-us";
-        		//Create attribute list
-				var  attributes = cmxPropertyName + "-_-" 
-							  + cmxHotelCityLocation + "-_-" 
-							  + cmxHotelRating + "-_-" 
-							  + cmxHotelBrand + "-_-"
-							  + cmxPropertyCode + "-_-"
-							  + cmxProductType + "-_-"
-							  + cmxPageType
-        		//execute cmx calls using above variables
-        		cmCreateHotelViewTag(stripAccents(cmxPropertyCode),
-        								stripAccents(cmxPropertyName),
-        								stripAccents(cmxCatID),
-										stripAccents(cmxHotelBrand),
-										"",
-										stripAccents(cmxSiteCountry),
-										stripAccents(cmxLanguage),
-										stripAccents(cmxHotelZip),
-										stripAccents(cmxHotelCity),
-										stripAccents(cmxHotelState),
-										stripAccents(cmxHotelCountry),
-										stripAccents(cmxHotelRating),
-        								stripAccents(attributes));
-        
-        		//execute section specific URL event attachment
-        		cmxExtractHrefs();
-        	}
-			
-			function stripAccents(r) {
-                r = r.replace(new RegExp("[á¢¢å¢, 'g'),"a");
-				r = r.replace(new RegExp("[AÃ„]", 'g'),"A");
-                r = r.replace(new RegExp("[éªªì¢, 'g'),"e");
-				r = r.replace(new RegExp("[É‰Ë‹]", 'g'),"E");
-                r = r.replace(new RegExp("[ï¿½Ý¢, 'g'),"i");
-				r = r.replace(new RegExp("[ÍÏ]", 'g'),"I");
-                r = r.replace(new RegExp("ñ¢¬ 'g'),"n");
-				r = r.replace(new RegExp("Ñ¢, 'g'),"N");
-                r = r.replace(new RegExp("[ò³´¶]", 'g'),"o");
-				r = r.replace(new RegExp("[Ó“Õ–]", 'g'),"O");
-                r = r.replace(new RegExp("[ñº»¼]", 'g'),"u");
-				r = r.replace(new RegExp("[ÚšÜœ]", 'g'),"u");
-                r = r.replace(new RegExp("[ï¿½ï¿½, 'g'),"y");
-				r = r.replace(new RegExp("[Þ", 'g'),"Y");
-				return r;
-			}
-    	</script>-->
+
 	    </div>
     <div class="clear"></div>  
  <!-- </div> <!-- /main-content -->

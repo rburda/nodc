@@ -12,7 +12,7 @@
     <meta name="author" content="">
 
     <!-- Le styles -->
-    <link href="/style/bootstrap.css" rel="stylesheet">
+    <link href="http://content.neworleans.com/style/bootstrap.css" rel="stylesheet">
     <style>
       body {
         padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
@@ -102,7 +102,7 @@
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="/js/jquery-1.9.1.min.js"></script>
-    <script src="/js/bootstrap.js"></script>
+    <script src="http://content.neworleans.com/js/jquery-1.9.1.min.js"></script>
+    <script src="http://content.neworleans.com/js/bootstrap.js"></script>
   </body>
 </html>

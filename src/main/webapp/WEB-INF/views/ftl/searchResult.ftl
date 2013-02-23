@@ -30,15 +30,12 @@
     <link type="text/css" rel="stylesheet" href="http://www.neworleans.com/style/global.css" />
     <link type="text/css" rel="stylesheet" href="http://www.neworleans.com/mytrip/style/checkout.css" />
     <link type="text/css" rel="stylesheet" href="http://www.neworleans.com/style/globaless.css" />
-    <link type="text/css" rel="stylesheet" href="style/searchstyle.css" />
+    <link type="text/css" rel="stylesheet" href="http://content.neworleans.com/style/searchstyle.css" />
 	
-	<script src="http://www.neworleans.com/common/js/jquery/jquery-core.js" type="text/javascript"></script>
-    <!-- Following Script tags are added because this page is expected to have JQModalWindow -->
+		<script src="http://www.neworleans.com/common/js/jquery/jquery-core.js" type="text/javascript"></script>
     <script src="http://www.neworleans.com/common/js/jquery/jquery-core.js" type="text/javascript"></script>
-    <!--<script src="http://neworleans.com/common/js/jquery/jquery-modal.js" type="text/javascript"></script>-->
     <script type="text/javascript" src="http://www.neworleans.com/common/js/jquery/jquery-ui.js"></script>
     <script type="text/javascript" src="http://www.neworleans.com/common/js/jquery/jquery-scrollTo.js"></script> 
-    <!--<script type="text/javascript" src="http://neworleans.com/common/js/jquery/jquery-modal.js"></script>-->    
     <script type="text/javascript" src="http://www.neworleans.com/common/js/jquery/jquery.galleriffic.js"></script>
     <script type="text/javascript" src="http://www.neworleans.com/common/js/jquery/jquery.opacityrollover.js"></script>
     <script type="text/javascript" src="http://www.neworleans.com/common/js/outside-wicket/widget-lib.js"></script>    
@@ -55,13 +52,13 @@
     <script type="text/javascript" src="http://www.neworleans.com/javascript/coremetrics/v40/eluminate.js"></script>
     <script type="text/javascript" src="http://www.neworleans.com/javascript/coremetrics/cmcustom.js"></script>
     <script type="text/javascript" src="http://www.neworleans.com/javascript/coremetrics/cmxCustomGlobal.js"></script>
-    <script type="text/javascript" src="/cookie_setup.js"></script>    
+    <script type="text/javascript" src="http://content.neworleans.com/cookie_setup.js"></script>    
 		<script type="text/javascript" src="http://www.neworleans.com/common/js/jquery/cyl-tooltip.js"></script>
-		<script language="javascript" src="/js/analytics1.js" type="text/javascript"></script>
+		<script language="javascript" src="http://content.neworleans.com/js/analytics1.js" type="text/javascript"></script>
 		<script language="javascript" src="http://www.neworleans.com/javascript/coremetrics/v40/eluminate.js" type="text/javascript"></script>
 		<script language="javascript" src="http://www.neworleans.com/javascript/coremetrics/cmcustom.js" type="text/javascript"></script>
 		<script language="javascript" src="http://www.neworleans.com/javascript/coremetrics/cmxCustomGlobal.js" type="text/javascript"></script>
-		<script language="javascript" src="/js/analytics2.js" type="text/javascript"></script>
+		<script language="javascript" src="http://content.neworleans.com/js/analytics2.js" type="text/javascript"></script>
 		
 	
 		<script type="text/javascript" id="tooltip">
@@ -219,8 +216,8 @@
   <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
-  <script src="jqModal.js" type="text/javascript"></script>
-  <link type="text/css" rel="stylesheet" href="jqModal.css" />	
+  <script src="http://content.neworleans.com/jqModal.js" type="text/javascript"></script>
+  <link type="text/css" rel="stylesheet" href="http://content.neworleans.com/jqModal.css" />	
 </head>
 <body class="globaless" id="transaction">
     <div class="header-wrapper">
