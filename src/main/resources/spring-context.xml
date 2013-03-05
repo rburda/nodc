@@ -34,15 +34,14 @@
   </bean>
  -->
  
+ 	<bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer"/>
+ 
 	<bean name="awsS3Client" class="com.amazonaws.services.s3.AmazonS3Client">
 		<constructor-arg index="0">
 			<bean class="com.amazonaws.auth.BasicAWSCredentials">
-				<!--  
-					<constructor-arg index="0" value="AKIAIGBN2TCGAEZF6UAQ" />
-					<constructor-arg index="1" value="c/THVw9PCgf4dmqLmVBBXzGx0aoyMWVPdxpKd5/3" />
-			  -->  
-			    <constructor-arg index="0" value="AKIAJ7BT65UECG4TKJTA" />
-			    <constructor-arg index="1" value="0jHOMCMbe45nTthlAFcizIgAWuqd26oTCB7HhbGB" />
+ 
+			    <constructor-arg index="0" value="${AWS_ACCESS_KEY_ID}" /> <!--  pulled in via system prop -->
+			    <constructor-arg index="1" value="${AWS_SECRET_KEY}" /> <!-- pulled in via system prop -->
  
 			</bean>
 		</constructor-arg>
@@ -51,13 +50,10 @@
 	<bean name="awsDynamoDbClient" class="com.amazonaws.services.dynamodb.AmazonDynamoDBAsyncClient">
 		<constructor-arg index="0">
 			<bean class="com.amazonaws.auth.BasicAWSCredentials">
-			<!-- 	
-				<constructor-arg index="0" value="AKIAIGBN2TCGAEZF6UAQ" />
-				<constructor-arg index="1" value="c/THVw9PCgf4dmqLmVBBXzGx0aoyMWVPdxpKd5/3" />
-			-->
-				<constructor-arg index="0" value="AKIAJ7BT65UECG4TKJTA" />
-			  <constructor-arg index="1" value="0jHOMCMbe45nTthlAFcizIgAWuqd26oTCB7HhbGB" />
 
+		    <constructor-arg index="0" value="${AWS_ACCESS_KEY_ID}" /> <!--  pulled in via system prop -->
+		    <constructor-arg index="1" value="${AWS_SECRET_KEY}" /> <!-- pulled in via system prop -->
+		    
 			</bean>
 		</constructor-arg>
 	</bean>
