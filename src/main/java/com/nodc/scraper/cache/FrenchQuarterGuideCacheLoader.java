@@ -24,6 +24,7 @@ import com.nodc.scraper.dao.HotelDetailCacheKey;
 import com.nodc.scraper.dao.HotelDetailDAO;
 import com.nodc.scraper.dao.RoomTypeDetailDAO;
 import com.nodc.scraper.dao.SourceHotelDAO;
+import com.nodc.scraper.inventory.InventoryUtils;
 import com.nodc.scraper.model.Amenity;
 import com.nodc.scraper.model.Photo;
 import com.nodc.scraper.model.persisted.HotelDetail;
@@ -60,118 +61,127 @@ public class FrenchQuarterGuideCacheLoader
 	@Scheduled(cron = "0 1 1 * * ?")
 	public void loadCache() throws Exception
 	{
-
+			int page = 1;
 			HttpResponse hotelSummaryResponse = queryGetHotelResults(1);
 			byte[] xml = EntityUtils.toByteArray(hotelSummaryResponse.getEntity());
 			Document xmlSummaryResults = Jsoup.parse(new String(xml), "", Parser.xmlParser());
-
-			for (Element hotelSummaryEl: xmlSummaryResults.select("hotel"))
+			int totalPages = Integer.valueOf(xmlSummaryResults.select("hotel_data").first().select("total_pages").first().ownText());
+			while (page <= totalPages)
 			{
-				String extHotelId = hotelSummaryEl.select("hotel_id").first().ownText();
-				SourceHotel sourceHotel = sourceHotelDAO.getByHotelId(extHotelId, InventorySource.FQG);
-				if (sourceHotel == null)
-				{
-					logger.warn(String.format("skipping hotel: %1$s; no source info found", extHotelId));
-					continue;
-				}
+				hotelSummaryResponse = queryGetHotelResults(page);
+				xml = EntityUtils.toByteArray(hotelSummaryResponse.getEntity());
+				xmlSummaryResults = Jsoup.parse(new String(xml), "", Parser.xmlParser());
 				
-				Element detailsEl = null;
-				int tries = 0;
-				boolean hasRoomTypes = false;
-				while (!hasRoomTypes && tries < 10)
+				for (Element hotelSummaryEl: xmlSummaryResults.select("hotel"))
 				{
-					HttpResponse hotelDetailResponse = queryGetHotelData(extHotelId, tries);
-					byte[] xmlAsBytes = EntityUtils.toByteArray(hotelDetailResponse.getEntity());
-					detailsEl = Jsoup.parse(new String(xmlAsBytes), "", Parser.xmlParser()).select("result").first();
+					String extHotelId = hotelSummaryEl.select("hotel_id").first().ownText();
+					SourceHotel sourceHotel = sourceHotelDAO.getByHotelId(extHotelId, InventorySource.FQG);
+					if (sourceHotel == null)
+					{
+						logger.warn(String.format("skipping hotel: %1$s; no source info found", extHotelId));
+						continue;
+					}
 					
-					if (!detailsEl.select("rate").isEmpty())
-						hasRoomTypes = true;
-					else
+					Element detailsEl = null;
+					int tries = 0;
+					boolean hasRoomTypes = false;
+					while (!hasRoomTypes && tries < 10)
 					{
-						tries++;
-					}						
-				}
-				HotelDetailCacheKey cacheKey = new HotelDetailCacheKey(sourceHotel.getHotelName(), InventorySource.FQG);
-				HotelDetail details = hotelDetailDAO.getHotelDetail(cacheKey);
-				if (details == null)
-				{
-					details = new HotelDetail();
-					details.setName(sourceHotel.getHotelName());
-					details.setAddress1(detailsEl.select("address").first().ownText());
-				}
-				
-				details.setDescription(URLDecoder.decode(detailsEl.select("description_full").first().ownText(), "UTF-8"));
-				details.setAreaDescription(detailsEl.select("district").first().ownText());
-				if (details.getCity() == null)
-					details.setCity("");
-				if (details.getState() == null)
-					details.setState("");
-				if (details.getZip() == null)
-					details.setZip("");
-				details.setLatitude(detailsEl.select("latitude").first().ownText());
-				details.setLongitude(detailsEl.select("longitude").first().ownText());
-				details.setRating(Float.valueOf(detailsEl.select("star_rating").first().ownText()));
-
-				details.clearPhotos();
-				for (Element photoEl: detailsEl.select("photo_data").first().select("photo"))
-				{
-					Photo photo = new Photo();
-					photo.url = photoEl.ownText();
-					details.addPhoto(photo);
-				}					
-				
-				details.clearAmenities();
-				Elements policies = detailsEl.select("policy_data");
-				if (policies != null && policies.size() > 0)
-				{
-					for (Element topAmenityEl: policies.first().select("policy"))
-					{
-						Amenity amenity = new Amenity();
-						amenity.name = topAmenityEl.select("policy_name").first().ownText();
-						try
+						HttpResponse hotelDetailResponse = queryGetHotelData(extHotelId, tries);
+						byte[] xmlAsBytes = EntityUtils.toByteArray(hotelDetailResponse.getEntity());
+						detailsEl = Jsoup.parse(new String(xmlAsBytes), "", Parser.xmlParser()).select("result").first();
+						
+						if (!detailsEl.select("rate").isEmpty())
+							hasRoomTypes = true;
+						else
 						{
-							amenity.description = URLDecoder.decode(topAmenityEl.select("description").first().ownText(), "UTF-8");
-						}
-						catch (Exception e)
-						{
-							amenity.description = topAmenityEl.select("description").first().ownText();
-							logger.error("unabled to decode", e);
-						}
-						//boolean avail = (topAmenityEl.select("allowed").first() != null);
-						//amenity.description = (avail ? "Yes" : "No");
-						details.addAmenity(amenity);
-					}						
-				}
-								
+							tries++;
+						}						
+					}
+					HotelDetailCacheKey cacheKey = new HotelDetailCacheKey(sourceHotel.getHotelName(), InventorySource.FQG);
+					HotelDetail details = hotelDetailDAO.getHotelDetail(cacheKey);
+					if (details == null)
+					{
+						details = new HotelDetail();
+						details.setName(sourceHotel.getHotelName());
+						details.setAddress1(detailsEl.select("address").first().ownText());
+					}
+					
+					details.setDescription(URLDecoder.decode(detailsEl.select("description_full").first().ownText(), "UTF-8"));
+					details.setAreaDescription(detailsEl.select("district").first().ownText());
+					if (details.getCity() == null)
+						details.setCity("");
+					if (details.getState() == null)
+						details.setState("");
+					if (details.getZip() == null)
+						details.setZip("");
+					details.setLatitude(detailsEl.select("latitude").first().ownText());
+					details.setLongitude(detailsEl.select("longitude").first().ownText());
+					details.setRating(Float.valueOf(detailsEl.select("star_rating").first().ownText()));
 
-				for (Element roomTypeEl: detailsEl.select("rate"))
-				{
-					String roomTypeName = URLDecoder.decode(roomTypeEl.select("room_title").first().ownText(), "UTF-8");
-					RoomTypeDetail rtd = null;
-					for (RoomTypeDetail existingDetail: details.getRoomTypeDetails())
+					details.clearPhotos();
+					for (Element photoEl: detailsEl.select("photo_data").first().select("photo"))
 					{
-						if (existingDetail.getName().equals(roomTypeName))
-							rtd = existingDetail;
-					}
-					if (rtd == null)
-						rtd = new RoomTypeDetail();
-					rtd.setHotelName(sourceHotel.getHotelName()+"_"+InventorySource.FQG.name());
-					rtd.setDescription(URLDecoder.decode(roomTypeEl.select("room_description").first().ownText(), "UTF-8"));
-					rtd.setDetails(roomTypeEl.select("room_details").first().ownText());
-					rtd.setFeatures(roomTypeEl.select("room_facilities").first().ownText());
-					rtd.setName(roomTypeName);
-					for (Element photoEl: roomTypeEl.select("room_photo_data").first().select("photo"))
+						Photo photo = new Photo();
+						photo.url = photoEl.ownText();
+						details.addPhoto(photo);
+					}					
+					
+					details.clearAmenities();
+					Elements policies = detailsEl.select("policy_data");
+					if (policies != null && policies.size() > 0)
 					{
-						Photo p = new Photo();
-						p.url = photoEl.select("full").first().ownText();
-						rtd.addPhoto(p);
+						for (Element topAmenityEl: policies.first().select("policy"))
+						{
+							Amenity amenity = new Amenity();
+							amenity.name = topAmenityEl.select("policy_name").first().ownText();
+							try
+							{
+								amenity.description = URLDecoder.decode(topAmenityEl.select("description").first().ownText(), "UTF-8");
+							}
+							catch (Exception e)
+							{
+								amenity.description = topAmenityEl.select("description").first().ownText();
+								logger.error("unabled to decode", e);
+							}
+							//boolean avail = (topAmenityEl.select("allowed").first() != null);
+							//amenity.description = (avail ? "Yes" : "No");
+							details.addAmenity(amenity);
+						}						
 					}
-					details.addRoomTypeDetail(rtd);
+									
+
+					for (Element roomTypeEl: detailsEl.select("rate"))
+					{
+						String roomTypeName = URLDecoder.decode(roomTypeEl.select("room_title").first().ownText(), "UTF-8");
+						RoomTypeDetail rtd = null;
+						for (RoomTypeDetail existingDetail: details.getRoomTypeDetails())
+						{
+							if (existingDetail.getName().equals(roomTypeName))
+								rtd = existingDetail;
+						}
+						if (rtd == null)
+							rtd = new RoomTypeDetail();
+						rtd.setHotelName(sourceHotel.getHotelName()+"_"+InventorySource.FQG.name());
+						rtd.setDescription(InventoryUtils.urlDecode(roomTypeEl.select("room_description").first().ownText()));
+						rtd.setDetails(roomTypeEl.select("room_details").first().ownText());
+						rtd.setFeatures(roomTypeEl.select("room_facilities").first().ownText());
+						rtd.setName(roomTypeName);
+						for (Element photoEl: roomTypeEl.select("room_photo_data").first().select("photo"))
+						{
+							Photo p = new Photo();
+							p.url = photoEl.select("full").first().ownText();
+							rtd.addPhoto(p);
+						}
+						details.addRoomTypeDetail(rtd);
+					}
+					
+					logger.error("saving: "+ sourceHotel.getHotelName());
+					hotelDetailDAO.save(details);
 				}
+				page++;
+			}
 				
-				logger.error("saving: "+ sourceHotel.getHotelName());
-				hotelDetailDAO.save(details);
-			}	
 	}
 	
 	/**
@@ -214,17 +224,19 @@ public class FrenchQuarterGuideCacheLoader
 	private HttpResponse queryGetHotelResults(int page)
 	{
 		URIBuilder builder = new URIBuilder();
-		/*builder
-				.setScheme("https")
-				.setHost("secure.rezserver.com")
-				.setPath("/api/hotel/getResults")
-				.addParameter("api_key", "5f871629935ff113b876b4bcb1ca70e4")
-				.addParameter("refid", "5057")
-				.addParameter("city_id", "3000008434")
-				.addParameter("check_in", new DateTime().plusDays(60).toString(DateTimeFormat.forPattern("MM/dd/yyyy")))
-				.addParameter("check_out", new DateTime().plusDays(61).toString(DateTimeFormat.forPattern("MM/dd/yyyy")))
-				.addParameter("page", String.valueOf(page));
-		*/
+		
+		builder
+		.setScheme("http")
+		.setHost("api.rezserver.com")
+		.setPath("/api/hotel/getResults")
+		.addParameter("refid", "5057")
+		.addParameter("limit", "600")
+		.addParameter("api_key", "5f871629935ff113b876b4bcb1ca70e4")
+		.addParameter("filter_add_radius", "30")
+		.addParameter("page", String.valueOf(page))
+		.addParameter("city_id", "3000008434");
+		
+		/*
 		builder
 			.setScheme("http")
 			.setHost("api.rezserver.com")
@@ -232,7 +244,9 @@ public class FrenchQuarterGuideCacheLoader
 			.addParameter("api_key", "5f871629935ff113b876b4bcb1ca70e4")
 			.addParameter("refid", "5057")
 			.addParameter("city_id", "3000008434")
-			.addParameter("limit", String.valueOf(500));	
+			.addParameter("airport_code", "MSY")
+			.addParameter("limit", String.valueOf(500));
+		*/	
 		HttpResponse response = null;
 		try
 		{
