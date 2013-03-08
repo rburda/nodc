@@ -9,7 +9,12 @@
 
     <!-- freemarker config -->
     <bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
-      <property name="templateLoaderPath" value="/WEB-INF/views/ftl/"/>
+  		<property name="preTemplateLoaders">
+	  		<list>
+	  			<ref bean="s3TemplateLoader"/>
+	  		</list>
+  		</property>
+    <!--   <property name="templateLoaderPath" value="/WEB-INF/views/ftl/"/> -->
 
 		  <property name="freemarkerSettings">
 		    <props>
@@ -18,8 +23,10 @@
 		  </property>
   	</bean>
 
+  	<bean name="s3TemplateLoader" class="com.nodc.scraper.S3TemplateLoader"/>  	
+
     <bean id="viewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
-      <property name="cache" value="false"/>
+      <property name="cache" value="true"/>
       <property name="prefix" value=""/>
       <property name="suffix" value=".ftl"/>
     </bean>
@@ -35,35 +42,5 @@
 	<!-- Enables the Spring MVC @Controller programming model -->
 	<mvc:resources mapping="/**" location="/content/**"/>
 	<mvc:annotation-driven />
-	<!-- 
-	<bean
-		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
-		<property name="messageConverters">
-			<list>
-				<ref bean="jsonConverter" />
-			</list>
-		</property>
-	</bean>
 
-	<bean id="jsonConverter"
-		class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
-		<property name="supportedMediaTypes" value="application/json" />
-	</bean>
-
-	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
-		<property name="favorPathExtension" value="true"/>
-		<property name="mediaTypes">
-			<map>
-				<entry key="json" value="application/json"/>
-				<entry key="jsonp" value="application/javascript"/>
-			</map>
-		</property>
-		<property name="defaultViews">
-			<list>
-				<bean class="org.springframework.web.servlet.view.json.MappingJacksonJsonView"/>
-				<bean class="com.nodc.scraper.JsonpView"/>
-			</list>
-		</property>
-	</bean>	
-	-->
 </beans>

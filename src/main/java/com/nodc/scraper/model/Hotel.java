@@ -69,6 +69,7 @@ public class Hotel
 	
 	public String toString()
 	{
-		return ToStringBuilder.reflectionToString(this);
+		return name;
+		//return ToStringBuilder.reflectionToString(this);
 	}
 }

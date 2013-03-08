@@ -1,6 +1,5 @@
 package com.nodc.scraper.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,8 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import com.google.common.base.Joiner;
 import com.nodc.scraper.inventory.InventoryService;
 import com.nodc.scraper.inventory.SessionInfo;
 import com.nodc.scraper.model.SearchParams;
@@ -35,9 +36,7 @@ import com.nodc.scraper.model.SearchResult;
 import com.nodc.scraper.model.SortType;
 import com.nodc.scraper.model.persisted.HotelDetail;
 import com.nodc.scraper.model.persisted.InventorySource;
-import com.nodc.scraper.model.persisted.MasterHotel;
 import com.nodc.scraper.model.persisted.SourceHotel;
-import com.google.common.base.Joiner;
 
 /**
  * Handles requests for the application home page.
@@ -52,6 +51,20 @@ public class SearchController
 	@Autowired
 	@Qualifier("inventoryService")
 	InventoryService invService;
+	
+	@InitBinder
+	/**
+	 * Spring uses this method as a way of configuring what can be bound to 
+	 * objects in the various requestmapping methods. In our case, we have a 
+	 * method saveMasterhotels that requires sending in >256 masterHotel objects
+	 * in a list. By default the max is 256 so we up that to ensure we do not get
+	 * an error.
+	 * @param dataBinder
+	 */
+	public void initBinder(WebDataBinder dataBinder) 
+	{
+		dataBinder.setAutoGrowCollectionLimit(5000);
+	}
 	
 	/**
 	 * Calls inventoryService and executes a search based on search params. 
