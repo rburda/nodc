@@ -1,28 +1,60 @@
 package com.nodc.scraper.dao;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
+import com.amazonaws.services.dynamodb.AmazonDynamoDB;
 import com.amazonaws.services.dynamodb.datamodeling.DynamoDBQueryExpression;
+import com.amazonaws.services.dynamodb.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodb.model.AttributeValue;
-import com.nodc.scraper.model.persisted.HotelDetail;
-import com.nodc.scraper.model.persisted.RoomTypeDetail;
-import com.google.code.ssm.api.ParameterValueKeyProvider;
-import com.google.code.ssm.api.ReadThroughSingleCache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Multimap;
+import com.nodc.scraper.cache.AbstractCacheRefresher;
+import com.nodc.scraper.model.persisted.InventorySource;
+import com.nodc.scraper.model.persisted.RoomTypeDetail;
 
+@Repository("roomTypeDetailDAO")
 public class RoomTypeDetailDAO extends AbstractDynamoDBDAO<RoomTypeDetail>
 {
 	private static Logger logger = LoggerFactory.getLogger(RoomTypeDetailDAO.class);
+	private final static String CACHE_STATE_NAME = "room_type_detail";
+
+	private final class RoomTypeDetailCacheRefresher extends AbstractCacheRefresher
+	{
+		private RoomTypeDetailCacheRefresher()
+		{
+			super(CACHE_STATE_NAME, cacheStateDAO);
+		}
+		
+		@Override
+		protected void loadCache()
+		{
+			List<RoomTypeDetail> allDetails = getDynamoMapper().scan(RoomTypeDetail.class,  new DynamoDBScanExpression());
+			Multimap<String, RoomTypeDetail> roomTypesPerKey = HashMultimap.create();
+			for (RoomTypeDetail rd: allDetails)
+				roomTypesPerKey.put(rd.getHotelName(), rd);
+			
+			for (String keyString : roomTypesPerKey.keySet())
+			{
+				String[] keyParts = keyString.split("_");
+				String hotelName = keyParts[0];
+				InventorySource is = InventorySource.valueOf(keyParts[1]);
+				HotelDetailCacheKey key = new HotelDetailCacheKey(hotelName, is);
+				roomTypeDetailCache.put(key, Lists.newArrayList(roomTypesPerKey.get(keyString)));				
+			}			
+		}
+	}	
+	
 	private LoadingCache<HotelDetailCacheKey, List<RoomTypeDetail>> roomTypeDetailCache = CacheBuilder.newBuilder()
-      .expireAfterWrite(1, TimeUnit.HOURS)
+      //.expireAfterWrite(1, TimeUnit.HOURS)
       .build(
           new CacheLoader<HotelDetailCacheKey, List<RoomTypeDetail>>() {
             public List<RoomTypeDetail> load(HotelDetailCacheKey key) {
@@ -30,8 +62,18 @@ public class RoomTypeDetailDAO extends AbstractDynamoDBDAO<RoomTypeDetail>
             }
           });
 	
+	private final CacheStateDAO cacheStateDAO;
+	
+	@Autowired
+	public RoomTypeDetailDAO(AmazonDynamoDB client, CacheStateDAO csDAO)
+	{
+		super(client);
+		this.cacheStateDAO = csDAO;
+		new RoomTypeDetailCacheRefresher().startAndWait();
+	}
+	
 	//@ReadThroughSingleCache(namespace = "RoomTypeDetail", expiration = 3600)
-	public List<RoomTypeDetail> getRoomTypeDetails(/*@ParameterValueKeyProvider(order=1)*/ HotelDetailCacheKey ck)
+	List<RoomTypeDetail> getRoomTypeDetails(/*@ParameterValueKeyProvider(order=1)*/ HotelDetailCacheKey ck)
 	{
 		List<RoomTypeDetail> details = null;
 		try

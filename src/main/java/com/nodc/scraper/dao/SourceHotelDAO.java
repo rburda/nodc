@@ -7,7 +7,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
+import com.amazonaws.services.dynamodb.AmazonDynamoDB;
 import com.amazonaws.services.dynamodb.datamodeling.DynamoDBScanExpression;
 import com.nodc.scraper.model.persisted.HotelDetail;
 import com.nodc.scraper.model.persisted.InventorySource;
@@ -20,6 +23,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Maps;
 
+@Repository("sourceHotelDAO")
 public class SourceHotelDAO extends AbstractDynamoDBDAO<SourceHotel>
 {	
 	private static final Logger logger = LoggerFactory.getLogger(SourceHotelDAO.class);
@@ -70,6 +74,12 @@ public class SourceHotelDAO extends AbstractDynamoDBDAO<SourceHotel>
             	return resultsMap;
             }
           });
+	
+	@Autowired
+	public SourceHotelDAO(AmazonDynamoDB client)
+	{
+		super(client);
+	}
 	
 	//@ReadThroughSingleCache(namespace = "SourceHotel", expiration = 3600)
 	public SourceHotel getByHotelId(

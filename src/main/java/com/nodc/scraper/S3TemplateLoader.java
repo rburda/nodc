@@ -10,6 +10,8 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GetObjectRequest;
@@ -17,6 +19,7 @@ import com.amazonaws.services.s3.model.S3Object;
 
 import freemarker.cache.TemplateLoader;
 
+@Component(value="s3TemplateLoader")
 public class S3TemplateLoader implements TemplateLoader
 {
 	private static final Logger logger = LoggerFactory.getLogger(S3TemplateLoader.class);

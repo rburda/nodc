@@ -5,11 +5,19 @@
 	xmlns:util="http://www.springframework.org/schema/util"	
 	xmlns:task="http://www.springframework.org/schema/task"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/beans/spring-context-3.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/beans/spring-util-3.1.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
 		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd"
 	xmlns:aop="http://www.springframework.org/schema/aop">
+	
+		<!-- Scans within the base package of the application for @Components to  configure as beans -->
+	<!-- @Controller, @Service, @Configuration, etc. -->
+	<context:component-scan base-package="com.nodc.scraper">
+		<context:exclude-filter type="regex" expression="com\.nodc\.scraper\.controller\..*"/>
+	</context:component-scan>
+	
+	
 <!-- 
 	<import resource="simplesm-context.xml" />
  -->	
@@ -57,23 +65,6 @@
 			</bean>
 		</constructor-arg>
 	</bean>
-
-	<bean id="hotelDetailDAO" class="com.nodc.scraper.dao.HotelDetailDAO">
-		<property name="dynamoDBClient" ref="awsDynamoDbClient" />
-		<property name="roomTypeDetailDAO" ref="roomTypeDetailDAO" />
-	</bean>
-	
-	<bean id="masterHotelDAO" class="com.nodc.scraper.dao.MasterHotelDAO">
-		<property name="dynamoDBClient" ref="awsDynamoDbClient" />
-	</bean>
-
-	<bean id="sourceHotelDAO" class="com.nodc.scraper.dao.SourceHotelDAO">
-			<property name="dynamoDBClient" ref="awsDynamoDbClient" />	
-	</bean>
-
-	<bean id="roomTypeDetailDAO" class="com.nodc.scraper.dao.RoomTypeDetailDAO">
-			<property name="dynamoDBClient" ref="awsDynamoDbClient" />	
-	</bean>
 	
 	<bean id="frenchQtrGuideCacheLoader" class="com.nodc.scraper.cache.FrenchQuarterGuideCacheLoader" >
 		<property name="hotelDetailDAO" ref="hotelDetailDAO" />
@@ -115,6 +106,8 @@
 		<property name="roomTypeDetailDAO" ref="roomTypeDetailDAO"/>
 		<property name="hotelDetailDAO" ref="hotelDetailDAO"/>
 	</bean>
+	
+
 	
 	<beans profile="scheduleTasks">
  		<task:scheduler id="taskScheduler"/>

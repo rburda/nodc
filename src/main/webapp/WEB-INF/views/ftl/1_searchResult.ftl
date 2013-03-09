@@ -531,10 +531,6 @@
 	                         <input id="sortRating" type="radio" value="RATING" class="scheck checkBox" <#if (searchResults["result"].currentSort.name() == "RATING") > checked="checked" </#if> />
 	                         <label for="sortRating">Rating</label>
 	                     </li>
-	                     <li>
-	                         <input id="sortRating" type="radio" value="AREA" class="scheck checkBox" <#if (searchResults["result"].currentSort.name() == "AREA") > checked="checked" </#if> />
-	                         <label for="sortRating">Area</label>
-	                     </li>
 	                    </ul>
                      	<span class="clear"></span>
                     </div>

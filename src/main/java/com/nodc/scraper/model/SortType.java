@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Comparator;
 
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 public enum SortType implements Comparator<Hotel>, Serializable
@@ -47,6 +48,17 @@ public enum SortType implements Comparator<Hotel>, Serializable
 			if (result > 0)
 				return 1;
 			return 0;
+		}
+	},
+	AREA
+	{
+		@JsonIgnore
+		@Override
+		public int compare(Hotel h1, Hotel h2)
+		{
+			String area1 = StringUtils.defaultIfEmpty(h1.getHotelDetails().getAreaDescription(),"");
+			String area2 = StringUtils.defaultIfEmpty(h2.getHotelDetails().getAreaDescription(),"");
+			return area1.compareTo(area2);
 		}
 	};
 

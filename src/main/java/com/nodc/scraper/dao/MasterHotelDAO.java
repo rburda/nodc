@@ -6,13 +6,17 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
+import com.amazonaws.services.dynamodb.AmazonDynamoDB;
 import com.amazonaws.services.dynamodb.datamodeling.DynamoDBScanExpression;
 import com.nodc.scraper.model.persisted.MasterHotel;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
+@Repository("masterHotelDAO")
 public class MasterHotelDAO extends AbstractDynamoDBDAO<MasterHotel>
 {
 	private Logger logger = LoggerFactory.getLogger(MasterHotelDAO.class);
@@ -24,6 +28,12 @@ public class MasterHotelDAO extends AbstractDynamoDBDAO<MasterHotel>
               return loadMasterHotel(key);
             }
           });
+	
+	@Autowired
+	public MasterHotelDAO(AmazonDynamoDB client)
+	{
+		super(client);
+	}
 	
 	//@ReadThroughSingleCache(namespace = "MasterHotel", expiration = 3600)
 	public MasterHotel getByHotelName(/*@ParameterValueKeyProvider*/ String name)

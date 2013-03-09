@@ -8,9 +8,14 @@ import com.amazonaws.services.dynamodb.datamodeling.DynamoDBQueryExpression;
 import com.amazonaws.services.dynamodb.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodb.model.AttributeValue;
 
-public class AbstractDynamoDBDAO<T>
+public abstract class AbstractDynamoDBDAO<T>
 {
-	private DynamoDBMapper mapper = null;
+	private final DynamoDBMapper mapper;
+	
+	protected AbstractDynamoDBDAO(AmazonDynamoDB client)
+	{
+		this.mapper = new DynamoDBMapper(client);
+	}
 	
 	public void save (T t)
 	{
@@ -35,9 +40,4 @@ public class AbstractDynamoDBDAO<T>
 	{
 		return mapper;
 	}
-	
-	public final void setDynamoDBClient(AmazonDynamoDB dbClient)
-	{
-		mapper = new DynamoDBMapper(dbClient);
-	}	
 }
