@@ -94,7 +94,7 @@ public class ContentEditor
 		{
 			persistOverrideMap.put(key, new AttributeValue(overrideStatus.get(key).toString()));
 		}
-		persistOverrideMap.put(getHashKey(), new AttributeValue("false"));
+		persistOverrideMap.put(getHashKey(), new AttributeValue(name));
 
 		client.putItem( 
 				new PutItemRequest().withTableName(tableName).withItem(persistValueMap));

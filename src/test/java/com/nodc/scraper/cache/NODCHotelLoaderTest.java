@@ -3,6 +3,7 @@ package com.nodc.scraper.cache;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -24,6 +25,7 @@ public class NODCHotelLoaderTest extends BaseSpringJUnitTest
 	}
 	
 	@Test
+	@Ignore
 	public void testLoadWeights() throws Exception
 	{
 		List<MasterHotel> allHotels = Lists.newArrayList();

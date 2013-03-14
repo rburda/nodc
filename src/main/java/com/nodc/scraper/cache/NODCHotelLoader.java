@@ -8,7 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
+import com.nodc.scraper.dao.CacheStateDAO;
 import com.nodc.scraper.dao.HotelDetailCacheKey;
 import com.nodc.scraper.dao.HotelDetailDAO;
 import com.nodc.scraper.dao.MasterHotelDAO;
@@ -16,30 +18,37 @@ import com.nodc.scraper.dao.RoomTypeDetailDAO;
 import com.nodc.scraper.dao.SourceHotelDAO;
 import com.nodc.scraper.inventory.NODCWarehouse;
 import com.nodc.scraper.model.Hotel;
+import com.nodc.scraper.model.persisted.CacheState;
 import com.nodc.scraper.model.persisted.HotelDetail;
 import com.nodc.scraper.model.persisted.InventorySource;
 import com.nodc.scraper.model.persisted.MasterHotel;
 import com.nodc.scraper.model.persisted.RoomTypeDetail;
 import com.nodc.scraper.model.persisted.SourceHotel;
 
+@Component
 public class NODCHotelLoader
 {
 	private static final Logger logger = LoggerFactory.getLogger(NODCHotelLoader.class);
 	
-	@Autowired
-	NODCWarehouse invSource;
+	private final NODCWarehouse invSource;
+	private final SourceHotelDAO sourceHotelDAO;
+	private final MasterHotelDAO masterHotelDAO;
+	private final HotelDetailDAO hotelDetailDAO;
+	private final RoomTypeDetailDAO roomTypeDetailDAO;
+	private final CacheStateDAO cacheStateDAO;
 	
 	@Autowired
-	SourceHotelDAO sourceHotelDAO;
-	
-	@Autowired
-	MasterHotelDAO masterHotelDAO;
-	
-	@Autowired
-	HotelDetailDAO hotelDetailDAO;
-	
-	@Autowired
-	RoomTypeDetailDAO roomTypeDetailDAO;
+	public NODCHotelLoader(
+			NODCWarehouse whs, SourceHotelDAO shDAO, MasterHotelDAO mhDAO, 
+			HotelDetailDAO hdDAO, RoomTypeDetailDAO rtdDAO, CacheStateDAO csDAO)
+	{
+		this.invSource = whs;
+		this.sourceHotelDAO = shDAO;
+		this.masterHotelDAO = mhDAO;
+		this.hotelDetailDAO = hdDAO;
+		this.roomTypeDetailDAO = rtdDAO;
+		this.cacheStateDAO = csDAO;
+	}
 	
 	public void updateWeights(Map<String, Integer> weights)
 	{
@@ -106,7 +115,8 @@ public class NODCHotelLoader
 					rtd.setHotelName(h.getSource().getHotelName()+"_"+InventorySource.NODC);
 			}
 			
-			HotelDetail hd = hotelDetailDAO.getHotelDetail(new HotelDetailCacheKey(h.getSource().getHotelName(), InventorySource.NODC));
+			HotelDetailCacheKey key = new HotelDetailCacheKey(h.getSource().getHotelName(), InventorySource.NODC);
+			HotelDetail hd = hotelDetailDAO.getHotelDetail(key);
 			if (hd != null)
 			{
 				logger.error("hotel details previously stored");
@@ -115,29 +125,39 @@ public class NODCHotelLoader
 					logger.error("hotel room type details present.... deleting");
 					roomTypeDetailDAO.delete(hd.getRoomTypeDetails());
 				}
+				keepNonOverridableContent(key, hd, h.getHotelDetails());
 			}
 			hotelDetailDAO.save(h.getHotelDetails());
 		}
+		
+		cacheStateDAO.markHotelDetailCacheUpdated();
+		cacheStateDAO.markRoomTypeCacheUpdated();
 	}
 	
-	public void setSourceHotelDAO(SourceHotelDAO dao)
+	private void keepNonOverridableContent(HotelDetailCacheKey key, HotelDetail existing, HotelDetail updated)
 	{
-		this.sourceHotelDAO = dao;
-	}
-	public void setMasterHotelDAO(MasterHotelDAO dao)
-	{
-		this.masterHotelDAO = dao;
-	}
-	public void setRoomTypeDetailDAO(RoomTypeDetailDAO dao)
-	{
-		this.roomTypeDetailDAO = dao;
-	}
-	public void setHotelDetailDAO(HotelDetailDAO dao)
-	{
-		this.hotelDetailDAO = dao;
-	}
-	public void setNODCWarehouse(NODCWarehouse whs)
-	{
-		this.invSource = whs;
+		Map<String, Boolean> overrideMap = hotelDetailDAO.loadHotelDetailOverridesAsMapFromDB(key);
+		if (!FrenchQuarterGuideCacheLoader.isContentRefreshable(false, overrideMap, "address"))
+			updated.setAddress1(existing.getAddress1());
+		if (!FrenchQuarterGuideCacheLoader.isContentRefreshable(false, overrideMap, "city"))
+			updated.setCity(existing.getCity());
+		if (!FrenchQuarterGuideCacheLoader.isContentRefreshable(false, overrideMap, "state"))
+			updated.setState(existing.getState());
+		if (!FrenchQuarterGuideCacheLoader.isContentRefreshable(false, overrideMap, "zip"))
+			updated.setZip(existing.getZip());
+		if (!FrenchQuarterGuideCacheLoader.isContentRefreshable(false, overrideMap, "lat"))
+			updated.setLatitude(existing.getLatitude());
+		if (!FrenchQuarterGuideCacheLoader.isContentRefreshable(false, overrideMap, "long"))
+			updated.setLongitude(existing.getLongitude());
+		if (!FrenchQuarterGuideCacheLoader.isContentRefreshable(false, overrideMap, "amenities_json"))
+			updated.setAmenitiesJsonString(existing.getAmenitiesJsonString());
+		if (!FrenchQuarterGuideCacheLoader.isContentRefreshable(false, overrideMap, "photos_json"))
+			updated.setPhotosJsonString(existing.getPhotosJsonString());
+		if (!FrenchQuarterGuideCacheLoader.isContentRefreshable(false, overrideMap, "area_desc"))
+			updated.setAreaDescription(existing.getAreaDescription());
+		if (!FrenchQuarterGuideCacheLoader.isContentRefreshable(false, overrideMap, "desc"))
+			updated.setDescription(existing.getDescription());
+		if (!FrenchQuarterGuideCacheLoader.isContentRefreshable(false, overrideMap, "rating"))
+			updated.setRating(existing.getRating());
 	}
 }

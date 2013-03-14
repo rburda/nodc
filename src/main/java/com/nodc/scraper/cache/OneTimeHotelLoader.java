@@ -1,6 +1,7 @@
 package com.nodc.scraper.cache;
 
 import java.net.URI;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
@@ -14,8 +15,11 @@ import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
+import com.nodc.scraper.dao.CacheStateDAO;
 import com.nodc.scraper.dao.HotelDetailCacheKey;
 import com.nodc.scraper.dao.HotelDetailDAO;
 import com.nodc.scraper.dao.MasterHotelDAO;
@@ -26,13 +30,27 @@ import com.nodc.scraper.model.persisted.InventorySource;
 import com.nodc.scraper.model.persisted.MasterHotel;
 import com.nodc.scraper.model.persisted.SourceHotel;
 
+@Component
 public class OneTimeHotelLoader
 {
 	private static final Logger logger = LoggerFactory.getLogger(OneTimeHotelLoader.class);
 	
-	private MasterHotelDAO masterHotelDAO;
-	private SourceHotelDAO sourceHotelDAO;
-	private HotelDetailDAO hotelDetailDAO;
+	private final MasterHotelDAO masterHotelDAO;
+	private final SourceHotelDAO sourceHotelDAO;
+	private final HotelDetailDAO hotelDetailDAO;
+	private final CacheStateDAO cacheStateDAO;
+	
+	@Autowired
+	public OneTimeHotelLoader(
+			MasterHotelDAO mhDAO, SourceHotelDAO shDAO, HotelDetailDAO hdDAO,
+			CacheStateDAO csDAO)
+	{
+		this.masterHotelDAO = mhDAO;
+		this.sourceHotelDAO = shDAO;
+		this.hotelDetailDAO = hdDAO;
+		this.cacheStateDAO = csDAO;
+	}
+			
 	
 	//1:02am every day; '0' to ensure ordering with other tasks; tasks are 
 	//single threaded so if tasks overlap, they will wait for an executing one to
@@ -93,28 +111,44 @@ public class OneTimeHotelLoader
 				//lastly, check to see if we already have a content detail record.
 				//If not, create one; if we do, then still set the address info as that
 				//doesn't come in during the normal cache load
-				HotelDetail hd = hotelDetailDAO.getHotelDetail(new HotelDetailCacheKey(hotel.getHotelName(), InventorySource.FQG));
+				HotelDetailCacheKey key = new HotelDetailCacheKey(hotel.getHotelName(), InventorySource.FQG);
+				HotelDetail hd = hotelDetailDAO.getHotelDetail(key);
+				Map<String, Boolean> overrideMap = hotelDetailDAO.loadHotelDetailOverridesAsMapFromDB(key);
+				boolean isNew = false;
 				if (hd == null)
 				{
 					logger.error("hotel detail not found for id: " + hotelId + "; creating detail with name of: " + hotel.getHotelName());
 					hd = new HotelDetail();
 					hd.setName(hotel.getHotelName());
+					isNew = true;
 				}
 				else
 					logger.error("hotel detail found for id: " + hotelId + " with name of: " + hotel.getHotelName());
-				hd.setAddress1(InventoryUtils.urlDecode(hotelEl.select("address").first().ownText()));
-				hd.setCity(InventoryUtils.urlDecode(hotelEl.select("city_name").first().ownText()));
-				hd.setState(hotelEl.select("state_code").first().ownText());
 				
-				hd.setAddress1(StringUtils.removeEnd(hd.getAddress1(), hd.getCity()));
-				hd.setAddress1(StringUtils.removeEnd(hd.getAddress1(),  ", "));
+				if(FrenchQuarterGuideCacheLoader.isContentRefreshable(isNew, overrideMap, "address"))
+					hd.setAddress1(InventoryUtils.urlDecode(hotelEl.select("address").first().ownText()));
+				if(FrenchQuarterGuideCacheLoader.isContentRefreshable(isNew, overrideMap, "city"))
+					hd.setCity(InventoryUtils.urlDecode(hotelEl.select("city_name").first().ownText()));
+				if(FrenchQuarterGuideCacheLoader.isContentRefreshable(isNew, overrideMap, "state"))
+					hd.setState(hotelEl.select("state_code").first().ownText());
 				
-				hd.setCity(StringUtils.removeEnd(hd.getCity(), hd.getState()));
-				hd.setCity(StringUtils.removeEnd(hd.getCity(), ", "));
+				if(FrenchQuarterGuideCacheLoader.isContentRefreshable(isNew, overrideMap, "address"))
+				{
+					hd.setAddress1(StringUtils.removeEnd(hd.getAddress1(), hd.getCity()));
+					hd.setAddress1(StringUtils.removeEnd(hd.getAddress1(),  ", "));
+				}
+
+				if(FrenchQuarterGuideCacheLoader.isContentRefreshable(isNew, overrideMap, "city"))
+				{				
+					hd.setCity(StringUtils.removeEnd(hd.getCity(), hd.getState()));
+					hd.setCity(StringUtils.removeEnd(hd.getCity(), ", "));
+				}
 				hotelDetailDAO.save(hd);
 			}
 			page++;
 		}
+		cacheStateDAO.markHotelDetailCacheUpdated();
+		cacheStateDAO.markRoomTypeCacheUpdated();
 	}
 	
 	private HttpResponse queryHotelsViaHttpClient(int page)
@@ -155,20 +189,5 @@ public class OneTimeHotelLoader
 			logger.error("unable to retrieve query response", e);
 		}
 		return response;
-	}	
-	
-	public void setSourceHotelDAO(SourceHotelDAO sDAO)
-	{
-		this.sourceHotelDAO = sDAO;
-	}
-	
-	public void setHotelDetailDAO(HotelDetailDAO hdDAO)
-	{
-		this.hotelDetailDAO = hdDAO;
-	}
-	
-	public void setMasterHotelDAO(MasterHotelDAO dao)
-	{
-		this.masterHotelDAO = dao;
 	}
 }

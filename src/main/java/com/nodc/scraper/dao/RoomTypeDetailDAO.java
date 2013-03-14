@@ -25,7 +25,7 @@ import com.nodc.scraper.model.persisted.RoomTypeDetail;
 public class RoomTypeDetailDAO extends AbstractDynamoDBDAO<RoomTypeDetail>
 {
 	private static Logger logger = LoggerFactory.getLogger(RoomTypeDetailDAO.class);
-	private final static String CACHE_STATE_NAME = "room_type_detail";
+	private final static String CACHE_STATE_NAME = "nodc_hotel_room_type_content";
 
 	private final class RoomTypeDetailCacheRefresher extends AbstractCacheRefresher
 	{

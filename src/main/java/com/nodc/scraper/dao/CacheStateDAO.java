@@ -19,4 +19,24 @@ public class CacheStateDAO extends AbstractDynamoDBDAO<CacheState>
 	{
 		return getDynamoMapper().load(CacheState.class,  cacheName);
 	}
+	
+	public void markHotelDetailCacheUpdated()
+	{
+		CacheState cs = getCacheState("nodc_hotel_content");
+		if (cs != null)
+		{
+			cs.markCacheAsUpdated();
+			save(cs);
+		}
+	}
+	
+	public void markRoomTypeCacheUpdated()
+	{
+		CacheState cs = getCacheState("nodc_hotel_room_type_content");
+		if (cs != null)
+		{
+			cs.markCacheAsUpdated();
+			save(cs);
+		}
+	}
 }

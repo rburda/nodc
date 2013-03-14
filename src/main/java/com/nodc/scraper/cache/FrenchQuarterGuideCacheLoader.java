@@ -2,7 +2,7 @@ package com.nodc.scraper.cache;
 
 import java.net.URI;
 import java.net.URLDecoder;
-import java.util.List;
+import java.util.Map;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -18,11 +18,13 @@ import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
+import com.nodc.scraper.dao.CacheStateDAO;
 import com.nodc.scraper.dao.HotelDetailCacheKey;
 import com.nodc.scraper.dao.HotelDetailDAO;
-import com.nodc.scraper.dao.RoomTypeDetailDAO;
 import com.nodc.scraper.dao.SourceHotelDAO;
 import com.nodc.scraper.inventory.InventoryUtils;
 import com.nodc.scraper.model.Amenity;
@@ -32,27 +34,27 @@ import com.nodc.scraper.model.persisted.InventorySource;
 import com.nodc.scraper.model.persisted.RoomTypeDetail;
 import com.nodc.scraper.model.persisted.SourceHotel;
 
+@Component
 public class FrenchQuarterGuideCacheLoader
 {
+	public static boolean isContentRefreshable(boolean isNew, Map<String, Boolean> refreshableMap, String col)
+	{
+		return (isNew || refreshableMap.get(col) == null || refreshableMap.get(col) == false);
+	}
+	
 	private Logger logger = LoggerFactory.getLogger(FrenchQuarterGuideCacheLoader.class);
 	
-	private HotelDetailDAO hotelDetailDAO;
-	private SourceHotelDAO sourceHotelDAO;
-	private RoomTypeDetailDAO roomTypeDetailDAO;
+	private final HotelDetailDAO hotelDetailDAO;
+	private final SourceHotelDAO sourceHotelDAO;
+	private final CacheStateDAO cacheStateDAO;
 	
-	public void setSourceHotelDAO(SourceHotelDAO shDAO)
+	@Autowired
+	public FrenchQuarterGuideCacheLoader(
+			HotelDetailDAO hdDAO, SourceHotelDAO shDAO, CacheStateDAO csDAO)
 	{
+		this.hotelDetailDAO = hdDAO;
 		this.sourceHotelDAO = shDAO;
-	}
-	
-	public void setHotelDetailDAO(HotelDetailDAO hdd)
-	{
-		this.hotelDetailDAO = hdd;
-	}
-	
-	public void setRoomTypeDetailDAO(RoomTypeDetailDAO dao)
-	{
-		this.roomTypeDetailDAO = dao;
+		this.cacheStateDAO = csDAO;
 	}
 	
 	//1:01am every day; '1' to ensure ordering with other tasks; tasks are 
@@ -100,55 +102,73 @@ public class FrenchQuarterGuideCacheLoader
 					}
 					HotelDetailCacheKey cacheKey = new HotelDetailCacheKey(sourceHotel.getHotelName(), InventorySource.FQG);
 					HotelDetail details = hotelDetailDAO.getHotelDetail(cacheKey);
+					Map<String, Boolean> overrideMap = hotelDetailDAO.loadHotelDetailOverridesAsMapFromDB(cacheKey);
+					boolean isNew = false;
 					if (details == null)
 					{
 						details = new HotelDetail();
 						details.setName(sourceHotel.getHotelName());
 						details.setAddress1(detailsEl.select("address").first().ownText());
+						isNew = true;
 					}
 					
-					details.setDescription(URLDecoder.decode(detailsEl.select("description_full").first().ownText(), "UTF-8"));
-					details.setAreaDescription(detailsEl.select("district").first().ownText());
-					if (details.getCity() == null)
-						details.setCity("");
-					if (details.getState() == null)
-						details.setState("");
-					if (details.getZip() == null)
-						details.setZip("");
-					details.setLatitude(detailsEl.select("latitude").first().ownText());
-					details.setLongitude(detailsEl.select("longitude").first().ownText());
-					details.setRating(Float.valueOf(detailsEl.select("star_rating").first().ownText()));
+					if (isContentRefreshable(isNew, overrideMap, "desc"))
+						details.setDescription(URLDecoder.decode(detailsEl.select("description_full").first().ownText(), "UTF-8"));
+					if (isContentRefreshable(isNew, overrideMap, "area_desc"))
+						details.setAreaDescription(detailsEl.select("district").first().ownText());
+					if (isContentRefreshable(isNew, overrideMap, "city"))
+						if (details.getCity() == null)	
+							details.setCity("");
+					if (isContentRefreshable(isNew, overrideMap, "state"))
+						if (details.getState() == null)
+							details.setState("");
+					if (isContentRefreshable(isNew, overrideMap, "zip"))
+						if (details.getZip() == null)
+							details.setZip("");
+					if (isContentRefreshable(isNew, overrideMap, "lat"))
+						details.setLatitude(detailsEl.select("latitude").first().ownText());
+					if (isContentRefreshable(isNew, overrideMap, "long"))
+						details.setLongitude(detailsEl.select("longitude").first().ownText());
+					if (isContentRefreshable(isNew, overrideMap, "rating"))
+						details.setRating(Float.valueOf(detailsEl.select("star_rating").first().ownText()));
 
-					details.clearPhotos();
-					for (Element photoEl: detailsEl.select("photo_data").first().select("photo"))
+					if (isContentRefreshable(isNew, overrideMap, "photos_json"))
 					{
-						Photo photo = new Photo();
-						photo.url = photoEl.ownText();
-						details.addPhoto(photo);
-					}					
-					
-					details.clearAmenities();
-					Elements policies = detailsEl.select("policy_data");
-					if (policies != null && policies.size() > 0)
-					{
-						for (Element topAmenityEl: policies.first().select("policy"))
+						details.clearPhotos();
+						for (Element photoEl: detailsEl.select("photo_data").first().select("photo"))
 						{
-							Amenity amenity = new Amenity();
-							amenity.name = topAmenityEl.select("policy_name").first().ownText();
-							try
+							Photo photo = new Photo();
+							photo.url = photoEl.ownText();
+							details.addPhoto(photo);
+						}	
+					}
+				
+					if (isContentRefreshable(isNew, overrideMap, "amenities_json"))
+					{
+						details.clearAmenities();
+						Elements policies = detailsEl.select("policy_data");
+						if (policies != null && policies.size() > 0)
+						{
+							for (Element topAmenityEl: policies.first().select("policy"))
 							{
-								amenity.description = URLDecoder.decode(topAmenityEl.select("description").first().ownText(), "UTF-8");
-							}
-							catch (Exception e)
-							{
-								amenity.description = topAmenityEl.select("description").first().ownText();
-								logger.error("unabled to decode", e);
-							}
-							//boolean avail = (topAmenityEl.select("allowed").first() != null);
-							//amenity.description = (avail ? "Yes" : "No");
-							details.addAmenity(amenity);
+								Amenity amenity = new Amenity();
+								amenity.name = topAmenityEl.select("policy_name").first().ownText();
+								try
+								{
+									amenity.description = URLDecoder.decode(topAmenityEl.select("description").first().ownText(), "UTF-8");
+								}
+								catch (Exception e)
+								{
+									amenity.description = topAmenityEl.select("description").first().ownText();
+									logger.error("unabled to decode", e);
+								}
+								//boolean avail = (topAmenityEl.select("allowed").first() != null);
+								//amenity.description = (avail ? "Yes" : "No");
+								details.addAmenity(amenity);
+							}						
 						}						
 					}
+
 									
 
 					for (Element roomTypeEl: detailsEl.select("rate"))
@@ -181,7 +201,8 @@ public class FrenchQuarterGuideCacheLoader
 				}
 				page++;
 			}
-				
+			cacheStateDAO.markHotelDetailCacheUpdated();
+			cacheStateDAO.markRoomTypeCacheUpdated();
 	}
 	
 	/**
@@ -261,5 +282,5 @@ public class FrenchQuarterGuideCacheLoader
 			logger.error("unable to retrieve query response", e);
 		}
 		return response;
-	}	
+	}
 }

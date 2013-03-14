@@ -65,32 +65,12 @@
 			</bean>
 		</constructor-arg>
 	</bean>
-	
-	<bean id="frenchQtrGuideCacheLoader" class="com.nodc.scraper.cache.FrenchQuarterGuideCacheLoader" >
-		<property name="hotelDetailDAO" ref="hotelDetailDAO" />
-		<property name="sourceHotelDAO" ref="sourceHotelDAO" />
-		<property name="roomTypeDetailDAO" ref="roomTypeDetailDAO" />
-	</bean>
-	
-	<bean id="frenchQtrGuideOneTimeLoader" class="com.nodc.scraper.cache.OneTimeHotelLoader">
-		<property name="masterHotelDAO" ref="masterHotelDAO" />
-		<property name="hotelDetailDAO" ref="hotelDetailDAO" />
-		<property name="sourceHotelDAO" ref="sourceHotelDAO" />	
-	</bean>
 		
 	<bean id="frenchQtrGuideInvSource" class="com.nodc.scraper.inventory.FrenchQuarterGuideInventorySource">
 		<property name="hotelDetailDAO" ref="hotelDetailDAO" />
 		<property name="sourceHotelDAO" ref="sourceHotelDAO" />		
 		<property name="masterHotelDAO" ref="masterHotelDAO" />
 	</bean>	
-	
-	<bean id="nodchotelLoader" class="com.nodc.scraper.cache.NODCHotelLoader" >
-		<property name="hotelDetailDAO" ref="hotelDetailDAO" />
-		<property name="sourceHotelDAO" ref="sourceHotelDAO" />		
-		<property name="masterHotelDAO" ref="masterHotelDAO" />
-		<property name="roomTypeDetailDAO" ref="roomTypeDetailDAO" />	
-		<property name="NODCWarehouse" ref="nodcInvSource" />
-	</bean>
 				
 	<bean id="nodcInvSource" class="com.nodc.scraper.inventory.NODCWarehouse">
 		<property name="sourceHotelDAO" ref="sourceHotelDAO" />
@@ -104,8 +84,6 @@
 		<property name="sourceHotelDAO" ref="sourceHotelDAO" />
 		<property name="hotelDetailDAO" ref="hotelDetailDAO"/>
 	</bean>
-	
-
 	
 	<beans profile="scheduleTasks">
  		<task:scheduler id="taskScheduler"/>
