@@ -102,8 +102,6 @@
 		<property name="NODCInventorySource" ref="nodcInvSource" />
 		<property name="FQGInventorySource" ref="frenchQtrGuideInvSource" />
 		<property name="sourceHotelDAO" ref="sourceHotelDAO" />
-		<property name="masterHotelDAO" ref="masterHotelDAO" />
-		<property name="roomTypeDetailDAO" ref="roomTypeDetailDAO"/>
 		<property name="hotelDetailDAO" ref="hotelDetailDAO"/>
 	</bean>
 	

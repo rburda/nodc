@@ -11,9 +11,11 @@ import com.amazonaws.services.dynamodb.model.AttributeValue;
 public abstract class AbstractDynamoDBDAO<T>
 {
 	private final DynamoDBMapper mapper;
+	private final AmazonDynamoDB client;
 	
 	protected AbstractDynamoDBDAO(AmazonDynamoDB client)
 	{
+		this.client = client;
 		this.mapper = new DynamoDBMapper(client);
 	}
 	
@@ -39,5 +41,10 @@ public abstract class AbstractDynamoDBDAO<T>
 	protected final DynamoDBMapper getDynamoMapper()
 	{
 		return mapper;
+	}
+	
+	protected final AmazonDynamoDB getClient()
+	{
+		return client;
 	}
 }

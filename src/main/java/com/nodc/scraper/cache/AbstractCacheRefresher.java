@@ -41,9 +41,10 @@ public abstract class AbstractCacheRefresher extends AbstractScheduledService
 			{
 				logger.debug(
 						String.format("cache recently updated: lastRefreshed = %1$s, updated = %2$s", 
-								lastRefreshed, cs.getLastUpdateDateTimeString()));
+								lastRefreshed, (cs != null ? cs.getLastUpdateDateTimeString() : "--")));
 				loadCache();
-				lastRefreshed = cs.getLastUpdateDateTime();
+				if (cs != null)
+					lastRefreshed = cs.getLastUpdateDateTime();
 			}			
 		}
 		catch (Throwable t)

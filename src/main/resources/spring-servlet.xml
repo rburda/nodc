@@ -7,30 +7,13 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
 		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd">
 
-		<context:component-scan base-package="com.nodc.scraper.controller" />
+	<context:component-scan base-package="com.nodc.scraper.controller" />
 
-    <!-- freemarker config -->
-    <bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
-  		<!-- <property name="preTemplateLoaders">
-	  		<list>
-	  			<ref bean="s3TemplateLoader"/>
-	  		</list>
-  		</property>
-  		 -->
-     <property name="templateLoaderPath" value="/WEB-INF/views/ftl/"/>
-
-		  <property name="freemarkerSettings">
-		    <props>
-		      <prop key="number_format">0.######</prop>
-		    </props>
-		  </property>
-  	</bean>
-
-    <bean id="viewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
-      <property name="cache" value="true"/>
-      <property name="prefix" value=""/>
-      <property name="suffix" value=".ftl"/>
-    </bean>
+  <bean id="viewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+    <property name="cache" value="true"/>
+    <property name="prefix" value=""/>
+    <property name="suffix" value=".ftl"/>
+  </bean>
 
 	<!-- DispatcherServlet Context: defines this servlet's request-processing 
 		infrastructure -->
@@ -39,4 +22,51 @@
 	<mvc:resources mapping="/**" location="/content/**"/>
 	<mvc:annotation-driven />
 
+	<beans profile="dev">
+  <!-- freemarker config -->
+	  <bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">			
+			<property name="preTemplateLoaders">
+	 			<list>
+	 				<ref bean="s3TemplateLoader"/>
+	 			</list>
+			</property>
+
+			<!-- intent is to look in the s3TemplateLoader first. Looking at FreeMarkerConfigurer, this appears to be the
+			     case. Noticed that preTemplateLoaders are added to loader list prior to templateLoader path.
+			     Templates are searched by asking each loader (in order of how they were added to list) whether they
+			     can find the file. -->
+			<property name="templateLoaderPath" value="/WEB-INF/views/ftl/"/>
+	
+			<property name="freemarkerSettings">
+				<props>
+			  	<prop key="number_format">0.######</prop>
+			    <prop key="template_update_delay">0</prop>
+			  </props>
+			</property>
+		</bean>
+	</beans>
+
+	<beans profile="live">
+  <!-- freemarker config -->
+	  <bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+			<property name="preTemplateLoaders">
+	 			<list>
+	 				<ref bean="s3TemplateLoader"/>
+	 			</list>
+			</property>
+			
+			<!-- intent is to look in the s3TemplateLoader first. Looking at FreeMarkerConfigurer, this appears to be the
+			     case. Noticed that preTemplateLoaders are added to loader list prior to templateLoader path.
+			     Templates are searched by asking each loader (in order of how they were added to list) whether they
+			     can find the file. -->
+			<property name="templateLoaderPath" value="/WEB-INF/views/ftl/"/>
+	
+			<property name="freemarkerSettings">
+				<props>
+			  	<prop key="number_format">0.######</prop>
+			    <prop key="template_update_delay">60</prop>
+			  </props>
+			</property>
+		</bean>
+	</beans>
 </beans>

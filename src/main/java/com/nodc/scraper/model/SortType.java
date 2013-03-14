@@ -56,8 +56,8 @@ public enum SortType implements Comparator<Hotel>, Serializable
 		@Override
 		public int compare(Hotel h1, Hotel h2)
 		{
-			String area1 = StringUtils.defaultIfEmpty(h1.getHotelDetails().getAreaDescription(),"");
-			String area2 = StringUtils.defaultIfEmpty(h2.getHotelDetails().getAreaDescription(),"");
+			String area1 = StringUtils.defaultIfEmpty(h1.getHotelDetails().getAreaDescription(),"ZZZ");
+			String area2 = StringUtils.defaultIfEmpty(h2.getHotelDetails().getAreaDescription(),"ZZZ");
 			return area1.compareTo(area2);
 		}
 	};

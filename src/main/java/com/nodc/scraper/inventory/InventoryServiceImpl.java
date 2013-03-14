@@ -51,12 +51,6 @@ public class InventoryServiceImpl implements InventoryService
   @Autowired
   private SourceHotelDAO sourceHotelDAO;
   
-  @Autowired
-  private MasterHotelDAO masterHotelDAO;
-  
-  @Autowired
-  private RoomTypeDetailDAO roomTypeDetailDAO;
-  
   private static final Logger logger = LoggerFactory.getLogger(InventoryServiceImpl.class);  
   private static final ExecutorService executor = Executors.newCachedThreadPool();
   
@@ -192,88 +186,6 @@ public class InventoryServiceImpl implements InventoryService
 		return hotelDetail;	
 	}
 	
-	@Override
-	public List<MasterHotel> getMasterRecords()
-	{
-		List<MasterHotel> hotels = Lists.newArrayList(masterHotelDAO.getAll());
-		Collections.sort(hotels, MasterHotel.BY_WEIGHT);
-		return hotels;
-	}
-	
-	@Override 
-	public void deleteMasterRecord(String masterHotelName)
-	{
-		MasterHotel mh = masterHotelDAO.loadMasterHotel(masterHotelName);
-		if (mh != null)
-			masterHotelDAO.delete(mh);
-	}
-	
-	@Override
-	public void saveMasterRecord(MasterHotel hotel, String newHotelName, int newWeight)
-	{
-		if (!hotel.getHotelName().equals(newHotelName))
-		{
-			masterHotelDAO.delete(hotel);
-			hotel.setHotelName(newHotelName);
-			masterHotelDAO.save(hotel);
-			logger.debug("updating hotel name from: " + hotel.getHotelName() + " to: " + newHotelName); 	
-		}
-		if (!(hotel.getWeight() == newWeight))
-		{
-			logger.debug("updating weight of hotel: " + hotel.getHotelName() + " from: " + hotel.getWeight() + " to: " + newWeight);
-			hotel.setWeight(newWeight);
-			masterHotelDAO.save(hotel);
-		}
-
-	}
-	
-	@Override
-	public void saveMasterRecords(List<EditableMasterHotel> masterHotels)
-	{
-		for (EditableMasterHotel emh: masterHotels)
-			saveMasterRecord(emh, emh.getNewHotelName(), emh.getNewWeight());
-	}
-	
-	@Override 
-	public SourceHotel getSourceHotel(String sourceHotelId, InventorySource is)
-	{
-		return sourceHotelDAO.getByHotelId(sourceHotelId, is);
-	}
-	
-	@Override
-	public List<SourceHotel> getSourceHotels()
-	{
-		List<SourceHotel> sourceHotels = Lists.newArrayList(sourceHotelDAO.getAll());
-		Collections.sort(sourceHotels, SourceHotel.BY_NAME);
-		
-		return sourceHotels;
-	}
-	
-	@Override 
-	public void updateSourceHotelName(String sourceHotelId, InventorySource is, String masterHotelName)
-	{
-		MasterHotel mh = masterHotelDAO.loadMasterHotel(masterHotelName);
-		SourceHotel sh = sourceHotelDAO.getByHotelId(sourceHotelId,  is);
-		if (mh != null && sh != null)
-		{
-			HotelDetail oldHotelDetail = hotelDetailDAO
-					.loadHotelDetailFromDB(new HotelDetailCacheKey(sh.getHotelName(), sh.getInvSource()));
-			
-			if (oldHotelDetail != null && oldHotelDetail.getRoomTypeDetails() != null)
-			{
-				for (RoomTypeDetail rtd: oldHotelDetail.getRoomTypeDetails())
-				{
-					roomTypeDetailDAO.delete(rtd);
-					rtd.setHotelName(masterHotelName+"_"+sh.getInvSource().name());
-					roomTypeDetailDAO.save(rtd);
-				}				
-			}			
-			sourceHotelDAO.delete(sh);
-			sh.setHotelName(masterHotelName);
-			sourceHotelDAO.save(sh);			
-		}
-	}
-	
 	public void setNODCInventorySource(NODCWarehouse invSource)
 	{
 		this.nodcInventorySource = invSource;
@@ -282,16 +194,6 @@ public class InventoryServiceImpl implements InventoryService
 	public void setSourceHotelDAO(SourceHotelDAO dao)
 	{
 		this.sourceHotelDAO = dao;
-	}
-	
-	public void setMasterHotelDAO(MasterHotelDAO dao)
-	{
-		this.masterHotelDAO = dao;
-	}
-	
-	public void setRoomTypeDetailDAO(RoomTypeDetailDAO dao)
-	{
-		this.roomTypeDetailDAO = dao;
 	}
 	
 	public void setHotelDetailDAO(HotelDetailDAO dao)

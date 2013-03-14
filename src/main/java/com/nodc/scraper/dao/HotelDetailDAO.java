@@ -20,6 +20,11 @@ import com.nodc.scraper.model.persisted.RoomTypeDetail;
 import com.nodc.scraper.model.persisted.SourceHotel;
 import com.amazonaws.services.dynamodb.AmazonDynamoDB;
 import com.amazonaws.services.dynamodb.datamodeling.DynamoDBScanExpression;
+import com.amazonaws.services.dynamodb.model.AttributeValue;
+import com.amazonaws.services.dynamodb.model.GetItemRequest;
+import com.amazonaws.services.dynamodb.model.GetItemResult;
+import com.amazonaws.services.dynamodb.model.Key;
+import com.amazonaws.services.dynamodb.model.PutItemRequest;
 import com.google.code.ssm.api.ParameterValueKeyProvider;
 import com.google.code.ssm.api.ReadThroughSingleCache;
 import com.google.common.cache.CacheBuilder;
@@ -31,7 +36,7 @@ import com.google.common.util.concurrent.AbstractScheduledService;
 @Repository("hotelDetailDAO")
 public class HotelDetailDAO extends AbstractDynamoDBDAO<HotelDetail>
 {
-	private final static String CACHE_STATE_NAME = "hotel_detail";
+	private final static String CACHE_STATE_NAME = "nodc_hotel_content";
 
 	private final class HotelDetailCacheRefresher extends AbstractCacheRefresher
 	{
@@ -92,6 +97,49 @@ public class HotelDetailDAO extends AbstractDynamoDBDAO<HotelDetail>
 			logger.error("Unable to load hotelDetail", ee);
 		}
 		return hd;
+	}
+	
+	public Map<String, AttributeValue> loadHotelDetailAsMapFromDB(HotelDetailCacheKey ck)
+	{
+		GetItemRequest getItemRequest = new GetItemRequest()
+	  .withTableName("nodc_hotel_content")
+	  .withKey(new Key()
+	  .withHashKeyElement(new AttributeValue().withS(ck.getHotelName())));
+
+		GetItemResult result = getClient().getItem(getItemRequest);
+		if (result != null)
+			return result.getItem();
+		else
+			return null;
+	}
+	
+	public Map<String, Boolean> loadHotelDetailOverridesAsMapFromDB(HotelDetailCacheKey ck)
+	{
+		Map<String, Boolean> overrideMap = Maps.newHashMap();
+		
+		GetItemRequest getItemRequest = new GetItemRequest()
+	  .withTableName("nodc_hotel_content_override")
+	  .withKey(new Key()
+	  .withHashKeyElement(new AttributeValue().withS(ck.getHotelName())));
+		
+
+		GetItemResult result = getClient().getItem(getItemRequest);
+		if (result != null && result.getItem() != null)
+		{
+			for (String key: result.getItem().keySet())
+			{
+				overrideMap.put(key,  Boolean.valueOf(result.getItem().get(key).getS()));
+			}
+		}
+		return overrideMap;
+	}
+	
+	public void saveHotelDetailFromMap(Map<String, AttributeValue> attrs)
+	{
+		getClient().putItem( 
+				new PutItemRequest()
+					.withTableName("nodc_hotel_content")
+					.withItem(attrs));
 	}
 	
 	public HotelDetail loadHotelDetailFromDB(HotelDetailCacheKey ck)
