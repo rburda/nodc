@@ -9,7 +9,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 
 public enum SortType implements Comparator<Hotel>, Serializable
 {
-	DEFAULT 
+	DEFAULT_D 
 	{
 		@JsonIgnore
 		@Override
@@ -18,7 +18,16 @@ public enum SortType implements Comparator<Hotel>, Serializable
 			return  (h1.getHotelDetails().getWeight() - h2.getHotelDetails().getWeight());
 		}
 	},
-	PRICE 
+	DEFAULT_A 
+	{
+		@JsonIgnore
+		@Override
+		public int compare(Hotel h1, Hotel h2)
+		{
+			return DEFAULT_D.compare(h2, h1);
+		}
+	},
+	PRICE_A 
 	{
 		@JsonIgnore
 		@Override
@@ -27,7 +36,16 @@ public enum SortType implements Comparator<Hotel>, Serializable
 			return h1.getLowestAvgRate().compareTo(h2.getLowestAvgRate());
 		}
 	},
-	HOTEL_NAME 
+	PRICE_D 
+	{
+		@JsonIgnore
+		@Override
+		public int compare(Hotel h1, Hotel h2)
+		{
+			return PRICE_A.compare(h2, h1);
+		}
+	},
+	HOTEL_NAME_A 
 	{
 		@JsonIgnore
 		@Override
@@ -36,7 +54,16 @@ public enum SortType implements Comparator<Hotel>, Serializable
 			return h1.getName().compareTo(h2.getName());
 		}
 	}, 
-	RATING 
+	HOTEL_NAME_D 
+	{
+		@JsonIgnore
+		@Override
+		public int compare(Hotel h1, Hotel h2)
+		{
+			return HOTEL_NAME_A.compare(h2, h1);
+		}
+	},
+	RATING_A 
 	{
 		@JsonIgnore
 		@Override
@@ -50,7 +77,16 @@ public enum SortType implements Comparator<Hotel>, Serializable
 			return 0;
 		}
 	},
-	AREA
+	RATING_D
+	{
+		@JsonIgnore
+		@Override
+		public int compare(Hotel h1, Hotel h2)
+		{
+			return RATING_A.compare(h2, h1);
+		}
+	},
+	AREA_A
 	{
 		@JsonIgnore
 		@Override
@@ -59,6 +95,15 @@ public enum SortType implements Comparator<Hotel>, Serializable
 			String area1 = StringUtils.defaultIfEmpty(h1.getHotelDetails().getAreaDescription(),"ZZZ");
 			String area2 = StringUtils.defaultIfEmpty(h2.getHotelDetails().getAreaDescription(),"ZZZ");
 			return area1.compareTo(area2);
+		}
+	},
+	AREA_D
+	{
+		@JsonIgnore
+		@Override
+		public int compare(Hotel h1, Hotel h2)
+		{
+			return AREA_A.compare(h2, h1);
 		}
 	};
 

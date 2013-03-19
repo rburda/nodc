@@ -22,6 +22,10 @@
 	<#if ( x?matches("FQG") ) >none<#else>block</#if>
 </#macro>
 
+<#macro isSortSelected selected current>
+	<#if ( selected?matches(current) ) >selected=selected</#if>
+</#macro>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -71,9 +75,13 @@
 		<script type="text/javascript">
 	 		cyljq(document).ready(function() 
 	 		{
-	 			cyljq(".scheck").click(function() {
+	 			cyljq(".scheck").change(function() {
 	   			document.location.href="results?page=1&sort="+cyljq(this).val();
 	  		});
+	 			
+	 			cyljq("#filter").change(function() {
+	 				document.location.href="results?page=1&filter="+cyljq(this).val();
+	 			});
 	 			
 				var ajaxOpts = {
 						url: 'http://www.neworleans.com/mytrip/app/SearchWidget?skin=homeHotel',
@@ -384,6 +392,8 @@
 								<h3>Change Search</h3>								
 								<div id="sidebarWidget"></div>
 							</div>
+
+
 							<div class="allAvailableItems">
 								<h3>All Available Hotels</h3>
 								<p>For your convenience, we've listed all of the available hotels within your search.</p>
@@ -516,24 +526,45 @@
 	                    <ul>
 	                     <li class="first"><label>Sort by:</label></li>
 	                     <li>
-	                         <input id="sortWeight" type="radio" value="DEFAULT" class="scheck checkBox" <#if (searchResults["result"].currentSort.name() == "DEFAULT") > checked="checked" </#if> />
-	                         <label for="sortWeight">NewOrleans.com Picks</label>&nbsp; 
+	                     		<div style="margin-right: 20px">NewOrleans Picks</div>
+	                     		<select id="sortWeight" class="scheck">
+	                     			<option value="">----</option>
+	                     			<option <@isSortSelected selected=searchResults["result"].currentSort current="DEFAULT_D" /> value="DEFAULT_D">High to Low</option>
+	                     			<option <@isSortSelected selected=searchResults["result"].currentSort current="DEFAULT_A" /> value="DEFAULT_A">Low to High</option>
+	                     		</select>
 	                     </li>
 	                     <li>
-	                         <input id="sortPrice" type="radio" value="PRICE" class="scheck checkBox" <#if (searchResults["result"].currentSort.name() == "PRICE") > checked="checked" </#if> />
-	                         <label for="sortPrice">Price</label> &nbsp; 
+	                     		<div>Price</div>
+	                     		<select id="sortPrice" class="scheck" style="margin-right: 20px">
+	                     			<option value="">----</option>
+	                     			<option <@isSortSelected selected=searchResults["result"].currentSort current="PRICE_D" /> value="PRICE_D">$$$ - $</option>
+	                     			<option <@isSortSelected selected=searchResults["result"].currentSort current="PRICE_A" /> value="PRICE_A">$ - $$$</option>
+	                     		</select>
 	                     </li>
 	                     <li>
-	                         <input id="sortName" type="radio" value="HOTEL_NAME" class="scheck checkBox" <#if (searchResults["result"].currentSort.name() == "HOTEL_NAME") > checked="checked" </#if> />
-	                         <label for="sortName">Hotel Name</label>&nbsp; 
+	                     		<div style="margin-right: 20px">Hotel Name</div>
+	                     		<select id="sortName" class="scheck">
+														<option value="">----</option>
+	                     			<option <@isSortSelected selected=searchResults["result"].currentSort current="HOTEL_NAME_A" /> value="HOTEL_NAME_A">A-Z</option>
+	                     			<option <@isSortSelected selected=searchResults["result"].currentSort current="HOTEL_NAME_D" /> value="HOTEL_NAME_D">Z-A</option>
+	                     		</select>
 	                     </li>
 	                     <li>
-	                         <input id="sortRating" type="radio" value="RATING" class="scheck checkBox" <#if (searchResults["result"].currentSort.name() == "RATING") > checked="checked" </#if> />
-	                         <label for="sortRating">Rating</label>
+	                     		<div>Rating</div>
+	                     		<select id="sortRating" class="scheck" style="margin-right: 20px">
+\														<option value="">----</option>
+	                     			<option <@isSortSelected selected=searchResults["result"].currentSort current="RATING_D" /> value="RATING_D">5 star first</option>
+	                     			<option <@isSortSelected selected=searchResults["result"].currentSort current="RATING_A" /> value="RATING_A">1 star first</option>
+	                     		</select>
 	                     </li>
 	                     <li>
-	                         <input id="sortRating" type="radio" value="AREA" class="scheck checkBox" <#if (searchResults["result"].currentSort.name() == "AREA") > checked="checked" </#if> />
-	                         <label for="sortRating">Area</label>
+													<div >Location</div> 
+														<select class="hotelLocation" id="filter" name="filter" value='${searchResults["result"].currentFilterLocation}' style="width: 160px;" >
+															<option <#if ( searchResults["result"].currentFilterLocation?matches("NONE") ) >selected=selected</#if> value="NONE">All Locations</option>
+															<#list searchResults["result"].locations as location>
+																<option <#if ( searchResults["result"].currentFilterLocation?matches(location) ) >selected=selected</#if> value="${location}">${location}</option>
+															</#list>
+														</select>	                     
 	                     </li>
 	                    </ul>
                      	<span class="clear"></span>
@@ -541,7 +572,7 @@
                     <div class="clear"></div>
                     <!-- / sort bar -->
                     <!-- pagination -->
-											<#if (searchResults["result"].filteredHotels?size > 0) >
+											<#if (searchResults["result"].pagedSubsetHotels?size > 0) >
 												<div style="font-size: 14px;" class="pagination">
 													<p class="left">
 														<span>${searchResults["result"].startHotel}-${searchResults["result"].endHotel} of ${searchResults["result"].numTotalHotels} results</span>
@@ -568,7 +599,7 @@
                     <!-- / pagination -->
                     <div>
 					<#assign hotelId=0>
-                        <#list searchResults["result"].filteredHotels as hotel>
+                        <#list searchResults["result"].pagedSubsetHotels as hotel>
                         <div class="searchResult">
                             <!-- search results box header with gradient background, hotel name, price -->
                             <div class="searchResultsHead">
@@ -746,7 +777,7 @@
                         <!-- / clearing -->
                     </div>
                     <!-- bottom pagination -->
-										<#if (searchResults["result"].filteredHotels?size > 0) >
+										<#if (searchResults["result"].pagedSubsetHotels?size > 0) >
 											<div style="font-size: 14px;" class="pagination">
 												<p class="left">
 													<span>${searchResults["result"].startHotel}-${searchResults["result"].endHotel} of ${searchResults["result"].numTotalHotels} results</span>

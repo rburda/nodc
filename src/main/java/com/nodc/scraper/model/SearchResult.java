@@ -24,9 +24,15 @@ public class SearchResult
 	public int numPages = 1;
 	public int startHotel = 1;
 	public int numTotalHotels = 0;
-	public SortType currentSort = SortType.DEFAULT;
+	public SortType currentSort = SortType.DEFAULT_A;
+	public String currentFilterLocation = null;
+	
+	private List<String> locations = Lists.newArrayList();
+	
+	//all hotels (unfiltered)
 	private List<Hotel> allHotels = new ArrayList<Hotel>();
-	private List<Hotel> filteredHotels = new ArrayList<Hotel>();
+	//a subset of the filteredSet of hotels;
+	private List<Hotel> pagedSubsetHotels = new ArrayList<Hotel>();
 	
 	SearchResult(){}
 	
@@ -82,9 +88,9 @@ public class SearchResult
 		this.allHotels = allHotels;
 	}
 	
-	public List<Hotel> getFilteredHotels()
+	public List<Hotel> getPagedSubsetHotels()
 	{
-		return Lists.newArrayList(filteredHotels);
+		return Lists.newArrayList(pagedSubsetHotels);
 	}
 	
 	public Hotel getHotel(String hotelName)
@@ -98,9 +104,19 @@ public class SearchResult
 		return found;
 	}
 	
-	public void setFilteredHotels(List<Hotel> hotels)
+	public void setPagedSubsetHotels(List<Hotel> hotels)
 	{
-		this.filteredHotels = Lists.newArrayList(hotels);
+		this.pagedSubsetHotels = Lists.newArrayList(hotels);
+	}
+	
+	public List<String> getLocations()
+	{
+		return locations;
+	}
+	
+	public void setLocations(List<String> locations)
+	{
+		this.locations = Lists.newArrayList(locations);
 	}
 	
 	public int getNumRooms()
@@ -133,6 +149,11 @@ public class SearchResult
 		return currentSort;
 	}
 	
+	public String getCurrentFilterLocation()
+	{
+		return currentFilterLocation;
+	}
+	
 	public int getNumTotalHotels()
 	{
 		return numTotalHotels;
@@ -145,7 +166,7 @@ public class SearchResult
 	
 	public int getEndHotel()
 	{
-		return getStartHotel()+filteredHotels.size()-1;
+		return getStartHotel()+pagedSubsetHotels.size()-1;
 	}
 	
 	public boolean isPreferredHotelRequested()

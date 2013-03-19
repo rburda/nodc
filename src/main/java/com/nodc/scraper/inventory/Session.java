@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -17,19 +18,24 @@ import com.nodc.scraper.model.SearchParams;
 import com.nodc.scraper.model.SearchResult;
 import com.nodc.scraper.model.SortType;
 import com.nodc.scraper.model.persisted.InventorySource;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 
 public class Session implements Serializable
 {
 	private static Logger logger = LoggerFactory.getLogger(Session.class);
-	private static final int NUM_RESULTS_PER_PAGE = 20;	
+	private static final int NUM_RESULTS_PER_PAGE = 20;
+	private static final String FILTER_NONE = "NONE";
 	private static final long serialVersionUID = 1L;
 	
 	private SearchParams params;
 	private Map<InventorySource, Boolean> completeStatusMap = Maps.newConcurrentMap();
 	private SortType currentSort;
+	private String filterLocation = FILTER_NONE;
 	private int currentPage = 1;
 	private boolean sortAsc;
 
@@ -101,11 +107,19 @@ public class Session implements Serializable
 	@JsonIgnore
 	public void setCurrentSort(SortType sortType)
 	{
+		/*
 		if (sortType == currentSort)
 			sortAsc = !sortAsc;
 		else
 			sortAsc = true;
+	*/
 		this.currentSort = sortType;			
+	}
+	
+	@JsonIgnore
+	public void setFilterLocation(String loc)
+	{
+		this.filterLocation = loc;
 	}
 		
 	@JsonIgnore
@@ -155,19 +169,45 @@ public class Session implements Serializable
 			logger.debug("num hotels after aggragation: " + aggragatedHotels.size());
 		}
 		
-		aggragatedResult.currentPage = currentPage;
-		aggragatedResult.numPages = (int) Math.ceil(((float)aggragatedHotels.size()) / NUM_RESULTS_PER_PAGE);
-		aggragatedResult.startHotel = getStartResult(aggragatedHotels)+1;
-		aggragatedResult.currentSort = currentSort;
-		aggragatedResult.numTotalHotels = aggragatedHotels.size();
+		//filter aggragatedHotels;
+		List<Hotel> filteredHotels = Lists.newArrayList(Iterables.filter(aggragatedHotels, new Predicate<Hotel>()
+				{
+					@Override
+					public boolean apply(Hotel h)
+					{
+						boolean apply = true;
+						if (filterLocation != null && !filterLocation.equals(FILTER_NONE))
+							if (!StringUtils.equals(filterLocation, h.getHotelDetails().getAreaDescription()))
+								apply = false;
+						return apply;
+					}
+				}));
 		
-		Collections.sort(aggragatedHotels, SortType.HOTEL_NAME);
+		
+		aggragatedResult.currentPage = currentPage;
+		aggragatedResult.numPages = (int) Math.ceil(((float)filteredHotels.size()) / NUM_RESULTS_PER_PAGE);
+		aggragatedResult.startHotel = getStartResult(filteredHotels)+1;
+		aggragatedResult.currentSort = currentSort;
+		aggragatedResult.currentFilterLocation = filterLocation;
+		aggragatedResult.numTotalHotels = filteredHotels.size();
+		
+		Collections.sort(aggragatedHotels, SortType.HOTEL_NAME_A);
 		aggragatedResult.setAllHotels(aggragatedHotels);
-		aggragatedResult.setFilteredHotels(createFilteredHotelList(aggragatedHotels));
+		aggragatedResult.setPagedSubsetHotels(createdPagedSubsetHotelList(filteredHotels));
+		
+		//finally set possible locations
+		Set<String> locations = Sets.newHashSet();
+		for (Hotel h: aggragatedHotels)
+			if (!StringUtils.isEmpty(h.getHotelDetails().getAreaDescription()))
+					locations.add(h.getHotelDetails().getAreaDescription());
+		
+		List<String> sortedLocations = Lists.newArrayList(locations);
+		Collections.sort(sortedLocations);
+		aggragatedResult.setLocations(sortedLocations);
 		return aggragatedResult;
 	}
 	
-	private List<Hotel> createFilteredHotelList(List<Hotel> hotels)
+	private List<Hotel> createdPagedSubsetHotelList(List<Hotel> hotels)
 	{
 		int startResult = getStartResult(hotels);
 		int endResult = startResult+NUM_RESULTS_PER_PAGE;
@@ -177,10 +217,10 @@ public class Session implements Serializable
 		
 		List<Hotel> sortedHotels = Lists.newArrayList(hotels);
 		Collections.sort(sortedHotels, currentSort);
-		if (!sortAsc)
-			Collections.reverse(sortedHotels);
+		//if (!sortAsc)
+		//	Collections.reverse(sortedHotels);
 		
-		if (currentSort.equals(SortType.DEFAULT) && sortAsc)
+		if (currentSort.equals(SortType.DEFAULT_D) /*&& sortAsc*/)
 		{
 			if (!StringUtils.isEmpty(params.getPreferredProductId()))
 			{

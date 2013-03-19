@@ -19,5 +19,5 @@ public interface InventoryService
 		
 	HotelDetail getHotelDetails(SessionInfo sessionInfo, String hotelName);
 
-	SearchResult getAggragatedResults(SessionInfo sessionInfo, SortType sortBy, Integer page);
+	SearchResult getAggragatedResults(SessionInfo sessionInfo, SortType sortBy, Integer page, String locationFilter);
 }

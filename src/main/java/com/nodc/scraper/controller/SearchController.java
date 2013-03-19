@@ -80,7 +80,7 @@ public class SearchController
 		SearchParams sp = new SearchParams(params);
 		sp.setSessionInfo(new SessionInfo(request));
 		invService.search(request, sp);
-		model.put("result", invService.getAggragatedResults(sp.getSessionInfo(), null, null));
+		model.put("result", invService.getAggragatedResults(sp.getSessionInfo(), null, null, null));
 		
 		createResponseCookies(request, clientResponse, sp);
 		return new ModelAndView("searchResult", model);
@@ -102,12 +102,13 @@ public class SearchController
 	public ModelAndView getResults(
 			@RequestParam(value="sort", required=false) SortType sortType,
 			@RequestParam(value="page", required=false) Integer page,
+			@RequestParam(value="filter", required=false) String locationFilterValue,
 			@ModelAttribute("searchResults") ModelMap model,
 			HttpServletRequest clientRequest,
 			HttpServletResponse clientResponse) throws Exception
 	{		
 		SessionInfo sessionInfo = new SessionInfo(clientRequest);
-		SearchResult searchResult = invService.getAggragatedResults(sessionInfo, sortType, page); 
+		SearchResult searchResult = invService.getAggragatedResults(sessionInfo, sortType, page, locationFilterValue); 
 		if (searchResult == null)
 			return new ModelAndView(new RedirectView("http://www.neworleans.com"));
 		model.put("result", searchResult);
@@ -155,18 +156,21 @@ public class SearchController
 		sessionIdCookie.setMaxAge(-1);
 		sessionIdCookie.setSecure(false);
 		sessionIdCookie.setDomain(".www.neworleans.com");
+		sessionIdCookie.setPath("/");
 		resp.addCookie(sessionIdCookie);
 		
 		Cookie wwwSidCookie = new Cookie(SessionInfo.WWW_SID_COOKIE_NAME, params.getSessionInfo().getWWWSid());
 		wwwSidCookie.setMaxAge(-1);
 		wwwSidCookie.setSecure(false);
 		wwwSidCookie.setDomain(".www.neworleans.com");
+		wwwSidCookie.setPath("/");
 		resp.addCookie(wwwSidCookie);
 		
 		Cookie wicketParentUrlCookie = new Cookie(SessionInfo.WICKET_SEARCH_COOKIE_NAME, params.getSessionInfo().getWicketSearchPath());
 		wicketParentUrlCookie.setMaxAge(-1);
 		wicketParentUrlCookie.setSecure(false);
 		wicketParentUrlCookie.setDomain(".www.neworleans.com");
+		wicketParentUrlCookie.setPath("/");
 		resp.addCookie(wicketParentUrlCookie);
 		
 		

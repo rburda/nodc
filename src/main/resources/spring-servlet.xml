@@ -25,12 +25,13 @@
 	<beans profile="dev">
   <!-- freemarker config -->
 	  <bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">			
+<!-- 
 			<property name="preTemplateLoaders">
 	 			<list>
 	 				<ref bean="s3TemplateLoader"/>
 	 			</list>
 			</property>
-
+ -->
 			<!-- intent is to look in the s3TemplateLoader first. Looking at FreeMarkerConfigurer, this appears to be the
 			     case. Noticed that preTemplateLoaders are added to loader list prior to templateLoader path.
 			     Templates are searched by asking each loader (in order of how they were added to list) whether they

@@ -105,13 +105,13 @@ public class InventoryServiceImpl implements InventoryService
 		}
 		Session session = new Session(params);
 		session.setCurrentPage(1);
-		session.setCurrentSort(SortType.DEFAULT);
+		session.setCurrentSort(SortType.DEFAULT_D);
 		logger.debug(String.format("CACHE: session cache key (%1$s);", params.getSessionInfo().getSessionId()));
 		request.getSession().setAttribute(params.getSessionInfo().getSessionId(), session);
 	}
 	
 	@Override
-	public SearchResult getAggragatedResults(SessionInfo sessionInfo, SortType sortBy, Integer page) 
+	public SearchResult getAggragatedResults(SessionInfo sessionInfo, SortType sortBy, Integer page, String locationFilter) 
 	{
 		SearchResult sr = null;
 		Session s = getFromCache(sessionInfo.getRequest(), sessionInfo.getSessionId());
@@ -134,6 +134,8 @@ public class InventoryServiceImpl implements InventoryService
 				s.setCurrentPage(page);
 			if (sortBy != null)
 				s.setCurrentSort(sortBy);
+			if (locationFilter != null)
+				s.setFilterLocation(locationFilter);
 			try
 			{
 				sessionInfo.getRequest().getSession().setAttribute(sessionInfo.getSessionId(), s);
@@ -151,7 +153,7 @@ public class InventoryServiceImpl implements InventoryService
 	@Override
 	public HotelDetail getHotelDetails(SessionInfo sessionInfo, String hotelName)
 	{
-		SearchResult searchResult = getAggragatedResults(sessionInfo,  null,  null);
+		SearchResult searchResult = getAggragatedResults(sessionInfo,  null,  null, null);
 		HotelDetail hotelDetail = null;
 		if (searchResult != null)
 		{
