@@ -2,6 +2,7 @@ package com.nodc.scraper.cache;
 
 import java.net.URI;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
@@ -58,6 +59,11 @@ public class OneTimeHotelLoader
 	@Scheduled(cron = "0 0 1 * * ?")
 	public void initializeHotelData() throws Exception
 	{
+		initializeHotelData(null);
+	}
+	
+	public void initializeHotelData(String optionalSingleHotel) throws Exception
+	{
 		int page = 1;
 		HttpResponse hotelSummaryResponse = queryHotelsViaHttpClient(page);
 		byte[] xml = EntityUtils.toByteArray(hotelSummaryResponse.getEntity());
@@ -75,16 +81,21 @@ public class OneTimeHotelLoader
 				MasterHotel hotel = null;
 				
 				String hotelId = hotelEl.select("hotel_id").first().ownText();
+				String hotelName = InventoryUtils.urlDecode(hotelEl.select("hotel_name").first().ownText());
+				if (optionalSingleHotel != null)
+					if (!hotelName.equals(optionalSingleHotel))
+						continue;
+				
 				logger.error("init hotel id: " + hotelId);
 				//check to see if we've seen this hotel before
 				SourceHotel sourceHotel = 
-						sourceHotelDAO.getByHotelId(hotelId, InventorySource.FQG);
+						sourceHotelDAO.loadSourceHotelFromDB(hotelId, InventorySource.FQG);
 				
 				//if not, record it now.
 				if (sourceHotel == null)
 				{
 					sourceHotel = new SourceHotel();
-					sourceHotel.setHotelName(InventoryUtils.urlDecode(hotelEl.select("hotel_name").first().ownText()));
+					sourceHotel.setHotelName(hotelName);
 					sourceHotel.setExternalHotelId(hotelId);
 					sourceHotel.setInvSource(InventorySource.FQG);
 					sourceHotelDAO.save(sourceHotel);
@@ -93,7 +104,7 @@ public class OneTimeHotelLoader
 		
 				//now see if we've created a master record before. This can only have
 				//been true if the sourceHotel was not null
-				hotel = masterHotelDAO.getByHotelName(sourceHotel.getHotelName());
+				hotel = masterHotelDAO.loadMasterHotelFromDB(sourceHotel.getHotelName());
 				
 				//if not go ahead and create one.
 				if (hotel == null)
@@ -103,6 +114,7 @@ public class OneTimeHotelLoader
 					hotel.setFavoredInventorySource(InventorySource.FQG);
 					hotel.setWeight(1000);
 					hotel.setHotelName(sourceHotel.getHotelName());
+					hotel.setUuid(UUID.randomUUID().toString());
 					masterHotelDAO.save(hotel);
 				}
 				else
@@ -112,7 +124,7 @@ public class OneTimeHotelLoader
 				//If not, create one; if we do, then still set the address info as that
 				//doesn't come in during the normal cache load
 				HotelDetailCacheKey key = new HotelDetailCacheKey(hotel.getHotelName(), InventorySource.FQG);
-				HotelDetail hd = hotelDetailDAO.getHotelDetail(key);
+				HotelDetail hd = hotelDetailDAO.loadHotelDetailFromDB(key);
 				Map<String, Boolean> overrideMap = hotelDetailDAO.loadHotelDetailOverridesAsMapFromDB(key);
 				boolean isNew = false;
 				if (hd == null)

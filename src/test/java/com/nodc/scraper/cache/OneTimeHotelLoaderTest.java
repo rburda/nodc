@@ -13,6 +13,6 @@ public class OneTimeHotelLoaderTest extends BaseSpringJUnitTest
 	@Test
 	public void testOneTimeHotelLoad() throws Exception
 	{
-		hotelLoader.initializeHotelData();
+		hotelLoader.initializeHotelData("Queen and Crescent Hotel");
 	}
 }

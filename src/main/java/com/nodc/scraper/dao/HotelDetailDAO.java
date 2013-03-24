@@ -21,6 +21,7 @@ import com.nodc.scraper.model.persisted.SourceHotel;
 import com.amazonaws.services.dynamodb.AmazonDynamoDB;
 import com.amazonaws.services.dynamodb.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodb.model.AttributeValue;
+import com.amazonaws.services.dynamodb.model.DeleteItemRequest;
 import com.amazonaws.services.dynamodb.model.GetItemRequest;
 import com.amazonaws.services.dynamodb.model.GetItemResult;
 import com.amazonaws.services.dynamodb.model.Key;
@@ -53,7 +54,16 @@ public class HotelDetailDAO extends AbstractDynamoDBDAO<HotelDetail>
 			for (SourceHotel sh: allSourceHotels)
 			{
 				HotelDetailCacheKey key = new HotelDetailCacheKey(sh.getHotelName(), sh.getInvSource());
-				hotelDetailMap.put(key, loadHotelDetailFromDB(key));				
+				HotelDetail hd = loadHotelDetailFromDB(key);
+				if (hd == null)
+				{
+					logger.error("unable to find hotel detail for key: " + key.getHotelName() + ", " + key.getInventorySource());
+					
+				}
+				else
+				{
+					hotelDetailMap.put(key, loadHotelDetailFromDB(key));
+				}
 			}
 			hotelDetailCache.putAll(hotelDetailMap);			
 		}
@@ -113,6 +123,15 @@ public class HotelDetailDAO extends AbstractDynamoDBDAO<HotelDetail>
 			return null;
 	}
 	
+	public void deleteHotelDetailOverrides(HotelDetailCacheKey ck)
+	{
+		DeleteItemRequest deleteItemRequest = new DeleteItemRequest()
+			.withTableName("nodc_hotel_content_override")
+			.withKey(new Key()
+					.withHashKeyElement(new AttributeValue().withS(ck.getHotelName())));
+		getClient().deleteItem(deleteItemRequest);
+	}
+	
 	public Map<String, Boolean> loadHotelDetailOverridesAsMapFromDB(HotelDetailCacheKey ck)
 	{
 		Map<String, Boolean> overrideMap = Maps.newHashMap();
@@ -134,6 +153,17 @@ public class HotelDetailDAO extends AbstractDynamoDBDAO<HotelDetail>
 		return overrideMap;
 	}
 	
+	public void saveHotelDetailOverrides(HotelDetailCacheKey ck, Map<String, Boolean> overrides)
+	{
+		Map<String, AttributeValue> persistOverrideMap = Maps.newHashMap();
+		for (String key: overrides.keySet())
+		{
+			persistOverrideMap.put(key, new AttributeValue(overrides.get(key).toString()));
+		}
+		getClient().putItem( 
+				new PutItemRequest().withTableName("nodc_hotel_content_override").withItem(persistOverrideMap));
+	}
+	
 	public void saveHotelDetailFromMap(Map<String, AttributeValue> attrs)
 	{
 		getClient().putItem( 
@@ -147,7 +177,7 @@ public class HotelDetailDAO extends AbstractDynamoDBDAO<HotelDetail>
 		HotelDetail hd = getDynamoMapper().load(HotelDetail.class,  ck.getHotelName());
 		if (hd != null)
 		{
-			List<RoomTypeDetail> roomTypes = roomTypeDetailDAO.getRoomTypeDetails(ck);
+			List<RoomTypeDetail> roomTypes = roomTypeDetailDAO.loadRoomTypeDetailsFromDB(ck);
 			if (roomTypes != null)
 			{
 				for (RoomTypeDetail rtd: roomTypes)

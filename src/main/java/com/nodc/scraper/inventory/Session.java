@@ -35,7 +35,8 @@ public class Session implements Serializable
 	private SearchParams params;
 	private Map<InventorySource, Boolean> completeStatusMap = Maps.newConcurrentMap();
 	private SortType currentSort;
-	private String filterLocation = FILTER_NONE;
+	private String locationFilter = FILTER_NONE;
+	private String hotelNameFilter = FILTER_NONE;
 	private int currentPage = 1;
 	private boolean sortAsc;
 
@@ -107,19 +108,25 @@ public class Session implements Serializable
 	@JsonIgnore
 	public void setCurrentSort(SortType sortType)
 	{
-		/*
-		if (sortType == currentSort)
-			sortAsc = !sortAsc;
-		else
-			sortAsc = true;
-	*/
 		this.currentSort = sortType;			
 	}
 	
 	@JsonIgnore
-	public void setFilterLocation(String loc)
+	public void setLocationFilter(String loc)
 	{
-		this.filterLocation = loc;
+		this.locationFilter = loc;
+	}
+	
+	@JsonIgnore
+	public void setHotelNameFilter(String hotelName)
+	{
+		this.hotelNameFilter = hotelName;
+	}
+	
+	@JsonIgnore
+	public String getHotelNameFilter()
+	{
+		return hotelNameFilter;
 	}
 		
 	@JsonIgnore
@@ -171,24 +178,32 @@ public class Session implements Serializable
 		
 		//filter aggragatedHotels;
 		List<Hotel> filteredHotels = Lists.newArrayList(Iterables.filter(aggragatedHotels, new Predicate<Hotel>()
+			{
+				@Override
+				public boolean apply(Hotel h)
 				{
-					@Override
-					public boolean apply(Hotel h)
+					boolean apply = true;
+					if (locationFilter != null && !locationFilter.equals(FILTER_NONE))
 					{
-						boolean apply = true;
-						if (filterLocation != null && !filterLocation.equals(FILTER_NONE))
-							if (!StringUtils.equals(filterLocation, h.getHotelDetails().getAreaDescription()))
-								apply = false;
-						return apply;
+						if (!StringUtils.equals(locationFilter, h.getHotelDetails().getAreaDescription()))
+							apply = false;
 					}
-				}));
+					if (hotelNameFilter != null && !hotelNameFilter.equals(FILTER_NONE))
+					{
+						if (!StringUtils.containsIgnoreCase(h.getName(), hotelNameFilter))
+							apply = false;
+					}
+					return apply;
+				}
+			}));
 		
 		
 		aggragatedResult.currentPage = currentPage;
 		aggragatedResult.numPages = (int) Math.ceil(((float)filteredHotels.size()) / NUM_RESULTS_PER_PAGE);
 		aggragatedResult.startHotel = getStartResult(filteredHotels)+1;
 		aggragatedResult.currentSort = currentSort;
-		aggragatedResult.currentFilterLocation = filterLocation;
+		aggragatedResult.currentFilterLocation = locationFilter;
+		aggragatedResult.currentHotelNameFilter = hotelNameFilter;
 		aggragatedResult.numTotalHotels = filteredHotels.size();
 		
 		Collections.sort(aggragatedHotels, SortType.HOTEL_NAME_A);
@@ -198,7 +213,7 @@ public class Session implements Serializable
 		//finally set possible locations
 		Set<String> locations = Sets.newHashSet();
 		for (Hotel h: aggragatedHotels)
-			if (!StringUtils.isEmpty(h.getHotelDetails().getAreaDescription()))
+			if (h.getHotelDetails() != null && !StringUtils.isEmpty(h.getHotelDetails().getAreaDescription()))
 					locations.add(h.getHotelDetails().getAreaDescription());
 		
 		List<String> sortedLocations = Lists.newArrayList(locations);

@@ -2,6 +2,7 @@ package com.nodc.scraper.cache;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +55,7 @@ public class NODCHotelLoader
 	{
 		for (String hotelName: weights.keySet())
 		{
-			MasterHotel h = masterHotelDAO.getByHotelName(hotelName);
+			MasterHotel h = masterHotelDAO.loadMasterHotelFromDB(hotelName);
 			if (h != null)
 			{
 				h.setWeight(weights.get(hotelName));
@@ -67,37 +68,47 @@ public class NODCHotelLoader
 	//single threaded so if tasks overlap, they will wait for an executing one to
 	//finish before starting the next one. Last one to execute. Want this to 
 	//execute last because we like NODC content more than priceline
-	@Scheduled(cron = "0 2 1 * * ?")   
+	@Scheduled(cron = "0 2 1 * * ?") 
 	public void loadCache() throws Exception
+	{
+		loadCache(null);
+	}
+	
+	public void loadCache(String optionalSingleHotel) throws Exception
 	{
 		List<Hotel> shellHotels = invSource.getAllShellHotels();
 		
-		for (Hotel h: shellHotels)
+		for (Hotel newHotel: shellHotels)
 		{
-			logger.error(String.format("saving hotel: %1$s (%2$s)", h.getName(), h.getSource().getExternalHotelId()));
-			String hotelId = h.getSource().getExternalHotelId();
+			if (optionalSingleHotel != null)
+				if (!newHotel.getName().equals(optionalSingleHotel))
+					continue;
+			
+			logger.error(String.format("saving hotel: %1$s (%2$s)", newHotel.getName(), newHotel.getSource().getExternalHotelId()));
+			String hotelId = newHotel.getSource().getExternalHotelId();
 			
 			//check to see if we've seen this hotel before (on the NODC side)
 			SourceHotel previouslyFound = 
-					sourceHotelDAO.getByHotelId(hotelId, InventorySource.NODC);
+					sourceHotelDAO.loadSourceHotelFromDB(hotelId, InventorySource.NODC);
 			//if we've never seen this hotel before
 			if (previouslyFound == null)
 			{
 				logger.error("hotel not previously found");
-				if (h.getSource().getHotelName().contains("Harrah"))
+				if (newHotel.getSource().getHotelName().contains("Harrah"))
 				{
-					h.getSource().setHotelName(h.getSource().getHotelName().replace("'",""));
+					newHotel.getSource().setHotelName(newHotel.getSource().getHotelName().replace("'",""));
 				}
-				sourceHotelDAO.save(h.getSource());				
+				sourceHotelDAO.save(newHotel.getSource());				
 				
 				//now check to see if a masterHotel has been created with this name
 				//previously
-				MasterHotel masterHotel = masterHotelDAO.getByHotelName(h.getSource().getHotelName());
+				MasterHotel masterHotel = masterHotelDAO.loadMasterHotelFromDB(newHotel.getSource().getHotelName());
 				if (masterHotel == null)
 				{
 					masterHotel = new MasterHotel();
-					masterHotel.setHotelName(h.getSource().getHotelName());
+					masterHotel.setHotelName(newHotel.getSource().getHotelName());
 					masterHotel.setWeight(1000);
+					masterHotel.setUuid(UUID.randomUUID().toString());
 				}
 				masterHotel.setFavoredInventorySource(InventorySource.NODC);
 				masterHotelDAO.save(masterHotel);
@@ -105,29 +116,31 @@ public class NODCHotelLoader
 			else
 			{
 				logger.error("hotel previously found");
-				h.setSource(previouslyFound);
+				newHotel.setSource(previouslyFound);
 			}
-			h.setName(h.getSource().getHotelName());
-			h.getHotelDetails().setName(h.getSource().getHotelName());
-			if (h.getHotelDetails().getRoomTypeDetails() != null)
+			newHotel.setName(newHotel.getSource().getHotelName());
+			newHotel.getHotelDetails().setName(newHotel.getSource().getHotelName());
+			if (newHotel.getHotelDetails().getRoomTypeDetails() != null)
 			{
-				for (RoomTypeDetail rtd: h.getHotelDetails().getRoomTypeDetails())
-					rtd.setHotelName(h.getSource().getHotelName()+"_"+InventorySource.NODC);
+				for (RoomTypeDetail rtd: newHotel.getHotelDetails().getRoomTypeDetails())
+					rtd.setHotelName(
+							RoomTypeDetail.createRoomTypeDetailHotelName(newHotel.getSource().getHotelName(),InventorySource.NODC));
 			}
 			
-			HotelDetailCacheKey key = new HotelDetailCacheKey(h.getSource().getHotelName(), InventorySource.NODC);
-			HotelDetail hd = hotelDetailDAO.getHotelDetail(key);
-			if (hd != null)
+			HotelDetailCacheKey key = new HotelDetailCacheKey(newHotel.getSource().getHotelName(), InventorySource.NODC);
+			HotelDetail existingHotelDetails = hotelDetailDAO.loadHotelDetailFromDB(key);
+			HotelDetail newHotelDetails = newHotel.getHotelDetails();
+			if (existingHotelDetails != null)
 			{
 				logger.error("hotel details previously stored");
-				if (hd.getRoomTypeDetails().size() > 0)
+				if (existingHotelDetails.getRoomTypeDetails().size() > 0)
 				{
 					logger.error("hotel room type details present.... deleting");
-					roomTypeDetailDAO.delete(hd.getRoomTypeDetails());
+					roomTypeDetailDAO.delete(existingHotelDetails.getRoomTypeDetails());
 				}
-				keepNonOverridableContent(key, hd, h.getHotelDetails());
+				keepNonOverridableContent(key, existingHotelDetails, newHotelDetails);
 			}
-			hotelDetailDAO.save(h.getHotelDetails());
+			hotelDetailDAO.save(newHotelDetails);
 		}
 		
 		cacheStateDAO.markHotelDetailCacheUpdated();

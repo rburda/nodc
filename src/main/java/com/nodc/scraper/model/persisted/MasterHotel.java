@@ -20,6 +20,7 @@ public class MasterHotel
 			
 		}
 		
+		@DynamoDBIgnore
 		public int getNewWeight()
 		{
 			return newWeight;
@@ -30,6 +31,7 @@ public class MasterHotel
 			this.newWeight = w;
 		}
 		
+		@DynamoDBIgnore
 		public String getNewHotelName()
 		{
 			return newHotelName;
@@ -60,6 +62,9 @@ public class MasterHotel
 	private String hotelName;
 	private int weight;
 	private InventorySource favoredInvSource;
+	private String uuid;
+	
+	public MasterHotel(){}
 	
 	@DynamoDBHashKey(attributeName = "hotel_name")
 	public String getHotelName()
@@ -103,5 +108,16 @@ public class MasterHotel
 	public void setFavoredInventorySourceString(String is)
 	{
 		this.favoredInvSource = InventorySource.valueOf(is);
+	}
+	
+	@DynamoDBAttribute(attributeName = "uuid")
+	public String getUuid()
+	{
+		return uuid;
+	}
+	
+	public void setUuid(String uuid)
+	{
+		this.uuid = uuid;
 	}
 }

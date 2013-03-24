@@ -87,13 +87,15 @@ public class RoomTypeDetailDAO extends AbstractDynamoDBDAO<RoomTypeDetail>
 		return details;	
 	}	
 	
-	private List<RoomTypeDetail> loadRoomTypeDetailsFromDB(HotelDetailCacheKey ck)
+	public List<RoomTypeDetail> loadRoomTypeDetailsFromDB(HotelDetailCacheKey ck)
 	{
 		DynamoDBQueryExpression queryExpression = 
 				new DynamoDBQueryExpression(new AttributeValue().withS(ck.getHotelName()+"_"+ck.getInventorySource().name()));
 
 		List<RoomTypeDetail> roomTypeDetails = Lists.newArrayList();
-		roomTypeDetails.addAll(getDynamoMapper().query(RoomTypeDetail.class, queryExpression));
+		List<RoomTypeDetail> queriedResults = getDynamoMapper().query(RoomTypeDetail.class, queryExpression); 
+		if (queriedResults != null)
+			roomTypeDetails.addAll(queriedResults);
 		
 		return roomTypeDetails;		
 	}

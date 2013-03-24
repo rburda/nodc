@@ -24,6 +24,11 @@ public class RoomTypeDetail
 {
 	private static final Logger logger = LoggerFactory.getLogger(RoomTypeDetail.class);
 	
+	public static final String createRoomTypeDetailHotelName(String hotelName, InventorySource is)
+	{
+		return hotelName+"_"+is;
+	}
+	
 	private String hotelName;
 	private String name;
 	private String description;

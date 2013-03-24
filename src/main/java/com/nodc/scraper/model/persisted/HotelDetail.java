@@ -37,10 +37,14 @@ public class HotelDetail implements Serializable
 	private float rating;
 	private int weight;
 	private String mapUrl;
+	//private String uuid;
 	private List<RoomTypeDetail> roomTypeDetails = Lists.newArrayList();
 	private List<Photo> photos = Lists.newArrayList();
 	private List<Amenity> amenities = Lists.newArrayList();
 	private InventorySource invSource;
+	
+	public HotelDetail()
+	{}
 	
 	@DynamoDBHashKey(attributeName = "hotel_name")
 	public String getName()
@@ -136,6 +140,19 @@ public class HotelDetail implements Serializable
 	{
 		return mapUrl;
 	}
+	
+	/*
+	@DynamoDBAttribute(attributeName = "uuid")
+	public String getUuid()
+	{
+		return uuid;
+	}
+	
+	public void setUuid(String uuid)
+	{
+		this.uuid = uuid;
+	}
+	*/
 	
 	@DynamoDBAttribute(attributeName = "area_desc")
 	public String getAreaDescription()

@@ -11,8 +11,6 @@ public interface AdminService
 {
 	List<MasterHotel> getMasterRecords();
 	
-	void saveMasterRecord(MasterHotel hotel, String newHotelName, int newWeight);
-	
 	void saveMasterRecords(List<EditableMasterHotel> masterHotels);
 	
 	void deleteMasterRecord(String masterHotelName);
@@ -23,7 +21,7 @@ public interface AdminService
 	
 	void updateSourceHotelName(String sourceHotelId, InventorySource is, String masterHotelName);
 	
-	ContentEditor editHotelContent(String masterHotelName);
+	ContentEditor editHotelContent(String masterHotelId);
 	
 	void saveHotelContent(ContentEditor ce);
 	

@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.nodc.scraper.model.SearchParams;
 import com.nodc.scraper.model.SearchResult;
 import com.nodc.scraper.model.SortType;
+import com.nodc.scraper.model.View;
 import com.nodc.scraper.model.persisted.HotelDetail;
 import com.nodc.scraper.model.persisted.InventorySource;
 import com.nodc.scraper.model.persisted.MasterHotel;
@@ -19,5 +20,5 @@ public interface InventoryService
 		
 	HotelDetail getHotelDetails(SessionInfo sessionInfo, String hotelName);
 
-	SearchResult getAggragatedResults(SessionInfo sessionInfo, SortType sortBy, Integer page, String locationFilter);
+	SearchResult getAggragatedResults(SessionInfo sessionInfo, View view);
 }

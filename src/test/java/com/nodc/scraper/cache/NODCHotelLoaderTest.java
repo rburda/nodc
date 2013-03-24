@@ -21,7 +21,7 @@ public class NODCHotelLoaderTest extends BaseSpringJUnitTest
 	@Test
 	public void testLoadCache() throws Exception
 	{
-		hotelLoader.loadCache();
+		hotelLoader.loadCache("Queen and Crescent Hotel");
 	}
 	
 	@Test

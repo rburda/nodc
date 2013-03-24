@@ -7,10 +7,17 @@
 	</head>
 	<body>
 		<script src="http://www.neworleans.com/common/js/outside-wicket/widget-incl.js" 
-   		insertTo="widgetPlaceholder"
+   		insertTo="widgetPlaceholderX"
    		widget="/mytrip/app/HotelSearchWidget?skin=homeHotel"></script>
-		<h1>It's Alive!!!</h1>
+		<script src="http://www.neworleans.com/common/js/outside-wicket/widget-incl.js" 
+   		insertTo="widgetPlaceholderProductSpecific"
+   		widget="/mytrip/app/HotelSearchWidget?skin=homeHotel&productId=3911"></script>   		
+   		
 		
-		<div id="widgetPlaceholder"></div>
+		<h1>All hotels</h1>
+		<div id="widgetPlaceholderX"></div>
+		
+		<h1>Product Specific (3911 -- Courtyard by Marriott New Orleans Downtown / Iberville)</h1>
+		<div id="widgetPlaceholderProductSpecific"></div>
 	</body>
 </html>

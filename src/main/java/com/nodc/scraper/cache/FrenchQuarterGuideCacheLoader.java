@@ -63,6 +63,11 @@ public class FrenchQuarterGuideCacheLoader
 	@Scheduled(cron = "0 1 1 * * ?")
 	public void loadCache() throws Exception
 	{
+		loadCache(null);
+	}
+	
+	public void loadCache(String optionalSingleHotel) throws Exception
+	{
 			int page = 1;
 			HttpResponse hotelSummaryResponse = queryGetHotelResults(1);
 			byte[] xml = EntityUtils.toByteArray(hotelSummaryResponse.getEntity());
@@ -77,11 +82,17 @@ public class FrenchQuarterGuideCacheLoader
 				for (Element hotelSummaryEl: xmlSummaryResults.select("hotel"))
 				{
 					String extHotelId = hotelSummaryEl.select("hotel_id").first().ownText();
-					SourceHotel sourceHotel = sourceHotelDAO.getByHotelId(extHotelId, InventorySource.FQG);
+					SourceHotel sourceHotel = sourceHotelDAO.loadSourceHotelFromDB(extHotelId, InventorySource.FQG);
 					if (sourceHotel == null)
 					{
 						logger.warn(String.format("skipping hotel: %1$s; no source info found", extHotelId));
 						continue;
+					}
+					
+					if (optionalSingleHotel != null )
+					{
+						if (!sourceHotel.getHotelName().equals(optionalSingleHotel))
+							continue;
 					}
 					
 					Element detailsEl = null;
@@ -101,7 +112,7 @@ public class FrenchQuarterGuideCacheLoader
 						}						
 					}
 					HotelDetailCacheKey cacheKey = new HotelDetailCacheKey(sourceHotel.getHotelName(), InventorySource.FQG);
-					HotelDetail details = hotelDetailDAO.getHotelDetail(cacheKey);
+					HotelDetail details = hotelDetailDAO.loadHotelDetailFromDB(cacheKey);
 					Map<String, Boolean> overrideMap = hotelDetailDAO.loadHotelDetailOverridesAsMapFromDB(cacheKey);
 					boolean isNew = false;
 					if (details == null)
@@ -182,7 +193,7 @@ public class FrenchQuarterGuideCacheLoader
 						}
 						if (rtd == null)
 							rtd = new RoomTypeDetail();
-						rtd.setHotelName(sourceHotel.getHotelName()+"_"+InventorySource.FQG.name());
+						rtd.setHotelName(RoomTypeDetail.createRoomTypeDetailHotelName(sourceHotel.getHotelName(), InventorySource.FQG));
 						rtd.setDescription(InventoryUtils.urlDecode(roomTypeEl.select("room_description").first().ownText()));
 						rtd.setDetails(roomTypeEl.select("room_details").first().ownText());
 						rtd.setFeatures(roomTypeEl.select("room_facilities").first().ownText());

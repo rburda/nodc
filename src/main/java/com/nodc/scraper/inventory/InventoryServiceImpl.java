@@ -26,6 +26,7 @@ import com.nodc.scraper.model.RoomType;
 import com.nodc.scraper.model.SearchParams;
 import com.nodc.scraper.model.SearchResult;
 import com.nodc.scraper.model.SortType;
+import com.nodc.scraper.model.View;
 import com.nodc.scraper.model.persisted.HotelDetail;
 import com.nodc.scraper.model.persisted.InventorySource;
 import com.nodc.scraper.model.persisted.MasterHotel;
@@ -111,7 +112,7 @@ public class InventoryServiceImpl implements InventoryService
 	}
 	
 	@Override
-	public SearchResult getAggragatedResults(SessionInfo sessionInfo, SortType sortBy, Integer page, String locationFilter) 
+	public SearchResult getAggragatedResults(SessionInfo sessionInfo, View view) 
 	{
 		SearchResult sr = null;
 		Session s = getFromCache(sessionInfo.getRequest(), sessionInfo.getSessionId());
@@ -130,12 +131,14 @@ public class InventoryServiceImpl implements InventoryService
 		rawResults.putAll(InventorySource.FQG, fqgHotels);
 		if (s != null)
 		{
-			if (page != null)
-				s.setCurrentPage(page);
-			if (sortBy != null)
-				s.setCurrentSort(sortBy);
-			if (locationFilter != null)
-				s.setFilterLocation(locationFilter);
+			if (view.getPage() != null)
+				s.setCurrentPage(view.getPage());
+			if (view.getSortType() != null)
+				s.setCurrentSort(view.getSortType());
+			if (view.getFilterLocation() != null)
+				s.setLocationFilter(view.getFilterLocation());
+			if (view.getFilterHotelName() != null)
+				s.setHotelNameFilter(view.getFilterHotelName());
 			try
 			{
 				sessionInfo.getRequest().getSession().setAttribute(sessionInfo.getSessionId(), s);
@@ -153,7 +156,7 @@ public class InventoryServiceImpl implements InventoryService
 	@Override
 	public HotelDetail getHotelDetails(SessionInfo sessionInfo, String hotelName)
 	{
-		SearchResult searchResult = getAggragatedResults(sessionInfo,  null,  null, null);
+		SearchResult searchResult = getAggragatedResults(sessionInfo,  View.INITIAL());
 		HotelDetail hotelDetail = null;
 		if (searchResult != null)
 		{

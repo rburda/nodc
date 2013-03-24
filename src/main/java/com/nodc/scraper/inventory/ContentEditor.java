@@ -28,8 +28,11 @@ public class ContentEditor
 	
 	public void addAttributes(Map<String, AttributeValue> attrs)
 	{
-		for (String s: attrs.keySet())
-			this.attributes.put(s,  (attrs.get(s).getS() == null ? attrs.get(s).getN() : attrs.get(s).getS()));
+		if (attrs != null && !attrs.isEmpty())
+		{
+			for (String s: attrs.keySet())
+				this.attributes.put(s,  (attrs.get(s).getS() == null ? attrs.get(s).getN() : attrs.get(s).getS()));			
+		}
 	}
 	
 	public Map<String, String> getAttributes()

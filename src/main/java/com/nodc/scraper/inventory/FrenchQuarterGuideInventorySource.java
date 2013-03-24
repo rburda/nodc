@@ -138,7 +138,13 @@ public class FrenchQuarterGuideInventorySource implements Warehouse
 			Hotel hotel = new Hotel();
 			hotel.setName(sourceHotel.getHotelName());
 			hotel.setSource(sourceHotel);
-			hotel.setHotelDetails( hotelDetailDAO.getHotelDetail(new HotelDetailCacheKey(sourceHotel.getHotelName(), InventorySource.FQG)));	
+			hotel.setHotelDetails( hotelDetailDAO.getHotelDetail(new HotelDetailCacheKey(sourceHotel.getHotelName(), InventorySource.FQG)));
+			if (hotel.getHotelDetails() == null)
+			{
+				logger.warn("unable to find hotel details for: " + extHotelId + ", " + sourceHotel.getHotelName());
+				continue;
+			}
+			
 			if (hotel.getHotelDetails() != null)
 				hotel.getHotelDetails().setWeight(masterHotelDAO.getByHotelName(sourceHotel.getHotelName()).getWeight());
 			Elements els = hotelElement.select(".room");

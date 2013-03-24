@@ -11,28 +11,28 @@
 	</appender>
 	
 	<!-- Application Loggers -->
-	<logger name="com.nodc.scraper">
+	<logger name="com.nodc.scraper" additivity="false">
 		<level value="debug" />
 		<appender-ref ref="console" />		
 	</logger>
 	
 	<!-- 3rdparty Loggers -->
-	<logger name="org.springframework.core">
+	<logger name="org.springframework.core" additivity="false">
 		<level value="warn" />
 		<appender-ref ref="console" />		
 	</logger>	
 	
-	<logger name="org.springframework.beans">
+	<logger name="org.springframework.beans" additivity="false">
 		<level value="warn" />
 		<appender-ref ref="console" />		
 	</logger>
 	
-	<logger name="org.springframework.context">
+	<logger name="org.springframework.context" additivity="false">
 		<level value="warn" />
 		<appender-ref ref="console" />		
 	</logger>
 
-	<logger name="org.springframework.web">
+	<logger name="org.springframework.web" additivity="false">
 		<level value="warn" />
 		<appender-ref ref="console" />
 	</logger>

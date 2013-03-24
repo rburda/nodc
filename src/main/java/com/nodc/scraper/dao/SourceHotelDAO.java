@@ -12,6 +12,9 @@ import org.springframework.stereotype.Repository;
 
 import com.amazonaws.services.dynamodb.AmazonDynamoDB;
 import com.amazonaws.services.dynamodb.datamodeling.DynamoDBScanExpression;
+import com.amazonaws.services.dynamodb.model.AttributeValue;
+import com.amazonaws.services.dynamodb.model.ComparisonOperator;
+import com.amazonaws.services.dynamodb.model.Condition;
 import com.nodc.scraper.model.persisted.HotelDetail;
 import com.nodc.scraper.model.persisted.InventorySource;
 import com.nodc.scraper.model.persisted.MasterHotel;
@@ -59,7 +62,7 @@ public class SourceHotelDAO extends AbstractDynamoDBDAO<SourceHotel>
       .build(
           new CacheLoader<CacheKey, SourceHotel>() {
             public SourceHotel load(CacheKey key) {
-              return loadSourceHotel(key);
+              return loadSourceHotelFromDB(key.hotelId, key.is);
             }
             
             @Override
@@ -110,9 +113,9 @@ public class SourceHotelDAO extends AbstractDynamoDBDAO<SourceHotel>
 			sourceCache.put(new CacheKey(sh.getExternalHotelId(), sh.getInvSource()), sh);
 	}
 	
-	private SourceHotel loadSourceHotel(CacheKey key)
+	public SourceHotel loadSourceHotelFromDB(String hotelId, InventorySource is)
 	{
-		return getDynamoMapper().load(SourceHotel.class,  key.hotelId, key.is.name());
+		return getDynamoMapper().load(SourceHotel.class,  hotelId, is.name());
 		/*
 		DynamoDBQueryExpression queryExpression = 
 				new DynamoDBQueryExpression(
@@ -120,5 +123,25 @@ public class SourceHotelDAO extends AbstractDynamoDBDAO<SourceHotel>
 								new Condition().withAttributeValueList(
 										new AttributeValue().withS(is.name())));
 		*/
+	}
+	
+	public SourceHotel loadSourceHotelFromDBByHotelName(String hotelName, InventorySource is)
+	{
+		SourceHotel sh = null;
+		DynamoDBScanExpression query = new DynamoDBScanExpression();
+		query.addFilterCondition("hotel_name", 
+				new Condition()
+					.withComparisonOperator(ComparisonOperator.EQ)
+					.withAttributeValueList(new AttributeValue(hotelName)));
+		List<SourceHotel> queryResult = getDynamoMapper().scan(SourceHotel.class, query);
+		if (queryResult != null && queryResult.size() > 0)
+		{
+			for (SourceHotel test: queryResult)
+			{
+				if (test.getInvSource() == is)
+					sh = test;
+			}
+		}
+		return sh;
 	}
 }

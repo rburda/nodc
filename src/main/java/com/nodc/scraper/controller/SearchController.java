@@ -31,6 +31,8 @@ import com.nodc.scraper.inventory.SessionInfo;
 import com.nodc.scraper.model.SearchParams;
 import com.nodc.scraper.model.SearchResult;
 import com.nodc.scraper.model.SortType;
+import com.nodc.scraper.model.View;
+import com.nodc.scraper.model.View.ViewBuilder;
 import com.nodc.scraper.model.persisted.HotelDetail;
 
 /**
@@ -80,7 +82,7 @@ public class SearchController
 		SearchParams sp = new SearchParams(params);
 		sp.setSessionInfo(new SessionInfo(request));
 		invService.search(request, sp);
-		model.put("result", invService.getAggragatedResults(sp.getSessionInfo(), null, null, null));
+		model.put("result", invService.getAggragatedResults(sp.getSessionInfo(), View.INITIAL()));
 		
 		createResponseCookies(request, clientResponse, sp);
 		return new ModelAndView("searchResult", model);
@@ -102,13 +104,21 @@ public class SearchController
 	public ModelAndView getResults(
 			@RequestParam(value="sort", required=false) SortType sortType,
 			@RequestParam(value="page", required=false) Integer page,
-			@RequestParam(value="filter", required=false) String locationFilterValue,
+			@RequestParam(value="filterLocation", required=false) String locationFilterValue,
+			@RequestParam(value="hotelNameFilter", required=false) String hotelNameFilter,
 			@ModelAttribute("searchResults") ModelMap model,
 			HttpServletRequest clientRequest,
 			HttpServletResponse clientResponse) throws Exception
 	{		
 		SessionInfo sessionInfo = new SessionInfo(clientRequest);
-		SearchResult searchResult = invService.getAggragatedResults(sessionInfo, sortType, page, locationFilterValue); 
+		View view = new ViewBuilder()
+			.withFilterHotelName(hotelNameFilter)
+			.withFilterLocation(locationFilterValue)
+			.withPage(page)
+			.withSortType(sortType)
+			.create();
+		
+		SearchResult searchResult = invService.getAggragatedResults(sessionInfo, view); 
 		if (searchResult == null)
 			return new ModelAndView(new RedirectView("http://www.neworleans.com"));
 		model.put("result", searchResult);

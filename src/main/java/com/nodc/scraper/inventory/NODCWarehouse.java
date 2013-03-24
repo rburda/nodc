@@ -233,7 +233,7 @@ public class NODCWarehouse implements Warehouse
 				{
 					RoomTypeDetail rtd = new RoomTypeDetail();
 					rtd.setName(roomEl.select(".tabText h4").first().ownText());
-					rtd.setHotelName(h.getName()+"_"+InventorySource.NODC);
+					rtd.setHotelName(RoomTypeDetail.createRoomTypeDetailHotelName(h.getName(), InventorySource.NODC));
 					StringBuffer desc = new StringBuffer();
 					for (Element descEl: roomEl.select(".tabText p"))
 					{
@@ -244,9 +244,15 @@ public class NODCWarehouse implements Warehouse
 					rtd.setDetails(desc.toString());
 					rtd.setFeatures(roomEl.select(".tabText").first().ownText());
 					
-					Photo p = new Photo();
-					p.url = "http://www.neworleans.com"+roomEl.select(".tabText img").first().attr("src");
-					rtd.addPhoto(p);
+
+					Element photoEl = roomEl.select(".tabText img").first();
+					if (photoEl != null)
+					{
+						Photo p = new Photo();
+						p.url = "http://www.neworleans.com"+photoEl.attr("src");
+						rtd.addPhoto(p);						
+					}
+
 					detail.addRoomTypeDetail(rtd);
 				}				
 				hotels.add(h);	    	

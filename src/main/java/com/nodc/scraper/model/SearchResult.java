@@ -26,6 +26,7 @@ public class SearchResult
 	public int numTotalHotels = 0;
 	public SortType currentSort = SortType.DEFAULT_A;
 	public String currentFilterLocation = null;
+	public String currentHotelNameFilter = null;
 	
 	private List<String> locations = Lists.newArrayList();
 	
@@ -152,6 +153,11 @@ public class SearchResult
 	public String getCurrentFilterLocation()
 	{
 		return currentFilterLocation;
+	}
+	
+	public String getCurrentHotelNameFilter()
+	{
+		return currentHotelNameFilter;
 	}
 	
 	public int getNumTotalHotels()

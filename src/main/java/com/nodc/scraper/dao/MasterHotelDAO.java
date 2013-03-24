@@ -11,6 +11,9 @@ import org.springframework.stereotype.Repository;
 
 import com.amazonaws.services.dynamodb.AmazonDynamoDB;
 import com.amazonaws.services.dynamodb.datamodeling.DynamoDBScanExpression;
+import com.amazonaws.services.dynamodb.model.AttributeValue;
+import com.amazonaws.services.dynamodb.model.ComparisonOperator;
+import com.amazonaws.services.dynamodb.model.Condition;
 import com.nodc.scraper.model.persisted.MasterHotel;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -25,7 +28,7 @@ public class MasterHotelDAO extends AbstractDynamoDBDAO<MasterHotel>
       .build(
           new CacheLoader<String, MasterHotel>() {
             public MasterHotel load(String key) {
-              return loadMasterHotel(key);
+              return loadMasterHotelFromDB(key);
             }
           });
 	
@@ -50,14 +53,26 @@ public class MasterHotelDAO extends AbstractDynamoDBDAO<MasterHotel>
 		return mh;
 	}
 	
-	
+	public MasterHotel getByUuid(String uuid)
+	{
+		MasterHotel mh = null;
+		DynamoDBScanExpression query = new DynamoDBScanExpression();
+		query.addFilterCondition("uuid", 
+				new Condition()
+					.withComparisonOperator(ComparisonOperator.EQ)
+					.withAttributeValueList(new AttributeValue(uuid)));
+		List<MasterHotel> queryResult = getDynamoMapper().scan(MasterHotel.class, query);
+		if (queryResult != null && queryResult.size() > 0)
+			mh = queryResult.get(0);
+		return mh;
+	}
 	
 	public List<MasterHotel> getAll()
 	{
 		return getDynamoMapper().scan(MasterHotel.class,  new DynamoDBScanExpression());
 	}
 	
-	public MasterHotel loadMasterHotel(String name)
+	public MasterHotel loadMasterHotelFromDB(String name)
 	{
 		return getDynamoMapper().load(MasterHotel.class,  name);
 	}

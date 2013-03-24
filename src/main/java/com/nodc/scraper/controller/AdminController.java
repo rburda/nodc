@@ -64,11 +64,11 @@ public class AdminController
 		return new ModelAndView(new RedirectView("/admin/editMaster"));
 	}
 	
-	@RequestMapping(value="/deleteMasterHotel", method=RequestMethod.POST)
+	@RequestMapping(value="/deleteMasterHotel", method={RequestMethod.POST, RequestMethod.GET})
 	@ResponseBody
-	public ModelAndView deleteMasterHotel(@RequestParam("name") String masterHotelName)
+	public ModelAndView deleteMasterHotel(@RequestParam("id") String masterHotelId)
 	{
-		adminService.deleteMasterRecord(masterHotelName);
+		adminService.deleteMasterRecord(masterHotelId);
 		return new ModelAndView(new RedirectView("/admin/editMaster"));
 	}
 
@@ -111,10 +111,10 @@ public class AdminController
 	@ResponseBody 
 	public ModelAndView editContent(
 			HttpServletRequest req, 
-			@RequestParam("masterHotelName")String masterHotelName,
+			@RequestParam("id")String masterHotelId,
 			@ModelAttribute("model") ModelMap model)
 	{
-		model.put("contentEditor", adminService.editHotelContent(masterHotelName));
+		model.put("contentEditor", adminService.editHotelContent(masterHotelId));
 		return new ModelAndView("/admin/editContent", model);
 	}
 	

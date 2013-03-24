@@ -15,6 +15,6 @@ public class FrenchQuarterGuideCacheLoaderTest extends BaseSpringJUnitTest
 	@Test
 	public void testLoadCache() throws Exception
 	{
-		cacheLoader.loadCache();
+		cacheLoader.loadCache("Queen and Crescent Hotel");
 	}
 }

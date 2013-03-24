@@ -1,31 +1,20 @@
-<div class="filterWrap">
-	<form name="searchWidgetForm" class="hotelSearchForm" action="results?page=1&filter=location" method="post">
-
-		<!-- Total Matching Products Display -->
-		<div class="totalMatches">
-			<div class="numberOfHotels">${searchResults["result"].numTotalHotels}</div>
-			<div class="matchingHotels">
-				<span>Matching Hotels</span><br> <a href="#">Show All</a>
-			</div>
-			<div class="clear"></div>
-		</div>
-		
-		<!-- LocationsDropDownChoice -->
-		<!-- location -->
-		<div class="filterBoxWrapper">
-			<div class="topHeader"></div>
-			<div class="locationPreference">
-				<strong>Location</strong> 
-				<select class="hotelLocation" name="locationValue" style="width: 160px;" >
-					<option selected="selected" value="">All Locations</option>
-					<#list searchResults["result"].locations as location>
-						<option value="${location.name}">{location.name}</option>
-					</#list>
-				</select> 
-				<span class="clear"></span>
-			</div>
-			<div class="bottomRound"></div>
-		</div>
-		
-	</form>
-</div>
+							<div class="filterWrap">
+								<!-- Total Matching Products Display -->
+								<div style="background-color: #01A401; margin: 0; padding: 5px 6px; height: 43px;margin-bottom: 10px;" class="totalMatches">
+									<div class="matchingHotels">
+										<span>Search By Hotel Name</span><br> <a href="#">Show All</a>
+									</div>
+									<div class="clear"></div>
+								</div>
+								
+								<!-- LocationsDropDownChoice -->
+								<!-- location -->
+								<div class="filterBoxWrapper">
+									<div class="topHeader"></div>
+									<div class="locationPreference"> 
+										<input type="text" name="select" class="hotelLocation" name="hotelNameFilter" style="width: 160px;" />
+										<span class="clear"></span>
+									</div>
+									<div class="bottomRound"></div>
+								</div>
+							</div>

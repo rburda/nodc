@@ -26,6 +26,10 @@
 	<#if ( selected?matches(current) ) >selected=selected</#if>
 </#macro>
 
+<#macro hotelNameFilterVal val>
+	<#if ( val?matches("NONE") ) ><#else>${val}</#if>
+</#macro>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -80,7 +84,12 @@
 	  		});
 	 			
 	 			cyljq("#filter").change(function() {
-	 				document.location.href="results?page=1&filter="+cyljq(this).val();
+	 				document.location.href="results?page=1&filterLocation="+cyljq(this).val();
+	 			});
+	 			
+	 			cyljq("#hotelNameFilter").keypress(function(e) {
+	 				if (e.which==13) //enter key
+	 					document.location.href="results?page=1&hotelNameFilter="+cyljq(this).val();
 	 			});
 	 			
 				var ajaxOpts = {
@@ -392,7 +401,26 @@
 								<h3>Change Search</h3>								
 								<div id="sidebarWidget"></div>
 							</div>
-
+							<div>
+								<div class="changeSearch">
+									<h3>Filter my results:</h3>
+								</div>
+								<!-- Total Matching Products Display -->
+								<div class="filterBoxWrapper" style="margin-left: 10px; margin-bottom: 8px">
+									<!-- <div style="background-color: #01A401; margin: 0; padding: 5px 6px; height: 43px;margin-bottom: 10px;""> -->
+									<div class="locationPreference">
+										<div class="topHeader"></div>
+										<div style="background-color: #fff; padding: 5px; border-style: solid; border-width: 0px 2px 0px 2px; border-color: #8c5395">
+											<strong>Hotel Name</strong><a href="results?hotelNameFilter=NONE" style="margin-left: 8px">Show All</a><br>
+											<input type="text" id="hotelNameFilter" name="hotelNameFilter" class="hotelLocation" 
+											 name="hotelNameFilter" style="width: 160px;" 
+											 value='<@hotelNameFilterVal searchResults["result"].currentHotelNameFilter />'/>
+										</div>
+										<div class="bottomRound"></div>
+									</div>
+									<div class="clear"></div>
+								</div>
+							</div>
 
 							<div class="allAvailableItems">
 								<h3>All Available Hotels</h3>
@@ -526,24 +554,16 @@
 	                    <ul>
 	                     <li class="first"><label>Sort by:</label></li>
 	                     <li>
-	                     		<div style="margin-right: 20px">NewOrleans Picks</div>
-	                     		<select id="sortWeight" class="scheck">
-	                     			<option value="">----</option>
-	                     			<option <@isSortSelected selected=searchResults["result"].currentSort current="DEFAULT_D" /> value="DEFAULT_D">High to Low</option>
-	                     			<option <@isSortSelected selected=searchResults["result"].currentSort current="DEFAULT_A" /> value="DEFAULT_A">Low to High</option>
-	                     		</select>
-	                     </li>
-	                     <li>
 	                     		<div>Price</div>
-	                     		<select id="sortPrice" class="scheck" style="margin-right: 20px">
+	                     		<select id="sortPrice" class="scheck" style="border-right-width: thin; border-right-color: gray; margin-right: 20px; width: 95px;">
 	                     			<option value="">----</option>
-	                     			<option <@isSortSelected selected=searchResults["result"].currentSort current="PRICE_D" /> value="PRICE_D">$$$ - $</option>
-	                     			<option <@isSortSelected selected=searchResults["result"].currentSort current="PRICE_A" /> value="PRICE_A">$ - $$$</option>
+	                     			<option <@isSortSelected selected=searchResults["result"].currentSort current="PRICE_D" /> value="PRICE_D">High to Low</option>
+	                     			<option <@isSortSelected selected=searchResults["result"].currentSort current="PRICE_A" /> value="PRICE_A">Low to High</option>
 	                     		</select>
 	                     </li>
 	                     <li>
 	                     		<div style="margin-right: 20px">Hotel Name</div>
-	                     		<select id="sortName" class="scheck">
+	                     		<select id="sortName" class="scheck" style="border-right-width: thin; border-right-color: gray; ">
 														<option value="">----</option>
 	                     			<option <@isSortSelected selected=searchResults["result"].currentSort current="HOTEL_NAME_A" /> value="HOTEL_NAME_A">A-Z</option>
 	                     			<option <@isSortSelected selected=searchResults["result"].currentSort current="HOTEL_NAME_D" /> value="HOTEL_NAME_D">Z-A</option>
@@ -551,7 +571,7 @@
 	                     </li>
 	                     <li>
 	                     		<div>Rating</div>
-	                     		<select id="sortRating" class="scheck" style="margin-right: 20px">
+	                     		<select id="sortRating" class="scheck" style="border-right-width: thin; border-right-color: gray; margin-right: 20px">
 \														<option value="">----</option>
 	                     			<option <@isSortSelected selected=searchResults["result"].currentSort current="RATING_D" /> value="RATING_D">5 star first</option>
 	                     			<option <@isSortSelected selected=searchResults["result"].currentSort current="RATING_A" /> value="RATING_A">1 star first</option>
@@ -559,12 +579,20 @@
 	                     </li>
 	                     <li>
 													<div >Location</div> 
-														<select class="hotelLocation" id="filter" name="filter" value='${searchResults["result"].currentFilterLocation}' style="width: 160px;" >
+														<select class="hotelLocation" id="filter" name="filter" value='${searchResults["result"].currentFilterLocation}' style="border-right-width: thin; border-right-color: gray; width: 155px;" >
 															<option <#if ( searchResults["result"].currentFilterLocation?matches("NONE") ) >selected=selected</#if> value="NONE">All Locations</option>
 															<#list searchResults["result"].locations as location>
 																<option <#if ( searchResults["result"].currentFilterLocation?matches(location) ) >selected=selected</#if> value="${location}">${location}</option>
 															</#list>
 														</select>	                     
+	                     </li>
+											 <li style="border-left: 2px solid #bfdfbf; padding-left: 20px;margin-left: 20px; ">
+	                     		<div style="margin-right: 20px">NewOrleans Picks</div>
+	                     		<select id="sortWeight" class="scheck" style="border-right-width: thin; border-right-color: gray; ">
+	                     			<option value="">----</option>
+	                     			<option <@isSortSelected selected=searchResults["result"].currentSort current="DEFAULT_D" /> value="DEFAULT_D">High to Low</option>
+	                     			<option <@isSortSelected selected=searchResults["result"].currentSort current="DEFAULT_A" /> value="DEFAULT_A">Low to High</option>
+	                     		</select>
 	                     </li>
 	                    </ul>
                      	<span class="clear"></span>
