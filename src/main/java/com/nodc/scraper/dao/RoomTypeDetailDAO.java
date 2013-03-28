@@ -1,6 +1,7 @@
 package com.nodc.scraper.dao;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +55,7 @@ public class RoomTypeDetailDAO extends AbstractDynamoDBDAO<RoomTypeDetail>
 	}	
 	
 	private LoadingCache<HotelDetailCacheKey, List<RoomTypeDetail>> roomTypeDetailCache = CacheBuilder.newBuilder()
-      //.expireAfterWrite(1, TimeUnit.HOURS)
+      .expireAfterWrite(1, TimeUnit.HOURS)
       .build(
           new CacheLoader<HotelDetailCacheKey, List<RoomTypeDetail>>() {
             public List<RoomTypeDetail> load(HotelDetailCacheKey key) {
@@ -69,7 +70,7 @@ public class RoomTypeDetailDAO extends AbstractDynamoDBDAO<RoomTypeDetail>
 	{
 		super(client);
 		this.cacheStateDAO = csDAO;
-		new RoomTypeDetailCacheRefresher().startAndWait();
+		//new RoomTypeDetailCacheRefresher().startAndWait();
 	}
 	
 	//@ReadThroughSingleCache(namespace = "RoomTypeDetail", expiration = 3600)

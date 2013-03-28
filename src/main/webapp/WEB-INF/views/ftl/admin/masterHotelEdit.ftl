@@ -27,7 +27,8 @@
            <thead>
 	            <tr>
 	            	<th width="10%">Id</th>
-                <th width="60%">Name</th>
+                <th width="50%">Name</th>
+                <th width="10%">Source</th>
                 <th width="10%">Weight</th>
                 <th colspan="2" width="20%">Actions</th>
               </tr>
@@ -42,6 +43,7 @@
 	           			<td><input style="width:500px" 
 	           			  name="masterHotels[${hotel_index}].newHotelName"  type="text" 
 	           			  value="${hotel.hotelName}"/></td>
+	           			<td><span>${hotel.favoredInventorySource}</span></td>
 	           			<td><input style="width:50px"  
 	           			  name="masterHotels[${hotel_index}].newWeight" type="text" 
 	           			  value="${hotel.weight}"/></td>

@@ -62,7 +62,7 @@ public class HotelDetailDAO extends AbstractDynamoDBDAO<HotelDetail>
 				}
 				else
 				{
-					hotelDetailMap.put(key, loadHotelDetailFromDB(key));
+					hotelDetailMap.put(key, hd);
 				}
 			}
 			hotelDetailCache.putAll(hotelDetailMap);			

@@ -1,5 +1,6 @@
 package com.nodc.scraper.inventory;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -7,12 +8,17 @@ import org.apache.commons.lang.StringUtils;
 import com.amazonaws.services.dynamodb.AmazonDynamoDB;
 import com.amazonaws.services.dynamodb.model.AttributeValue;
 import com.amazonaws.services.dynamodb.model.PutItemRequest;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.nodc.scraper.dao.CacheStateDAO;
 import com.nodc.scraper.model.persisted.CacheState;
 
 public class ContentEditor
 {
+	private static final List<String> REQUIRED_FIELDS = 
+			Lists.newArrayList("address", "amenities_json", "area_desc", "city", 
+					"desc", "hotel_name", "lat", "long", "photos_json", "rating", "state", "zip");
+	
 	private String tableName;
 	private String name;
 	private Map<String, String> attributes = Maps.newTreeMap();
@@ -32,6 +38,11 @@ public class ContentEditor
 		{
 			for (String s: attrs.keySet())
 				this.attributes.put(s,  (attrs.get(s).getS() == null ? attrs.get(s).getN() : attrs.get(s).getS()));			
+		}
+		for (String s: REQUIRED_FIELDS)
+		{
+			if (this.attributes.get(s) == null)
+				this.attributes.put(s,  StringUtils.EMPTY);
 		}
 	}
 	
@@ -84,6 +95,9 @@ public class ContentEditor
 		for (String key: attributes.keySet())
 		{
 			String val = StringUtils.defaultIfEmpty(attributes.get(key), "").trim();
+			if (StringUtils.isEmpty(val))
+				continue;
+			
 			AttributeValue av = new AttributeValue();
 			if (key.equals("rating"))
 				av.setN(val);

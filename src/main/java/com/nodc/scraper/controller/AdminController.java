@@ -1,5 +1,6 @@
 package com.nodc.scraper.controller;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import com.nodc.scraper.inventory.AdminService;
 import com.nodc.scraper.inventory.ContentEditor;
 import com.nodc.scraper.model.persisted.InventorySource;
+import com.nodc.scraper.model.persisted.MasterHotel;
 import com.nodc.scraper.model.persisted.SourceHotel;
 
 @Controller
@@ -78,7 +80,10 @@ public class AdminController
 	{
 		List<SourceHotel> sourceHotels = adminService.getSourceHotels();
 		map.put("sourceHotelList",  sourceHotels);
-		map.put("masterHotelList", adminService.getMasterRecords());
+		
+		List<MasterHotel> masterHotels = adminService.getMasterRecords();
+		Collections.sort(masterHotels, MasterHotel.BY_NAME);
+		map.put("masterHotelList", masterHotels);
 		return new ModelAndView("/admin/viewSourceHotels", map);
 	}
 	

@@ -2,6 +2,15 @@
 	<#if ( current?matches(value) ) >selected</#if>
 </#macro>
 
+<#macro chopstring val length=8>
+	<#assign x = val?length>
+	<#assign name = val>
+	<#if (x > length) >
+		${val?substring(0,length)}
+	  <#else>
+	  	${val}	
+	</#if>
+</#macro>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -32,10 +41,11 @@
            		<form action="/admin/updateSourceHotel" method="post" commandName="wrapper">
            		<tr>
 	           			<td>
-	           				<select style="width:500px" name="masterHotelName" value="${hotel.hotelName}">
+	           				<select style="width:550px" name="masterHotelName" value="${hotel.hotelName}">
 	           					<#list model["masterHotelList"] as masterHotel>
 	           						<option <@isSelected current=hotel.hotelName value=masterHotel.hotelName/> 
-	           						 value="${masterHotel.hotelName}">${masterHotel.hotelName}</option>
+	           						 value="${masterHotel.hotelName}">
+	           						 	${masterHotel.hotelName} (<@chopstring val=masterHotel.uuid /> - ${masterHotel.favoredInventorySource})</option>
 	           					</#list>
 	           				</select>
 	           			</td>
