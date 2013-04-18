@@ -225,7 +225,7 @@ public class FrenchQuarterGuideCacheLoader
 		URIBuilder builder = new URIBuilder();
 		builder
 				.setScheme("https")
-				.setHost("secure.rezserver.com")
+				.setHost("hotelsearch.neworleans.com")
 				.setPath("/api/hotel/getHotelData")
 				.addParameter("api_key", "5f871629935ff113b876b4bcb1ca70e4")
 				.addParameter("refid", "5057")
@@ -259,7 +259,7 @@ public class FrenchQuarterGuideCacheLoader
 		
 		builder
 		.setScheme("http")
-		.setHost("api.rezserver.com")
+		.setHost("hotelsearch.neworleans.com")
 		.setPath("/api/hotel/getResults")
 		.addParameter("refid", "5057")
 		.addParameter("limit", "600")
@@ -271,7 +271,7 @@ public class FrenchQuarterGuideCacheLoader
 		/*
 		builder
 			.setScheme("http")
-			.setHost("api.rezserver.com")
+			.setHost("hotelsearch.neworleans.com")
 			.setPath("/api/hotel/getStaticHotels")
 			.addParameter("api_key", "5f871629935ff113b876b4bcb1ca70e4")
 			.addParameter("refid", "5057")

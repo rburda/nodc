@@ -113,7 +113,7 @@ public class FrenchQuarterGuideInventorySource implements Warehouse
 	private Collection<Hotel> createHotels(SearchParams params, byte[] html) throws Exception
 	{
 		Document document = Jsoup.parse(
-				new String(html), "http://secure.rezserver.com/js/ajax/city_page_redesign/getResults.php");
+				new String(html), "http://hotelsearch.neworleans.com/js/ajax/city_page_redesign/getResults.php");
 		
 		List<Hotel> hotels = Lists.newArrayList();
 		for (Element hotelElement: document.select(".hotelbox"))
@@ -200,7 +200,7 @@ public class FrenchQuarterGuideInventorySource implements Warehouse
 	private String createBookUrl(SearchParams sp, String[] idParts)
 	{
 		StringBuffer url = new StringBuffer();
-		url.append("https://secure.rezserver.com/book/index.php?refid=5057&seshid=ac5711115d836fd9a54f2c0757438cfc");
+		url.append("https://hotelsearch.neworleans.com/book/index.php?refid=5057&seshid=ac5711115d836fd9a54f2c0757438cfc");
 		url.append("refid=5057");
 		url.append("&rs_hid="+idParts[0]);
 		url.append("&rs_rate_cat="+idParts[1]);
@@ -221,7 +221,7 @@ public class FrenchQuarterGuideInventorySource implements Warehouse
 		URIBuilder builder = new URIBuilder();
 		builder
 				.setScheme("http")
-				.setHost("secure.rezserver.com")
+				.setHost("hotelsearch.neworleans.com")
 				.setPath("/js/ajax/city_page_redesign/getResults.php")
 				.addParameter("rs_city", "New Orleans, Lousiana")
 				.addParameter("rs_cid", "3000008434")

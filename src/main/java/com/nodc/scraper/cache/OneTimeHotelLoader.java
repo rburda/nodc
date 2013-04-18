@@ -169,7 +169,7 @@ public class OneTimeHotelLoader
 		/*
 		builder
 				.setScheme("http")
-				.setHost("api.rezserver.com")
+				.setHost("hotelsearch.neworleans.com")
 				.setPath("/api/hotel/getStaticHotels")
 				.addParameter("refid", "5057")
 				.addParameter("limit", "300")
@@ -179,7 +179,7 @@ public class OneTimeHotelLoader
 		*/
 		builder
 		.setScheme("http")
-		.setHost("api.rezserver.com")
+		.setHost("hotelsearch.neworleans.com")
 		.setPath("/api/hotel/getResults")
 		.addParameter("refid", "5057")
 		.addParameter("limit", "600")
