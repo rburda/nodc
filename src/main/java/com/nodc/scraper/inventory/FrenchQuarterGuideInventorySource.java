@@ -200,7 +200,7 @@ public class FrenchQuarterGuideInventorySource implements Warehouse
 	private String createBookUrl(SearchParams sp, String[] idParts)
 	{
 		StringBuffer url = new StringBuffer();
-		url.append("https://hotelsearch.neworleans.com/book/index.php?refid=5057&seshid=ac5711115d836fd9a54f2c0757438cfc");
+		url.append("http://hotelsearch.neworleans.com/book/index.php?refid=5057&seshid=ac5711115d836fd9a54f2c0757438cfc");
 		url.append("refid=5057");
 		url.append("&rs_hid="+idParts[0]);
 		url.append("&rs_rate_cat="+idParts[1]);
