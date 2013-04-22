@@ -201,18 +201,19 @@ public class FrenchQuarterGuideInventorySource implements Warehouse
 	{
 		StringBuffer url = new StringBuffer();
 		//url.append("http://hotelsearch.neworleans.com/book/index.php?refid=5057&seshid=ac5711115d836fd9a54f2c0757438cfc");
-		url.append("http://hotelsearch.neworleans.com/book/index.php?refid=5057");
+		url.append("http://hotelsearch.neworleans.com/hotel/?refid=5057");
 		//url.append("refid=5057");
+		url.append("&needLiveRates=true");
 		url.append("&rs_hid="+idParts[0]);
-		url.append("&rs_rate_cat="+idParts[1]);
-		url.append("&rs_rate_code="+idParts[2]);
-		url.append("&rs_room_code="+idParts[3]);
-		url.append("&rs_city=New Orleans, LA");
+		url.append("&rs_rooms="+sp.getNumRooms());
+		//url.append("&rs_rate_cat="+idParts[1]);
+		//url.append("&rs_rate_code="+idParts[2]);
+		//url.append("&rs_room_code="+idParts[3]);
+		//url.append("&rs_city=New Orleans, LA");
 		url.append("&rs_chk_in="+STAY_DATE_FORMAT.print(sp.getCheckInDate()));
 		url.append("&rs_chk_out="+STAY_DATE_FORMAT.print(sp.getCheckOutDate()));
-		url.append("&rs_rooms="+sp.getNumRooms());
-		url.append("&ts_testing=");
-		url.append("&_booknow=1");
+		//url.append("&ts_testing=");
+		//url.append("&_booknow=1");
 		return url.toString();
 	}
 	
