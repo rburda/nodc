@@ -224,7 +224,7 @@ public class FrenchQuarterGuideCacheLoader
 	{
 		URIBuilder builder = new URIBuilder();
 		builder
-				.setScheme("https")
+				.setScheme("http")
 				.setHost("hotelsearch.neworleans.com")
 				.setPath("/api/hotel/getHotelData")
 				.addParameter("api_key", "5f871629935ff113b876b4bcb1ca70e4")
